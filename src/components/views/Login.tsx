@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
@@ -11,6 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [name, setName] = useState<string>(null);
   const [username, setUsername] = useState<string>(null);
+  const [password, setPassword] = useState<string>(null);
 
   const doLogin = async () => {
     try {
@@ -32,6 +33,10 @@ const Login = () => {
     }
   };
 
+  const getToRegister = () => {
+    navigate("/register");
+  }
+
   return (
     <BaseContainer>
       <div className="login container">
@@ -42,9 +47,9 @@ const Login = () => {
             onChange={(un: string) => setUsername(un)}
           />
           <FormField
-            label="Name"
-            value={name}
-            onChange={(n) => setName(n)}
+            label="Password"
+            value={password}
+            onChange={(n) => setPassword(n)}
           />
           <div className="login button-container">
             <Button
@@ -53,6 +58,14 @@ const Login = () => {
               onClick={() => doLogin()}
             >
               Login
+            </Button>
+          </div>
+          <div className="login button-container">
+            <Button
+              width="100%"
+              onClick={() => getToRegister()}
+            >
+              Create new account
             </Button>
           </div>
         </div>
