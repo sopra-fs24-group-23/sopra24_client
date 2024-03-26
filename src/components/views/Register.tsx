@@ -22,7 +22,7 @@ const Register = () => {
       // Store the token into the local storage.
       localStorage.setItem("token", user.token);
 
-      navigate("/game/" + user.id);
+      navigate("/game/");
     } catch (error) {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }

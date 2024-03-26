@@ -15,8 +15,8 @@ const Login = () => {
 
   const doLogin = async () => {
     try {
-      const requestBody = JSON.stringify({ username, name });
-      const response = await api.post("/users", requestBody);
+      const requestBody = JSON.stringify({ username, password });
+      const response = await api.post("/login", requestBody);
 
       // Get the returned user and update a new object.
       const user = new User(response.data);
@@ -31,6 +31,8 @@ const Login = () => {
         `Something went wrong during the login: \n${handleError(error)}`
       );
     }
+    console.log(password);
+    
   };
 
   const getToRegister = () => {
@@ -53,7 +55,7 @@ const Login = () => {
           />
           <div className="login button-container">
             <Button
-              disabled={!username || !name}
+              disabled={!username || !username}
               width="100%"
               onClick={() => doLogin()}
             >
