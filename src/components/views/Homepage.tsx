@@ -11,15 +11,27 @@ const Homepage = () => {
     const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const { id } = useParams();
+    const [username, setUsername] = useState("");
 
 
     const logout = async () => {
         const token = localStorage.getItem("token");
+        console.log(token);
         await api.post("/logout", { token: token });
 
         localStorage.removeItem("token");
         navigate("login");
     }
+    const saveUpdate = async () => {
+        try {
+            await api.put("/users/" + id, { username: username });
+            setProfile({ ...profile, username: username }); // Update local profile state
+            alert('Username updated successfully!');
+        } catch (error) {
+            console.error(`Failed to update username: ${error}`);
+            alert('Failed to update username. Please try again.');
+        }
+    };
 
     const goToLeaderboards = () => {
         navigate('/leaderboards');
@@ -67,16 +79,24 @@ const Homepage = () => {
     }, []);
 
     return (
-        <BaseContainer>
-            {/* User statistics */}
-            {profile && (
-                <div className="user-stats">
-                    <div>{profile.username}</div>
-                    <div>{profile.gamesPlayed} Games Played</div>
-                    <div>{profile.pointsScored} Points Scored</div>
-                    <div>{profile.gamesWon} Games Won</div>
+      <BaseContainer>
+          {/* User statistics */}
+          {profile && (
+            <div className="user-stats">
+                <div>
+                    Username:
+                    <input
+                      value={username || ""}
+                      onChange={(e) => setUsername(e.target.value)}
+                      style={{ marginLeft: "10px" }}
+                    />
                 </div>
-            )}
+                <div>{profile.gamesPlayed} Games Played</div>
+                <div>{profile.pointsScored} Points Scored</div>
+                <div>{profile.gamesWon} Games Won</div>
+                <Button style={{ marginTop: "10px" }} onClick={saveUpdate}>Save</Button>
+            </div>
+          )}
 
             {/* Action buttons */}
             <Button onClick={createLobby}>Create Lobby</Button>
