@@ -20,9 +20,10 @@ const Register = () => {
       const user = new User(response.data);
 
       // Store the token into the local storage.
-      localStorage.setItem("token", user.token);
+      localStorage.setItem("token", response.data.token);
+      console.log(response.data);
 
-      navigate("/game/");
+      navigate("/homepage/" + response.data.id);
     } catch (error) {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }

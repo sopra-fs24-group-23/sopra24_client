@@ -9,7 +9,6 @@ import FormField from "components/ui/FormField";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState<string>(null);
   const [username, setUsername] = useState<string>(null);
   const [password, setPassword] = useState<string>(null);
 
@@ -22,10 +21,13 @@ const Login = () => {
       const user = new User(response.data);
 
       // Store the token into the local storage.
-      localStorage.setItem("token", user.token);
+      localStorage.setItem("token", response.data.token);
+      console.log(response.data.token);
+      console.log(user);
+      console.log(response.data.id);
 
-      // Login successfully worked --> navigate to the route /game in the GameRouter
-      navigate("/game");
+      // Login successfully worked --> navigate to Homepage
+      navigate("/homepage/" + response.data.id);
     } catch (error) {
       alert(
         `Something went wrong during the login: \n${handleError(error)}`
