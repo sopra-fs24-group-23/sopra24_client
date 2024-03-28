@@ -95,6 +95,9 @@ const Homepage = () => {
                 <div>{profile.pointsScored} Points Scored</div>
                 <div>{profile.gamesWon} Games Won</div>
                 <Button style={{ marginTop: "10px" }} onClick={saveUpdate}>Save</Button>
+                <Button width="100%" onClick={() => navigate("/game/instructions")}>
+                    Instructions
+                </Button>
             </div>
           )}
 

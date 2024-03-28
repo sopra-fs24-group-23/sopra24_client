@@ -94,9 +94,7 @@ const Game = () => {
         <Button width="100%" onClick={() => logout()}>
           Logout
         </Button>
-        <Button width="100%" onClick={() => navigate("/game/instructions")}>
-          Instructions
-        </Button>
+
       </div>
     );
   }
