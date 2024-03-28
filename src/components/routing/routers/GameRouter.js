@@ -2,6 +2,7 @@ import React from "react";
 import {Navigate, Route, Routes} from "react-router-dom";
 import Game from "../../views/Game";
 import PropTypes from "prop-types";
+import Instructions from "../../views/Instructions";
 
 const GameRouter = () => {
   return (
@@ -14,14 +15,13 @@ const GameRouter = () => {
 
         <Route path="*" element={<Navigate to="dashboard" replace />} />
 
+        <Route path="instructions" element={<Instructions />} />
+        
       </Routes>
    
     </div>
   );
 };
-/*
-* Don't forget to export your component!
- */
 
 GameRouter.propTypes = {
   base: PropTypes.string
