@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import "styles/views/Login.scss";
 //import BaseContainer from "components/ui/BaseContainer";
-import FormField from "components/ui/FormField";
+//import FormField from "components/ui/FormField";
 import BackgroundImageLayout from 'styles/views/BackgroundImageLayout';
+import GameFormField from "components/ui/GameFormField";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -47,12 +48,12 @@ const Login = () => {
     <BackgroundImageLayout>
       <div className="login container">
         <div className="login form">
-          <FormField
+          <GameFormField
             label="Username"
             value={username}
             onChange={(un: string) => setUsername(un)}
           />
-          <FormField
+          <GameFormField
             label="Password"
             value={password}
             onChange={(n) => setPassword(n)}
