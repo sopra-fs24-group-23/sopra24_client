@@ -3,10 +3,10 @@ import { api, handleError } from "helpers/api";
 //import { Button } from "components/ui/Button";
 import Button from "@mui/material/Button";
 import { useNavigate, useParams } from "react-router-dom";
-import BaseContainer from "components/ui/BaseContainer";
-import PropTypes from "prop-types";
+//import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/Game.scss";
-import { User } from "types";
+//import { User } from "types";
+import HomepageBackgroundImage from 'styles/views/HomepageBackgroundImage';
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -79,7 +79,7 @@ const Homepage = () => {
   }, []);
 
   return (
-    <BaseContainer>
+    <HomepageBackgroundImage>
       {/* User statistics */}
       {profile && (
         <div className="user-stats">
@@ -106,7 +106,7 @@ const Homepage = () => {
       <Button onClick={joinLobby}>Join Lobby</Button>
       <Button onClick={goToLeaderboards}>Leaderboards</Button>
       <Button onClick={logout}>Logout</Button>
-    </BaseContainer>
+    </HomepageBackgroundImage>
   );
 };
 
