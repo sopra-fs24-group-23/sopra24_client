@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
-import { Button } from "components/ui/Button";
+//import { Button } from "components/ui/Button";
+import Button from '@mui/material/Button';
 import "styles/views/Login.scss";
-import BaseContainer from "components/ui/BaseContainer";
+//import BaseContainer from "components/ui/BaseContainer";
 import FormField from "components/ui/FormField";
+import BackgroundImageLayout from 'styles/views/BackgroundImageLayout';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -42,7 +44,7 @@ const Login = () => {
   }
 
   return (
-    <BaseContainer>
+    <BackgroundImageLayout>
       <div className="login container">
         <div className="login form">
           <FormField
@@ -58,7 +60,7 @@ const Login = () => {
           <div className="login button-container">
             <Button
               disabled={!username || !username}
-              width="100%"
+              sx={{ width: '100%' }}
               onClick={() => doLogin()}
             >
               Login
@@ -66,7 +68,7 @@ const Login = () => {
           </div>
           <div className="login button-container">
             <Button
-              width="100%"
+              sx={{ width: '100%' }}
               onClick={() => getToRegister()}
             >
               Create new account
@@ -74,7 +76,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-    </BaseContainer>
+    </BackgroundImageLayout>
   );
 };
 
