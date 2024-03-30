@@ -1,7 +1,8 @@
 import React from "react";
 import BaseContainer from "components/ui/BaseContainer";
 import { useNavigate } from "react-router-dom";
-import { Button } from "components/ui/Button";
+//import { Button } from "components/ui/Button";
+import Button from '@mui/material/Button';
 
 const Instructions = () => {
   const navigate = useNavigate();

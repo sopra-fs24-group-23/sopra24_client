@@ -4,7 +4,9 @@ import FormField from "components/ui/FormField";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import BaseContainer from "components/ui/BaseContainer";
-import { Button } from "components/ui/Button";
+//import { Button } from "components/ui/Button";
+import Button from '@mui/material/Button';
+import BackgroundImageLayout from 'styles/views/BackgroundImageLayout';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -34,7 +36,7 @@ const Register = () => {
   };
 
   return (
-    <BaseContainer>
+    <BackgroundImageLayout>
       <div className="login container">
         <div className="login form">
           <FormField
@@ -50,7 +52,7 @@ const Register = () => {
           <div className="login button-container">
             <Button
               disabled={!username || !password}
-              width="100%"
+              sx={{ width: '100%' }}
               onClick={() => doRegister()}
             >
               Register
@@ -58,7 +60,7 @@ const Register = () => {
           </div>
           <div className="login button-container">
             <Button
-              width="100%"
+              sx={{ width: '100%' }}
               onClick={() => getToLogin()}
             >
               Back to login
@@ -66,7 +68,7 @@ const Register = () => {
           </div>
         </div>
       </div>
-    </BaseContainer>
+    </BackgroundImageLayout>
   );
 };
 
