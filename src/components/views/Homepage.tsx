@@ -25,7 +25,8 @@ const Homepage = () => {
     await api.post("/logout", { token: token });
 
     localStorage.removeItem("token");
-    navigate("login");
+    navigate("/login");
+    console.log(localStorage.getItem("token"));
   };
 
   const handleEditClick = () => {
