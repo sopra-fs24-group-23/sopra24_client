@@ -5,8 +5,9 @@ import { api, handleError } from "helpers/api";
 import User from "models/User";
 import BaseContainer from "components/ui/BaseContainer";
 //import { Button } from "components/ui/Button";
-import Button from '@mui/material/Button';
+//import Button from '@mui/material/Button';
 import BackgroundImageLayout from 'styles/views/BackgroundImageLayout';
+import CustomButton from "components/ui/CustomButton";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -50,21 +51,21 @@ const Register = () => {
             onChange={(n) => setPassword(n)}
           />
           <div className="login button-container">
-            <Button
+            <CustomButton
               disabled={!username || !password}
               sx={{ width: '100%' }}
               onClick={() => doRegister()}
             >
               Register
-            </Button>
+            </CustomButton>
           </div>
           <div className="login button-container">
-            <Button
+            <CustomButton
               sx={{ width: '100%' }}
               onClick={() => getToLogin()}
             >
               Back to login
-            </Button>
+            </CustomButton>
           </div>
         </div>
       </div>
