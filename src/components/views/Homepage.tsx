@@ -7,13 +7,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import "styles/views/Game.scss";
 //import { User } from "types";
 import HomepageBackgroundImage from 'styles/views/HomepageBackgroundImage';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import TextField from "@mui/material/TextField";
+import { IconButton } from "@mui/material";
 
 const Homepage = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const { id } = useParams();
   const [username, setUsername] = useState("");
-
+  const [isEditing, setIsEditing] = useState(false);
 
   const logout = async () => {
     const token = localStorage.getItem("token");
@@ -23,6 +27,10 @@ const Homepage = () => {
     localStorage.removeItem("token");
     navigate("login");
   };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  }
   const saveUpdate = async () => {
     try {
       await api.put("/users/" + id, { username: username });
@@ -33,6 +41,12 @@ const Homepage = () => {
       alert("Failed to update username. Please try again.");
     }
   };
+
+  // Handle save after editing
+  const handleSaveClick = () => {
+    saveUpdate();
+    setIsEditing(false); // set editing to false to switch back to display mode
+  }
 
   const goToLeaderboards = () => {
     navigate("/leaderboards");
@@ -84,17 +98,24 @@ const Homepage = () => {
       {profile && (
         <div className="user-stats">
           <div>
-            Username:
-            <input
-              value={username || ""}
-              onChange={(e) => setUsername(e.target.value)}
-              style={{ marginLeft: "10px" }}
-            />
+            Username: {isEditing ? (
+              <>
+              <TextField
+                value={username || ""}
+                onChange={(e) => setUsername(e.target.value)}
+                style={{ marginLeft: "10px" }}
+              />
+            <IconButton onClick={handleSaveClick}>
+              <SaveIcon />
+            </IconButton>
+            </>
+            ) : (
+              <>{profile.username} <EditIcon onClick={handleEditClick} /></>
+            )}
           </div>
           <div>{profile.gamesPlayed} Games Played</div>
           <div>{profile.pointsScored} Points Scored</div>
           <div>{profile.gamesWon} Games Won</div>
-          <Button style={{ marginTop: "10px" }} onClick={saveUpdate}>Save</Button>
           <Button style={{ width: "100%" }} onClick={() => navigate("/game/instructions")}>
             Instructions
           </Button>
@@ -109,6 +130,5 @@ const Homepage = () => {
     </HomepageBackgroundImage>
   );
 };
-
 
 export default Homepage;
