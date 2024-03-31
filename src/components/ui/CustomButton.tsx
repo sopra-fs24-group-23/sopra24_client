@@ -12,6 +12,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({ children, disabled, sx, onC
   return (
     <Button
       sx={{
+        fontFamily: 'Londrina Solid',
         backgroundColor: '#f8f8f8', // button color
         color: 'black', // text color
         borderColor: 'black',
@@ -36,7 +37,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({ children, disabled, sx, onC
       disabled={disabled}
       onClick={onClick}
       variant="contained"
-      >
+    >
       {children}
     </Button>
   );

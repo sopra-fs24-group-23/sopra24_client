@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FormField from "components/ui/FormField";
+import GameFormField from "components/ui/GameFormField";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import BaseContainer from "components/ui/BaseContainer";
@@ -39,12 +39,12 @@ const Register = () => {
     <BackgroundImageLayout>
       <div className="login container">
         <div className="login form">
-          <FormField
+          <GameFormField
             label="Username"
             value={username}
             onChange={(un: string) => setUsername(un)}
           />
-          <FormField
+          <GameFormField
             label="Password"
             value={password}
             onChange={(n) => setPassword(n)}
