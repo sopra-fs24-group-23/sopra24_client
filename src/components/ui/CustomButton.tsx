@@ -12,8 +12,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({ children, disabled, sx, onC
   return (
     <Button
       sx={{
-        backgroundColor: '#white', // button color
-        color: '#black', // text color
+        backgroundColor: 'white', // button color
+        color: 'black', // text color
         fontSize: '16px',
         fontWeight: 'bold',
         textTransform: 'uppercase',
@@ -21,7 +21,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({ children, disabled, sx, onC
         borderRadius: '20px',
         padding: '6px 16px', // Adjust padding as needed
         '&:hover': {
-          backgroundColor: '#lightgray', // Replace with the color for hover state
+          backgroundColor: 'lightgray', // Replace with the color for hover state
           // more styling for hover state here
         },
         // more styling to match mockup
