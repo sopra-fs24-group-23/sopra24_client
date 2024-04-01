@@ -6,7 +6,7 @@ const BackgroundImageLobby = ( {children}) => {
   return (
     <Box
       sx={{
-        backgroundImage: `url('/BackgroundImages/Lobby.png')`,
+        backgroundImage: "url('/BackgroundImages/Lobby.png')",
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
@@ -25,4 +25,5 @@ const BackgroundImageLobby = ( {children}) => {
 BackgroundImageLobby.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
 export default BackgroundImageLobby;

@@ -5,9 +5,9 @@ import { useNavigate, useParams } from "react-router-dom";
 //import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/Game.scss";
 //import { User } from "types";
-import HomepageBackgroundImage from 'styles/views/HomepageBackgroundImage';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
+import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
 import TextField from "@mui/material/TextField";
 import { IconButton } from "@mui/material";
 import CustomButton from "components/ui/CustomButton";
@@ -31,7 +31,7 @@ const Homepage = () => {
 
   const handleEditClick = () => {
     setIsEditing(true);
-  }
+  };
   const saveUpdate = async () => {
     try {
       await api.put("/users/" + id, { username: username });
@@ -47,7 +47,7 @@ const Homepage = () => {
   const handleSaveClick = () => {
     saveUpdate();
     setIsEditing(false); // set editing to false to switch back to display mode
-  }
+  };
 
   const goToLeaderboards = () => {
     navigate("/leaderboards");
@@ -105,15 +105,15 @@ const Homepage = () => {
           <div>
             Username: {isEditing ? (
               <>
-              <TextField
-                value={username || ""}
-                onChange={(e) => setUsername(e.target.value)}
-                style={{ marginLeft: "10px" }}
-              />
-            <IconButton onClick={handleSaveClick}>
-              <SaveIcon />
-            </IconButton>
-            </>
+                <TextField
+                  value={username || ""}
+                  onChange={(e) => setUsername(e.target.value)}
+                  style={{ marginLeft: "10px" }}
+                />
+                <IconButton onClick={handleSaveClick}>
+                  <SaveIcon />
+                </IconButton>
+              </>
             ) : (
               <>{profile.username} <EditIcon onClick={handleEditClick} /></>
             )}
