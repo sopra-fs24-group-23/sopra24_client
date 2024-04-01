@@ -5,7 +5,7 @@ import { api, handleError } from "helpers/api";
 import User from "models/User";
 import BaseContainer from "components/ui/BaseContainer";
 //import { Button } from "components/ui/Button";
-import BackgroundImageLayout from 'styles/views/BackgroundImageLayout';
+import BackgroundImageLayout from "styles/views/BackgroundImageLayout";
 import CustomButton from "components/ui/CustomButton";
 
 const Register = () => {
@@ -52,7 +52,7 @@ const Register = () => {
           <div className="login button-container">
             <CustomButton
               disabled={!username || !password}
-              sx={{ width: '100%' }}
+              sx={{ width: "100%" }}
               onClick={() => doRegister()}
             >
               Register
@@ -60,7 +60,7 @@ const Register = () => {
           </div>
           <div className="login button-container">
             <CustomButton
-              sx={{ width: '100%' }}
+              sx={{ width: "100%" }}
               onClick={() => getToLogin()}
             >
               Back to login

@@ -6,7 +6,7 @@ const HomepageBackgroundImage = ( {children}) => {
   return (
     <Box
       sx={{
-        backgroundImage: `url('/BackgroundImages/Homepage_mountains.png')`,
+        backgroundImage: "url('/BackgroundImages/Homepage_mountains.png')",
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
@@ -25,4 +25,5 @@ const HomepageBackgroundImage = ( {children}) => {
 HomepageBackgroundImage.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
 export default HomepageBackgroundImage;

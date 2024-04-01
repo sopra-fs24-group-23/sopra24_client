@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 //import "styles/views/Login.scss";
 //import BaseContainer from "components/ui/BaseContainer";
 //import FormField from "components/ui/FormField";
-import BackgroundImageLayout from 'styles/views/BackgroundImageLayout';
+import BackgroundImageLayout from "styles/views/BackgroundImageLayout";
 import GameFormField from "components/ui/GameFormField";
 import CustomButton from "components/ui/CustomButton";
 
@@ -61,7 +61,7 @@ const Login = () => {
           <div className="login button-container">
             <CustomButton
               disabled={!username || !username}
-              sx={{ width: '100%' }}
+              sx={{ width: "100%" }}
               onClick={() => doLogin()}
             >
               Login
@@ -69,7 +69,7 @@ const Login = () => {
           </div>
           <div className="login button-container">
             <CustomButton
-              sx={{ width: '100%' }}
+              sx={{ width: "100%" }}
               onClick={() => getToRegister()}
             >
               Create new account
