@@ -21,6 +21,9 @@ const Lobby = () => {
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#e0e0e0", // Grey
+        borderColor: "black",
+        borderWidth: "2px",
+        borderStyle: "solid",
         padding: "20px",
         borderRadius: "10px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
