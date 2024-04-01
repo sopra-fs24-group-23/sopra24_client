@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 //import { Button } from "components/ui/Button";
-import Button from "@mui/material/Button";
 import { useNavigate, useParams } from "react-router-dom";
 //import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/Game.scss";
 //import { User } from "types";
-import HomepageBackgroundImage from 'styles/views/HomepageBackgroundImage';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
+import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
 import TextField from "@mui/material/TextField";
 import { IconButton } from "@mui/material";
+import CustomButton from "components/ui/CustomButton";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ const Homepage = () => {
 
   const handleEditClick = () => {
     setIsEditing(true);
-  }
+  };
   const saveUpdate = async () => {
     try {
       await api.put("/users/" + id, { username: username });
@@ -47,7 +47,7 @@ const Homepage = () => {
   const handleSaveClick = () => {
     saveUpdate();
     setIsEditing(false); // set editing to false to switch back to display mode
-  }
+  };
 
   const goToLeaderboards = () => {
     navigate("/leaderboards");
@@ -55,9 +55,13 @@ const Homepage = () => {
 
   const createLobby = async () => {
     try {
-      const response = await api.post("/lobbies/create");
+      // get token from localstorage
+      const token = localStorage.getItem("token");
+      // create lobby
+      const requestBody = JSON.stringify({ token });
+      const response = await api.post("/lobbies", requestBody);
       // Navigate to the game room using the game ID from the response
-      navigate(`/lobby/${response.data.lobbyId}`);
+      navigate(`/lobbies/${response.data.id}`);
     } catch (error) {
       console.error(`Creating game failed: ${error}`);
       alert("Failed to create game. Please try again.");
@@ -101,15 +105,15 @@ const Homepage = () => {
           <div>
             Username: {isEditing ? (
               <>
-              <TextField
-                value={username || ""}
-                onChange={(e) => setUsername(e.target.value)}
-                style={{ marginLeft: "10px" }}
-              />
-            <IconButton onClick={handleSaveClick}>
-              <SaveIcon />
-            </IconButton>
-            </>
+                <TextField
+                  value={username || ""}
+                  onChange={(e) => setUsername(e.target.value)}
+                  style={{ marginLeft: "10px" }}
+                />
+                <IconButton onClick={handleSaveClick}>
+                  <SaveIcon />
+                </IconButton>
+              </>
             ) : (
               <>{profile.username} <EditIcon onClick={handleEditClick} /></>
             )}
@@ -117,17 +121,17 @@ const Homepage = () => {
           <div>{profile.gamesPlayed} Games Played</div>
           <div>{profile.pointsScored} Points Scored</div>
           <div>{profile.gamesWon} Games Won</div>
-          <Button style={{ width: "100%" }} onClick={() => navigate("/game/instructions")}>
+          <CustomButton onClick={() => navigate("/game/instructions")}>
             Instructions
-          </Button>
+          </CustomButton>
         </div>
       )}
 
       {/* Action buttons */}
-      <Button onClick={createLobby}>Create Lobby</Button>
-      <Button onClick={joinLobby}>Join Lobby</Button>
-      <Button onClick={goToLeaderboards}>Leaderboards</Button>
-      <Button onClick={logout}>Logout</Button>
+      <CustomButton onClick={createLobby}>Create Lobby</CustomButton>
+      <CustomButton onClick={joinLobby}>Join Lobby</CustomButton>
+      <CustomButton onClick={goToLeaderboards}>Leaderboards</CustomButton>
+      <CustomButton onClick={logout}>Logout</CustomButton>
     </HomepageBackgroundImage>
   );
 };

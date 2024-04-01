@@ -1,7 +1,9 @@
 import React from "react";
 import {createRoot} from "react-dom/client";
-import "./styles/index.scss";
+//import "./styles/index.scss";
+import './styles/ui/main.scss';
 import App from "./App";
+
 
 /**
  * This is the entry point of your React application where the root element is in the public/index.html.
