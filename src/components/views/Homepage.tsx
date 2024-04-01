@@ -55,9 +55,13 @@ const Homepage = () => {
 
   const createLobby = async () => {
     try {
-      const response = await api.post("/lobbies/create");
+      // get token from localstorage
+      const token = localStorage.getItem("token");
+      // create lobby
+      const requestBody = JSON.stringify({ token });
+      const response = await api.post("/lobbies", requestBody);
       // Navigate to the game room using the game ID from the response
-      navigate(`/lobby/${response.data.lobbyId}`);
+      navigate(`/lobbies/${response.data.id}`);
     } catch (error) {
       console.error(`Creating game failed: ${error}`);
       alert("Failed to create game. Please try again.");
