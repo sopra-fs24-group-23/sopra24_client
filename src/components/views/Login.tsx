@@ -2,13 +2,10 @@ import React, { useState } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
-//import { Button } from "components/ui/Button";
-//import "styles/views/Login.scss";
-//import BaseContainer from "components/ui/BaseContainer";
-//import FormField from "components/ui/FormField";
 import BackgroundImageLayout from "styles/views/BackgroundImageLayout";
 import GameFormField from "components/ui/GameFormField";
 import CustomButton from "components/ui/CustomButton";
+import Box from "@mui/material/Box";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -37,7 +34,7 @@ const Login = () => {
       );
     }
     console.log(password);
-    
+
   };
 
   const getToRegister = () => {
@@ -46,18 +43,31 @@ const Login = () => {
 
   return (
     <BackgroundImageLayout>
-      <div className="login container">
+      <Box sx={{
+        position: "absolute",
+        top: "60%",
+        left: "20%",
+        transform: "translate(-50%, -50%)",
+        width: "clamp(300px, 50%, 500px)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}>
         <div className="login form">
           <GameFormField
             label="Username"
             value={username}
             onChange={(un: string) => setUsername(un)}
           />
+          <div style={{ margin: "15px 0" }}></div>
           <GameFormField
             label="Password"
             value={password}
             onChange={(n) => setPassword(n)}
           />
+          <div style={{ margin: "10px 0" }}></div>
           <div className="login button-container">
             <CustomButton
               disabled={!username || !username}
@@ -67,6 +77,7 @@ const Login = () => {
               Login
             </CustomButton>
           </div>
+          <div style={{ margin: "10px 0" }}></div>
           <div className="login button-container">
             <CustomButton
               sx={{ width: "100%" }}
@@ -75,8 +86,8 @@ const Login = () => {
               Create new account
             </CustomButton>
           </div>
-        </div>
-      </div>
+          </div>
+        </Box>
     </BackgroundImageLayout>
   );
 };
