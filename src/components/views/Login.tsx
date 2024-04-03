@@ -87,8 +87,8 @@ const Login = () => {
               Create new account
             </CustomButton>
           </div>
-          </div>
-        </Box>
+        </div>
+      </Box>
     </BackgroundImageLayout>
   );
 };

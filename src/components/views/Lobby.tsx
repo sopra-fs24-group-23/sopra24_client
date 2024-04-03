@@ -3,13 +3,22 @@ import React, { useState } from "react";
 import { Spinner } from "../ui/Spinner";
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Typography, List, ListItem } from "@mui/material";
+import { Box, Typography, List, ListItem, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from "@mui/material";
 
 const Lobby = () => {
   const { lobbyId } = useParams();
   const [players, setPlayers] = useState([]);
   const [lobbyDetails, setLobbyDetails] = useState(null);
   const navigate = useNavigate();
+  const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpenLeaveDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenLeaveDialog(false);
+  };
 
   const handleLeaveGame = () => {
     const userId = localStorage.getItem("userId");
@@ -23,6 +32,7 @@ const Lobby = () => {
 
   let content = <Spinner />;
 
+
   return (
     <BackgroundImageLobby>
       <Box sx={{
@@ -31,8 +41,8 @@ const Lobby = () => {
         top: "2%",
         left: "85%",
       }}>
-        <CustomButton 
-          onClick={handleLeaveGame}
+        <CustomButton
+          onClick={handleOpenDialog}
           sx={{
             backgroundColor: "#e0e0e0",
             "&:hover": {
@@ -42,6 +52,21 @@ const Lobby = () => {
         >
           Leave Game
         </CustomButton>
+        <Dialog open={openLeaveDialog} onClose={handleCloseDialog}>
+          <DialogTitle>Leave the lobby?</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to leave the lobby?
+              You will be returned to your profile page but you can still return as long as the
+              game hasn&apos;t started yet. If the host leaves the lobby,
+              the lobby will be closed for all players.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
+            <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
+          </DialogActions>
+        </Dialog>
       </Box>
       {/* Outer box */}
       <Box sx={{
