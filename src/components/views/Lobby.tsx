@@ -11,15 +11,38 @@ const Lobby = () => {
   const [lobbyDetails, setLobbyDetails] = useState(null);
   const navigate = useNavigate();
 
-  const goToEditSettings = () => {
-    navigate("/editSettings");
-  };
-
+  const handleLeaveGame = () => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      navigate(`/homepage/${userId}`);
+    } else {
+      console.error("User ID not found.");
+      navigate("/login");
+    }
+  }
 
   let content = <Spinner />;
 
   return (
     <BackgroundImageLobby>
+      <Box sx={{
+        display: "flex",
+        position: "absolute",
+        top: "2%",
+        left: "85%",
+      }}>
+        <CustomButton 
+          onClick={handleLeaveGame}
+          sx={{
+            backgroundColor: "#e0e0e0",
+            "&:hover": {
+              backgroundColor: "red",
+            },
+          }}
+        >
+          Leave Game
+        </CustomButton>
+      </Box>
       {/* Outer box */}
       <Box sx={{
         display: "flex",

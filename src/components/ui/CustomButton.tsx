@@ -9,10 +9,9 @@ interface CustomButtonProps {
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({ children, disabled, sx, onClick }) => {
-  return (
-    <Button
-      sx={{
-        fontFamily: "Londrina Solid",
+  // Combine default styles with the styles passed through the sx prop
+  const combinedStyles = {
+    fontFamily: "Londrina Solid",
         backgroundColor: "#f8f8f8", // button color
         color: "black", // text color
         borderColor: "black",
@@ -32,8 +31,11 @@ const CustomButton: React.FC<CustomButtonProps> = ({ children, disabled, sx, onC
           boxShadow: "0px 5px 5px rgba(0,0,0,0.2)"
           // more styling for hover state here
         },
-        // more styling to match mockup
-      }}
+        ...sx, // Override the default styles with the ones passed as props
+      };
+  return (
+    <Button
+      sx={combinedStyles}
       disabled={disabled}
       onClick={onClick}
       variant="contained"
