@@ -1,9 +1,10 @@
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Spinner } from "../ui/Spinner";
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Typography, List, ListItem, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from "@mui/material";
+import { Box, TextField, Typography, List, ListItem, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from "@mui/material";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 const Lobby = () => {
   const { lobbyId } = useParams();
@@ -11,6 +12,25 @@ const Lobby = () => {
   const [lobbyDetails, setLobbyDetails] = useState(null);
   const navigate = useNavigate();
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
+  const [openGameSettings, setOpenGameSettings] = useState(false);
+  const handleOpenGameSettings = () => setOpenGameSettings(true);
+  const handleCloseGameSettings = () => setOpenGameSettings(false);
+  const [isHost, setIsHost] = useState(false);
+
+  const [settings, setSettings] = useState({
+    setting1: 'Example setting value',
+  });
+
+  const handleIsHost = () => {
+    // isHost will be set to true if true
+    setIsHost(localStorage.getItem("isHost") === "true");
+    console.log(isHost);
+    
+  };
+
+  const onSettingsChange = (newSettings) => {
+    setSettings(newSettings);
+  };
 
   const handleOpenDialog = () => {
     setOpenLeaveDialog(true);
@@ -30,7 +50,30 @@ const Lobby = () => {
     }
   }
 
+  const GameSettings = ({ isHost, settings, onSettingsChange }) => {
+    return (
+      <>
+      {isHost ? (
+        // Render editable fields for the host
+        <TextField
+          label="Setting 1"
+          defaultValue={settings.setting1}
+          onChange={(e) => onSettingsChange({...settings, setting1: e.target.value})}
+        />
+      ) : (
+        // Render read-only info for other players
+        <Typography>Setting 1: {settings.setting1}</Typography>
+      )}
+      {/* Repeat for other settings */}
+    </>
+  );
+};
+
   let content = <Spinner />;
+
+  useEffect(() => {
+    handleIsHost();
+  }, []);
 
 
   return (
@@ -87,6 +130,19 @@ const Lobby = () => {
         margin: "auto",
         position: "relative",
       }}>
+        <CustomButton onClick={handleOpenGameSettings}>
+          <SettingsIcon/>
+        </CustomButton>
+        <Dialog open={openGameSettings} onClose={handleCloseGameSettings}>
+          <DialogTitle>Game Settings</DialogTitle>
+          <DialogContent>
+            {/* Conditionally render settings based on user role (host or not) */}
+            <GameSettings isHost={isHost} settings={settings} onSettingsChange={onSettingsChange} />
+          </DialogContent>
+          <DialogActions>
+            <CustomButton onClick={handleCloseGameSettings}>Close</CustomButton>
+          </DialogActions>
+        </Dialog>
         {/*
         <CustomButton onClick={() => navigate(`/lobbies/${response.data.id}`)}>
             Instructions

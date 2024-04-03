@@ -18,6 +18,7 @@ const Homepage = () => {
   const { id } = useParams();
   const [username, setUsername] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [isHost, setIsHost] = useState(false);
 
   const logout = async () => {
     const token = localStorage.getItem("token");
@@ -60,6 +61,9 @@ const Homepage = () => {
       // create lobby
       const requestBody = JSON.stringify({ token });
       const response = await api.post("/lobbies", requestBody);
+      const lobbyId = await response.json;
+      localStorage.setItem("isHost", "true");
+
       // Navigate to the game room using the game ID from the response
       navigate(`/lobbies/${response.data.id}`);
     } catch (error) {
@@ -73,6 +77,8 @@ const Homepage = () => {
       const lobbyId = prompt("Enter lobby ID: ");
       // API call to join a lobby by ID
       const response = await api.post(`/lobbies/join/${lobbyId}`);
+      localStorage.setItem("isHost", "false");
+
       // Navigate to the lobby
       navigate(`/lobby/${lobbyId}`);
     } catch (error) {
