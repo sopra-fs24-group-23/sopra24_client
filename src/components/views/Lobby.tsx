@@ -26,14 +26,14 @@ const Lobby = () => {
   const [isHost, setIsHost] = useState(false);
 
   const [settings, setSettings] = useState({
-    setting1: 'Example setting value',
+    setting1: "Example setting value",
   });
 
   const handleIsHost = () => {
     // isHost will be set to true if true
     setIsHost(localStorage.getItem("isHost") === "true");
     console.log(isHost);
-    
+
   };
 
   const onSettingsChange = (newSettings) => {
@@ -61,21 +61,21 @@ const Lobby = () => {
   const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
     return (
       <>
-      {isHost ? (
-        // Render editable fields for the host
-        <TextField
-          label="Setting 1"
-          defaultValue={settings.setting1}
-          onChange={(e) => onSettingsChange({...settings, setting1: e.target.value})}
-        />
-      ) : (
-        // Render read-only info for other players
-        <Typography>Setting 1: {settings.setting1}</Typography>
-      )}
-      {/* Repeat for other settings */}
-    </>
-  );
-};
+        {isHost ? (
+          // Render editable fields for the host
+          <TextField
+            label="Setting 1"
+            defaultValue={settings.setting1}
+            onChange={(e) => onSettingsChange({ ...settings, setting1: e.target.value })}
+          />
+        ) : (
+          // Render read-only info for other players
+          <Typography>Setting 1: {settings.setting1}</Typography>
+        )}
+        {/* Repeat for other settings */}
+      </>
+    );
+  };
 
   let content = <Spinner />;
 
@@ -139,7 +139,7 @@ const Lobby = () => {
         position: "relative",
       }}>
         <CustomButton onClick={handleOpenGameSettings}>
-          <SettingsIcon/>
+          <SettingsIcon />
         </CustomButton>
         <Dialog open={openGameSettings} onClose={handleCloseGameSettings}>
           <DialogTitle>Game Settings</DialogTitle>
