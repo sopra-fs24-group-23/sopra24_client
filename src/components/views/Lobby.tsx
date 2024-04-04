@@ -6,6 +6,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Box, TextField, Typography, List, ListItem, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 
+interface GameSettingsProps {
+  isHost: boolean;
+  settings: {
+    setting1: string;
+  };
+  onSettingsChange: (newSettings: { setting1: string }) => void;
+}
+
 const Lobby = () => {
   const { lobbyId } = useParams();
   const [players, setPlayers] = useState([]);
@@ -50,7 +58,7 @@ const Lobby = () => {
     }
   }
 
-  const GameSettings = ({ isHost, settings, onSettingsChange }) => {
+  const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
     return (
       <>
       {isHost ? (
@@ -117,7 +125,7 @@ const Lobby = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#e0e0e0", // Grey
+        backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
         borderColor: "black",
         borderWidth: "2px",
         borderStyle: "solid",
