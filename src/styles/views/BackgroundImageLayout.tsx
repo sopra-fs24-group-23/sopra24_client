@@ -6,7 +6,7 @@ const BackgroundImageLayout = ({ children }) => {
   return (
     <Box
       sx={{
-        backgroundImage: `url('/BackgroundImages/Register_Login.png')`,
+        backgroundImage: "url('/BackgroundImages/Register_Login.png')",
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
