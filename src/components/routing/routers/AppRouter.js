@@ -8,6 +8,7 @@ import Register from "../../views/Register";
 import Homepage from "../../views/Homepage";
 import Instructions from "../../views/Instructions";
 import Lobby from "../../views/Lobby";
+import GlobalLeaderboard from "../../views/GlobalLeaderboard";
 
 /**
  * Main router of your application.
@@ -44,6 +45,8 @@ const AppRouter = () => {
         </Route>
 
         <Route path="/lobbies/:id" element={<Lobby/>}/>
+
+        <Route path="/leaderboards" element={<GlobalLeaderboard />} />
 
         <Route path="/" element={
           <Navigate to="/login" replace />
