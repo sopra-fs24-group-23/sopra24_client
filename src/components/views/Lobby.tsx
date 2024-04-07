@@ -103,7 +103,7 @@ const Lobby = () => {
         display: "flex",
         position: "absolute",
         top: "2%",
-        left: "85%",
+        left: "85%",  
       }}>
         <CustomButton
           onClick={handleOpenDialog}
