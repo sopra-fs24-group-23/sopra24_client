@@ -14,7 +14,8 @@
     "react-router-dom": "^6.21.3",
     "react-scripts": "^5.0.1",
     "serve": "^14.2.1",
-    "typescript": "^3.9.10"
+    "typescript": "^3.9.10",
+    "@stomp/stompjs": "^7.0.0"
   },
   "scripts": {
     "dev": "react-scripts start",
