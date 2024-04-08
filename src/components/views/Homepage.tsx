@@ -133,99 +133,99 @@ const Homepage = () => {
           <CustomButton onClick={() => navigate("/game/instructions")}>Instructions</CustomButton>
           <CustomButton onClick={logout}>Logout</CustomButton>
         </Box>
-          {/* User statistics */}
-          {profile && (
-            <div className="user-stats">
-              <div>
-                {isEditing ? (
-                  <>
-                    <TextField
-                      value={username || ""}
-                      onChange={(e) => setUsername(e.target.value)}
-                      style={{ marginLeft: "10px" }}
-                    />
-                    <IconButton onClick={handleSaveClick}>
-                      <SaveIcon />
-                    </IconButton>
-                  </>
-                ) : (
-                  <>{profile.username} <EditIcon onClick={handleEditClick} /></>
-                )}
-              </div>
-              <CustomButton onClick={goToLeaderboards}>Leaderboards</CustomButton>
-              <Box sx={{
-                  backgroundColor: "#e0e0e0",
-                  borderColor: "black",
-                  borderWidth: "2px",
-                  borderStyle: "solid",
-                  width: "60%",
-                  height: "20%",
-                  margin: "auto",
-                  padding: "20px",
-                  borderRadius: "10px",
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                  position: "relative",
-                }}>
-                <div>{profile.gamesPlayed}</div>
-                <Typography variant="h4" gutterBottom
-                    sx={{
-                    fontFamily: "Londrina Solid",
-                    textAlign: "center",
-                    }}>
-                    Games Played
-                </Typography>
-              </Box>
-              <Box sx={{
-                  backgroundColor: "#e0e0e0",
-                  borderColor: "black",
-                  borderWidth: "2px",
-                  borderStyle: "solid",
-                  width: "60%",
-                  height: "20%",
-                  margin: "auto",
-                  padding: "20px",
-                  borderRadius: "10px",
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                  position: "relative",
-                }}>
-                <div>{profile.pointsScored}</div>
-                <Typography variant="h4" gutterBottom
-                    sx={{
-                    fontFamily: "Londrina Solid",
-                    textAlign: "center",
-                    }}>
-                    Points Scored
-                </Typography>
-              </Box>
-              <Box sx={{
-                  backgroundColor: "#e0e0e0",
-                  borderColor: "black",
-                  borderWidth: "2px",
-                  borderStyle: "solid",
-                  width: "60%",
-                  height: "20%",
-                  margin: "auto",
-                  padding: "20px",
-                  borderRadius: "10px",
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                  position: "relative",
-                }}>
-                 <div>{profile.gamesWon}</div>
-                 <Typography variant="h4" gutterBottom
-                    sx={{
-                    fontFamily: "Londrina Solid",
-                    textAlign: "center",
-                    }}>
-                    Games Won
-                </Typography>
-              </Box>
+        {/* User statistics */}
+        {profile && (
+          <div className="user-stats">
+            <div>
+              {isEditing ? (
+                <>
+                  <TextField
+                    value={username || ""}
+                    onChange={(e) => setUsername(e.target.value)}
+                    style={{ marginLeft: "10px" }}
+                  />
+                  <IconButton onClick={handleSaveClick}>
+                    <SaveIcon />
+                  </IconButton>
+                </>
+              ) : (
+                <>{profile.username} <EditIcon onClick={handleEditClick} /></>
+              )}
             </div>
-          )}
+            <CustomButton onClick={goToLeaderboards}>Leaderboards</CustomButton>
+            <Box sx={{
+              backgroundColor: "#e0e0e0",
+              borderColor: "black",
+              borderWidth: "2px",
+              borderStyle: "solid",
+              width: "60%",
+              height: "20%",
+              margin: "auto",
+              padding: "20px",
+              borderRadius: "10px",
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+              position: "relative",
+            }}>
+              <div>{profile.gamesPlayed}</div>
+              <Typography variant="h4" gutterBottom
+                sx={{
+                  fontFamily: "Londrina Solid",
+                  textAlign: "center",
+                }}>
+                Games Played
+              </Typography>
+            </Box>
+            <Box sx={{
+              backgroundColor: "#e0e0e0",
+              borderColor: "black",
+              borderWidth: "2px",
+              borderStyle: "solid",
+              width: "60%",
+              height: "20%",
+              margin: "auto",
+              padding: "20px",
+              borderRadius: "10px",
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+              position: "relative",
+            }}>
+              <div>{profile.pointsScored}</div>
+              <Typography variant="h4" gutterBottom
+                sx={{
+                  fontFamily: "Londrina Solid",
+                  textAlign: "center",
+                }}>
+                Points Scored
+              </Typography>
+            </Box>
+            <Box sx={{
+              backgroundColor: "#e0e0e0",
+              borderColor: "black",
+              borderWidth: "2px",
+              borderStyle: "solid",
+              width: "60%",
+              height: "20%",
+              margin: "auto",
+              padding: "20px",
+              borderRadius: "10px",
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+              position: "relative",
+            }}>
+              <div>{profile.gamesWon}</div>
+              <Typography variant="h4" gutterBottom
+                sx={{
+                  fontFamily: "Londrina Solid",
+                  textAlign: "center",
+                }}>
+                Games Won
+              </Typography>
+            </Box>
+          </div>
+        )}
 
-          {/* Action buttons */}
-          <CustomButton onClick={createLobby}>Create Lobby</CustomButton>
-          <CustomButton onClick={joinLobby}>Join Lobby</CustomButton>
-    </Box>
+        {/* Action buttons */}
+        <CustomButton onClick={createLobby}>Create Lobby</CustomButton>
+        <CustomButton onClick={joinLobby}>Join Lobby</CustomButton>
+      </Box>
     </HomepageBackgroundImage>
   );
 };
