@@ -48,9 +48,6 @@ const GlobalLeaderboard = () => {
           onClick={handleBack}
           sx={{
             backgroundColor: "#e0e0e0",
-            "&:hover": {
-              backgroundColor: "red",
-            },
           }}
         >
           Back
