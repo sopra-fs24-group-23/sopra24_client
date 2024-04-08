@@ -36,12 +36,19 @@ const Homepage = () => {
   };
   const saveUpdate = async () => {
     try {
-      await api.put("/users/" + id, { username: username });
+      const response = await api.put("/users/" + id, { username: username });
       setProfile({ ...profile, username: username }); // Update local profile state
       alert("Username updated successfully!");
     } catch (error) {
       console.error(`Failed to update username: ${error}`);
-      setErrorMessage("This username is already taken. Please choose a different username.");
+      // Default error message
+      let message = "An unexpected error occured. Please try again.";
+      
+      // If the Backend sends a specific error message, use it
+      if (error.response && error.response.data && error.response.data.message) {
+        message = error.response.data.message;
+      }
+      setErrorMessage(message);
       setIsErrorDialogOpen(true);
     }
   };
