@@ -24,6 +24,7 @@ const Register = () => {
 
       // Store the token into the local storage.
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userId", response.data.id);
       console.log(response.data);
 
       navigate("/homepage/" + response.data.id);
