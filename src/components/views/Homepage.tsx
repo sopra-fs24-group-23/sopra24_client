@@ -7,7 +7,7 @@ import "styles/views/Game.scss";
 //import { User } from "types";
 import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
 import CustomButton from "components/ui/CustomButton";
-import { Box, TextField, IconButton, Typography } from "@mui/material";
+import { Box, TextField, IconButton, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 
@@ -18,6 +18,8 @@ const Homepage = () => {
   const [username, setUsername] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [isHost, setIsHost] = useState(false);
+  const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const logout = async () => {
     const token = localStorage.getItem("token");
@@ -39,7 +41,8 @@ const Homepage = () => {
       alert("Username updated successfully!");
     } catch (error) {
       console.error(`Failed to update username: ${error}`);
-      alert("Failed to update username. Please try again.");
+      setErrorMessage("This username is already taken. Please choose a different username.");
+      setIsErrorDialogOpen(true);
     }
   };
 
@@ -254,6 +257,19 @@ const Homepage = () => {
           <CustomButton onClick={joinLobby}>Join Lobby</CustomButton>
         </Box>
       </Box>
+      {/* Dialog for error messages */}
+      <Dialog
+        open={isErrorDialogOpen}
+        onClose={() => setIsErrorDialogOpen(false)}
+      >
+        <DialogTitle>{"Error updating username"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{errorMessage}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <CustomButton onClick={() => setIsErrorDialogOpen(false)}> Okay</CustomButton>
+        </DialogActions>
+      </Dialog>
     </HomepageBackgroundImage>
   );
 };
