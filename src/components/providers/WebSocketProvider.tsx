@@ -1,11 +1,12 @@
-import React, { useRef } from "react";
-import StompJs from "@stomp/stompjs";
+import React, { ReactNode, useRef } from "react";
+import { Client } from "@stomp/stompjs";
 import { getDomain } from "../../helpers/getDomain.js";
 import { isProduction } from "../../helpers/isProduction.js"
 import StompSubscriptionRequest from "../../interfaces/StompSubscriptionRequest";
 import WebSocketContext from "../../contexts/WebSocketContext"
+import PropTypes from "prop-types";
 
-export const WebSocketProvider = ({ children }) => {
+const WebSocketProvider = ({ children }) => {
 
     const aSessionId = useRef(null);
     const stompClient = useRef(null);
@@ -16,7 +17,7 @@ export const WebSocketProvider = ({ children }) => {
         if(!stompClient.current) {
             aSessionId.current = sessionId;
             // client setup
-            stompClient.current = new StompJs.Client({
+            stompClient.current = new Client({
                 brokerURL: `${getDomain()}ws`, // might need to change to "/ws" here
                 heartbeatIncoming: 10000,
                 heartbeatOutgoing: 10000,
@@ -91,3 +92,9 @@ export const WebSocketProvider = ({ children }) => {
         </WebSocketContext.Provider>
     )
 }
+
+WebSocketProvider.propTypes = {
+    children: PropTypes.node
+}
+
+export default WebSocketProvider;
