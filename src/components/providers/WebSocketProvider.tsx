@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef } from "react";
+import React, { useRef } from "react";
 import { Client } from "@stomp/stompjs";
 import { getDomain } from "../../helpers/getDomain.js";
 import { isProduction } from "../../helpers/isProduction.js"
