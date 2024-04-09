@@ -28,6 +28,9 @@ const WebSocketProvider = ({ children }) => {
           onStompError: (frame) => {
             `Encountered a StompError: ${frame}`;
           },
+          onWebSocketError: () => {
+            "Encountered a WebSocketError."
+          }
         });
         // on connection: (re-)subscribe all subscriptions and resolve promise
         stompClient.current.onConnect = () => {
@@ -47,12 +50,12 @@ const WebSocketProvider = ({ children }) => {
   };
 
   /** method to send a body to an app-destination in the BE
-   * NOTICE: this method calls JSON.stringify() on the body **/
+   * NOTICE: this method DOES NOT CALL JSON.stringify() on the body -> do it in client code!**/
   function send(destination: string, body: any) {
     if (stompClient.current && stompClient.current.active) {
       stompClient.current.publish({
         destination: destination,
-        body: `${JSON.stringify(body)}`,
+        body: body,
       });
     }
   }
