@@ -8,7 +8,6 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
-import StompSubscriptionRequest from "../../interfaces/StompSubscriptionRequest";
 import { Message } from "@stomp/stompjs"
 
 interface GameSettingsProps {
