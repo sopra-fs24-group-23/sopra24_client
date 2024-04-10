@@ -20,7 +20,6 @@ interface GameSettingsProps {
 }
 
 const Lobby = () => {
-  const { lobbyId } = useParams();
   const [players, setPlayers] = useState([]);
   const [lobbyDetails, setLobbyDetails] = useState(null);
   const navigate = useNavigate();
@@ -30,7 +29,7 @@ const Lobby = () => {
   const handleCloseGameSettings = () => setOpenGameSettings(false);
   const [isHost, setIsHost] = useState(false);
   const [lobbyCode, setLobbyCode] = useState("testCode");
-
+  const { lobbyId } = useParams();
   const [settings, setSettings] = useState({
     setting1: "Example setting value",
   });
@@ -50,28 +49,18 @@ const Lobby = () => {
     }
   }, []);
 
-
   /** WEBSOCKET STUFF **/
   // This useEffect is triggered as soon as the lobbyId param is set (or if it changes)
   // It checks that the lobbyId is not null, then calls functions from above (see line40)
   useEffect(() => {
     console.log("LOBBY ID CHANGED: " + lobbyId)
     if (lobbyId) {
-      const connectAndSubscribe = async () => {
-        connect(lobbyId)
-          .then(() => {
-            console.log(lobbyId)
-              subscribeClient({
-                name: "playerSubscription",
-                destination: `/topic/lobbies/${lobbyId}/players`,
-                callback: (message: Message) => {
-                  console.log("received something")
-                  console.log(`Received STOMP message: ${message.body}`)
-                }
-              })
-          })
-      }
-      connectAndSubscribe();
+      connect(lobbyId).then(() => {
+        subscribeClient(
+          `/topic/lobbies/${lobbyId}/players`,
+          (message: Message) => {console.log(`Received message: ` + message.body)}
+        )
+      })
     }
   }, [lobbyId, connect, subscribeClient])
 
