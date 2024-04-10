@@ -1,13 +1,12 @@
 import React, { useRef } from "react";
 import { Client } from "@stomp/stompjs";
-import { getDomain } from "../../helpers/getDomain.js";
+import { getWebSocketDomain } from "../../helpers/getDomain.js";
 import { isProduction } from "../../helpers/isProduction.js";
 import StompSubscriptionRequest from "../../interfaces/StompSubscriptionRequest";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import PropTypes from "prop-types";
 
 const WebSocketProvider = ({ children }) => {
-  const aSessionId = useRef(null);
   const stompClient = useRef(null);
   const subscriptionRequests = useRef(new Map());
 
@@ -15,11 +14,11 @@ const WebSocketProvider = ({ children }) => {
    * otherwise rejected. Does nothing if the client is already initialized and connected**/
   const connect = ({ sessionId }) => {
     return new Promise((resolve, reject) => {
+      console.log("RECEIVED ID: " + sessionId)
       if (!stompClient.current) {
-        aSessionId.current = sessionId;
         // client setup
         stompClient.current = new Client({
-          brokerURL: `${getDomain()}ws`, // might need to change to "/ws" here
+          brokerURL: `${getWebSocketDomain()}`, // might need to change to "/ws" here
           heartbeatIncoming: 10000,
           heartbeatOutgoing: 10000,
           reconnectDelay: 5000,
@@ -70,6 +69,7 @@ const WebSocketProvider = ({ children }) => {
       alert("Cannot create two subscriptionRequests with the same name.");
     } else if (stompClient.current && stompClient.current.active) {
       // subscribe client, store subscription to request object for unsubscribing
+      console.log()
       subscriptionRequest.subscription =
         stompClient.current.subscribe(
           `${subscriptionRequest.destination}`,
