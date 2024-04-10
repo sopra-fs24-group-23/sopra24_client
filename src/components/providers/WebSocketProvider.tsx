@@ -8,43 +8,52 @@ import PropTypes from "prop-types";
 
 const WebSocketProvider = ({ children }) => {
   const stompClient = useRef(null);
+  const sessionId = useRef("");
   const subscriptionRequests = useRef(new Map());
 
   /** Connect function, returns promise that is only resolved after successful connection,
-   * otherwise rejected. Does nothing if the client is already initialized and connected**/
-  const connect = ( sessionId ) => {
+   * otherwise rejected. Does nothing if the client is already initialized and connected **/
+  const connect = ( lobbyId: string ) => {
     return new Promise((resolve, reject) => {
-      console.log("RECEIVED ID: " + sessionId)
-      if (!stompClient.current) {
+      sessionId.current = lobbyId;
+      // if client not initialized or inactive; create new one
+      if (!stompClient.current || !stompClient.current.active) {
+        console.log("Connect called, sessionId: " + sessionId.current)
         // client setup
         stompClient.current = new Client({
-          brokerURL: `${getWebSocketDomain()}`, // might need to change to "/ws" here
+          brokerURL: `${getWebSocketDomain()}`,
           heartbeatIncoming: 10000,
           heartbeatOutgoing: 10000,
           reconnectDelay: 5000,
           debug: isProduction() ? undefined : (str) => console.log(str),
-          beforeConnect: isProduction() ? undefined : () => console.log("Connecting websocket."),
+          beforeConnect: isProduction() ? undefined : () => console.log("Connecting websocket..."),
           onStompError: (frame) => {
             `Encountered a StompError: ${frame}`;
           },
           onWebSocketError: () => {
             "Encountered a WebSocketError."
           }
-        });
-        // on connection: (re-)subscribe all subscriptions and resolve promise
+        })
         stompClient.current.onConnect = () => {
           subscriptionRequests.current.forEach((request) => {
-            request.subscription = stompClient.current.subscribe(request.destination, request.callback);
-          });
-          resolve();
-        };
-      } else if (stompClient.current && !stompClient.current.active) {
-        stompClient.current.activate();
+            if (sessionId.current === request.sessionId) {
+              request.subscription = stompClient.current.subscribe(request.destination, request.callback)
+            }
+            else {
+              console.log("Discarding subscription: " + request.destination)
+              subscriptionRequests.current.delete(request.destination)
+            }
+          })
+          resolve()
+        }
       }
+      // finally, activate the connection
+      stompClient.current.activate()
     });
   };
 
   const disconnect = () => {
+    // might need to do more here: delete subscription requests?
     stompClient.current.deactivate();
   };
 
@@ -66,9 +75,10 @@ const WebSocketProvider = ({ children }) => {
     // if websocket is connected
     if(stompClient.current && stompClient.current.active) {
       const subscriptionReference = stompClient.current.subscribe(pDestination, pCallback)
-      const subscriptionRequest = {
+      const subscriptionRequest: StompSubscriptionRequest = {
         destination: pDestination,
         callback: pCallback,
+        sessionId: sessionId.current,
         subscription: subscriptionReference
       }
       subscriptionRequests.current.set(pDestination, subscriptionRequest)
