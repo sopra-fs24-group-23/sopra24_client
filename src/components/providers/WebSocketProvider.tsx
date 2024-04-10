@@ -25,8 +25,8 @@ const WebSocketProvider = ({ children }) => {
           heartbeatIncoming: 10000,
           heartbeatOutgoing: 10000,
           reconnectDelay: 5000,
-          debug: isProduction() ? undefined : (str) => console.log(str),
-          beforeConnect: isProduction() ? undefined : () => console.log("Connecting websocket..."),
+          debug: isProduction() ? () => {} : (str) => console.log(str),
+          beforeConnect: isProduction() ? () => {} : () => console.log("Connecting websocket..."),
           onStompError: (frame) => {
             `Encountered a StompError: ${frame}`;
           },
