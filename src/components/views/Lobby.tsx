@@ -58,7 +58,7 @@ const Lobby = () => {
       connect(lobbyId).then(() => {
         subscribeClient(
           `/topic/lobbies/${lobbyId}/players`,
-          (message: Message) => {console.log(`Received message: ` + message.body)}
+          (message: Message) => {console.log("Received message: " + message.body)}
         )
       })
     }
@@ -128,8 +128,6 @@ const Lobby = () => {
   };
 
   let content = <Spinner />;
-
-
 
   return (
     <BackgroundImageLobby>
