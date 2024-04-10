@@ -1,5 +1,5 @@
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Spinner } from "../ui/Spinner";
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,6 +7,8 @@ import { Box, TextField, Typography, List, ListItem, Dialog, DialogActions, Dial
 import SettingsIcon from "@mui/icons-material/Settings";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IconButton from "@mui/material/IconButton";
+import WebSocketContext from "../../contexts/WebSocketContext";
+import { Message } from "@stomp/stompjs"
 
 interface GameSettingsProps {
   isHost: boolean;
@@ -17,7 +19,6 @@ interface GameSettingsProps {
 }
 
 const Lobby = () => {
-  const { lobbyId } = useParams();
   const [players, setPlayers] = useState([]);
   const [lobbyDetails, setLobbyDetails] = useState(null);
   const navigate = useNavigate();
@@ -27,16 +28,50 @@ const Lobby = () => {
   const handleCloseGameSettings = () => setOpenGameSettings(false);
   const [isHost, setIsHost] = useState(false);
   const [lobbyCode, setLobbyCode] = useState("testCode");
-
+  const { lobbyId } = useParams();
   const [settings, setSettings] = useState({
     setting1: "Example setting value",
   });
+
+  /** Consuming Websocket Context
+   * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
+  const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext)
+
+  /** On component Mount/Unmount**/
+  useEffect(() => {
+    // logic executed on mount
+    handleIsHost();
+
+    // logic executed on unmount
+    return () => {
+      disconnect()
+    }
+  }, []);
+
+  /** WEBSOCKET STUFF **/
+  // This useEffect is triggered as soon as the lobbyId param is set (or if it changes)
+  // It checks that the lobbyId is not null, then calls functions from above (see line40)
+  useEffect(() => {
+    console.log("LOBBY ID CHANGED: " + lobbyId)
+    if (lobbyId) {
+      connect(lobbyId).then(() => {
+        subscribeClient(
+          `/topic/lobbies/${lobbyId}/players`,
+          (message: Message) => {console.log("Received message: " + message.body)}
+        )
+      })
+    }
+  }, [lobbyId, connect, subscribeClient])
+
+  const sendMessage = () => {
+    const token = localStorage.getItem("token")
+    send(`/app/lobbies/${lobbyId}/players/add`, JSON.stringify({ token }))
+  }
 
   const handleIsHost = () => {
     // isHost will be set to true if true
     setIsHost(localStorage.getItem("isHost") === "true");
     console.log(isHost);
-
   };
 
   const onSettingsChange = (newSettings) => {
@@ -62,6 +97,7 @@ const Lobby = () => {
   }
 
   const handleCopyLobbyCode = () => {
+    sendMessage()
     navigator.clipboard.writeText(lobbyCode)
       .then(() => {
         console.log("Lobby code copied to clipboard");
@@ -91,11 +127,6 @@ const Lobby = () => {
   };
 
   let content = <Spinner />;
-
-  useEffect(() => {
-    handleIsHost();
-  }, []);
-
 
   return (
     <BackgroundImageLobby>

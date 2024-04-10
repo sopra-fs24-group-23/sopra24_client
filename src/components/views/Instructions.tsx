@@ -26,15 +26,12 @@ const Instructions = () => {
         display: "flex",
         position: "absolute",
         top: "2%",
-        left: "85%",  
+        left: "85%",
       }}>
         <CustomButton
           onClick={handleBack}
           sx={{
             backgroundColor: "#e0e0e0",
-            "&:hover": {
-              backgroundColor: "red",
-            },
           }}
         >
           Back
@@ -61,22 +58,22 @@ const Instructions = () => {
         paddingTop: "30px",
         paddingBottom: "10px",
       }}>
-          <Typography variant="h4" gutterBottom
-            sx={{
-              fontFamily: "Londrina Solid",
-              textAlign: "center",
-            }}>
-            Instructions
-          </Typography>
-          <Typography variant="h5" gutterBottom
-            sx={{
-              fontFamily: "Londrina Solid",
-              textAlign: "center",
-            }}>
-            This is how you play the game.
-          </Typography>
-        </Box>
-      </HomepageBackgroundImage>
+        <Typography variant="h4" gutterBottom
+          sx={{
+            fontFamily: "Londrina Solid",
+            textAlign: "center",
+          }}>
+          Instructions
+        </Typography>
+        <Typography variant="h5" gutterBottom
+          sx={{
+            fontFamily: "Londrina Solid",
+            textAlign: "center",
+          }}>
+          This is how you play the game.
+        </Typography>
+      </Box>
+    </HomepageBackgroundImage>
   );
 };
 

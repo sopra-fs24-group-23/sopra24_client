@@ -1,5 +1,5 @@
 import React from "react";
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import {GameGuard} from "../routeProtectors/GameGuard";
 import GameRouter from "./GameRouter";
 import {LoginGuard} from "../routeProtectors/LoginGuard";
@@ -44,7 +44,7 @@ const AppRouter = () => {
           <Route path="/register" element={<Register/>} />
         </Route>
 
-        <Route path="/lobbies/:id" element={<Lobby/>}/>
+        <Route exact path="/lobbies/:lobbyId" element={<Lobby />} />
 
         <Route path="/leaderboards" element={<GlobalLeaderboard />} />
 
