@@ -199,9 +199,9 @@ const Homepage = () => {
             </Box>
 
             <Box sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              width: '100%',
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
             }}>
               <Box sx={statBoxStyle}>
                 <Typography variant="h4" gutterBottom
@@ -255,9 +255,9 @@ const Homepage = () => {
         )}
         {/* Action buttons */}
         <Box sx={{
-          display: 'flex',
-          width: '100%',
-          justifyContent: 'space-around',
+          display: "flex",
+          width: "100%",
+          justifyContent: "space-around",
           my: 2,
         }}>
           <CustomButton onClick={createLobby}>Create Lobby</CustomButton>
