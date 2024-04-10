@@ -12,7 +12,7 @@ const WebSocketProvider = ({ children }) => {
 
   /** Connect function, returns promise that is only resolved after successful connection,
    * otherwise rejected. Does nothing if the client is already initialized and connected**/
-  const connect = ({ sessionId }) => {
+  const connect = ( sessionId ) => {
     return new Promise((resolve, reject) => {
       console.log("RECEIVED ID: " + sessionId)
       if (!stompClient.current) {
@@ -34,7 +34,7 @@ const WebSocketProvider = ({ children }) => {
         // on connection: (re-)subscribe all subscriptions and resolve promise
         stompClient.current.onConnect = () => {
           subscriptionRequests.current.forEach((request) => {
-            stompClient.current.subscribe(request.destination, request.callback);
+            request.subscription = stompClient.current.subscribe(request.destination, request.callback);
           });
           resolve();
         };
@@ -61,28 +61,23 @@ const WebSocketProvider = ({ children }) => {
 
   /** Method to subscribe to a topic/queue destination in the BE
    * NOTICE: method is called subscribeClient to avoid confusion
-   * with stompClient.subscribe
-   * subscriptionRequest names must be unique**/
-  function subscribeClient(subscriptionRequest: StompSubscriptionRequest) {
-    if (subscriptionRequests.current.has(subscriptionRequest.name)) {
-      console.log("You tried to add a subscriptionRequest with a duplicate name, the names must be unique");
-      alert("Cannot create two subscriptionRequests with the same name.");
-    } else if (stompClient.current && stompClient.current.active) {
-      // subscribe client, store subscription to request object for unsubscribing
-      console.log()
-      subscriptionRequest.subscription =
-        stompClient.current.subscribe(
-          `${subscriptionRequest.destination}`,
-          subscriptionRequest.callback,
-        );
-      // add subscription request to list to allow re-subscription
-      subscriptionRequests.current.set(subscriptionRequest.name, subscriptionRequest);
+   * Only one subscription per destination is allowed**/
+  function subscribeClient(pDestination: string, pCallback: Function) {
+    // if websocket is connected
+    if(stompClient.current && stompClient.current.active) {
+      const subscriptionReference = stompClient.current.subscribe(pDestination, pCallback)
+      const subscriptionRequest = {
+        destination: pDestination,
+        callback: pCallback,
+        subscription: subscriptionReference
+      }
+      subscriptionRequests.current.set(pDestination, subscriptionRequest)
     }
-    // error message in dev-environment
     else if (!isProduction()) {
       alert("You tried adding a subscription to an empty or inactive STOMP-Client");
       console.log("You tried adding a subscription to an empty or inactive STOMP-Client.");
     }
+    // error message in dev-environment
   }
 
   function unsubscribeClient(name: string) {
