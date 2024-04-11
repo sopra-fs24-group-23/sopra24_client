@@ -63,9 +63,9 @@ const Lobby = () => {
     }
   }, [lobbyId, connect, subscribeClient])
 
-  const sendMessage = () => {
+  const joinLobby = () => {
     const token = localStorage.getItem("token")
-    send(`/app/lobbies/${lobbyId}/players/add`, JSON.stringify({ token }))
+    send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }))
   }
 
   const handleIsHost = () => {
