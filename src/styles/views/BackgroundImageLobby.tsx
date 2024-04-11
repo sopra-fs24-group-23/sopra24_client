@@ -8,7 +8,7 @@ const BackgroundImageLobby = ( {children}) => {
     <Box
       className="background-image-lobby"
       sx={{
-        backgroundImage: "url('/BackgroundImages/Lobby.png')",
+        backgroundImage: "url('/Images/lobby_background.png')",
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
