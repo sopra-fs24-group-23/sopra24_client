@@ -24,16 +24,32 @@ const Instructions = () => {
     <HomepageBackgroundImage>
       <Box sx={{
         display: "flex",
-        position: "absolute",
-        top: "2%",
-        left: "85%",
+        justifyContent: "space-between",
+        alignItems: "center",
+        //height: "50vh", // Use viewport height to fill the screen
+        padding: "20px",
+        //display: "flex",
+        //flexDirection: "column",
+        //alignItems: "center",
+        //justifyContent: "space-between",
+        backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
+        borderColor: "black",
+        borderWidth: "2px",
+        borderStyle: "solid",
+        borderRadius: "27px",
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+        width: "90%",
+        //maxWidth: "800px",
+        height: "5%",
+        margin: "auto",
+        position: "relative",
+        //paddingTop: "20px",
+        //paddingBottom: "10px",
+        top: 30,
+        marginBottom: "30px",
       }}>
-        <CustomButton
-          onClick={handleBack}
-          sx={{
-            backgroundColor: "#e0e0e0",
-          }}
-        >
+        <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px"}} />
+        <CustomButton onClick={handleBack}>
           Back
         </CustomButton>
       </Box>
@@ -41,22 +57,29 @@ const Instructions = () => {
       <Box sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: "center",
+        alignItems: "left",
+        //height: "50vh", // Use viewport height to fill the screen
+        width: "80vw",
+        padding: "30px",
+        //display: "flex",
+        //flexDirection: "column",
+        //alignItems: "center",
+        //justifyContent: "space-between",
         backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
         borderColor: "black",
         borderWidth: "2px",
         borderStyle: "solid",
-        padding: "20px",
         borderRadius: "27px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        width: "35%",
-        maxWidth: "500px",
-        height: "77%",
+        //width: "100%",
+        maxWidth: "800px",
+        // height: "70%",
         margin: "auto",
         position: "relative",
-        paddingTop: "30px",
-        paddingBottom: "10px",
+        //paddingTop: "20px",
+        //paddingBottom: "10px",
+        top: 30,
       }}>
         <Typography variant="h4" gutterBottom
           sx={{
@@ -65,12 +88,31 @@ const Instructions = () => {
           }}>
           Instructions
         </Typography>
-        <Typography variant="h5" gutterBottom
+        <Typography variant="h6" gutterBottom
           sx={{
             fontFamily: "Londrina Solid",
-            textAlign: "center",
+            textAlign: "left",
           }}>
-          This is how you play the game.
+          GlobalGuess is the online version of the all-time favorite game Categories.<br />
+          Over with debates about whether countries, animals or rivers exist or not!
+          With our automatic answer-checking feature, you can focus on the gameplay and not the tedious tasks of
+          checking answers.<br />
+          <br />
+
+          Once a game is started, a cycle of several rounds begins.<br />
+          During each round, a random letter is chosen and your goal is to think of words
+          belonging to each categories of words displayed, all starting with the imposed letter.<br />
+          If you are unsure of a word, you can use the Joker button to sneak wrong answers, but you will only be able to do this once per round.<br />
+          After a round, everyone sees each others answers and can press X to doubt one answer per person, which will trigger an automatic answer-check 
+          for the doubted answer.<br />
+
+          The game ends when the number of rounds set by the host are completed and the person with the most points wins.<br />
+          <br />
+
+          Once a game is over, your statistics are saved in your profile and you can check the leaderboard to see how you rank compared to your friends.<br />
+          <br />
+
+          Good luck and have fun!
         </Typography>
       </Box>
     </HomepageBackgroundImage>
