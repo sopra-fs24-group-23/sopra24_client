@@ -24,7 +24,7 @@ const Login = () => {
       localStorage.setItem("token", user.token)
 
       // Store user to the context.
-      setUser(User)
+      setUser(user);
 
       // Login successfully worked --> navigate to Homepage
       navigate("/homepage");
