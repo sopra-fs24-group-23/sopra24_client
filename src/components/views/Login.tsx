@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
@@ -6,11 +6,13 @@ import BackgroundImageLayout from "styles/views/BackgroundImageLayout";
 import GameFormField from "components/ui/GameFormField";
 import CustomButton from "components/ui/CustomButton";
 import Box from "@mui/material/Box";
+import UserContext from "../../contexts/UserContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>(null);
   const [password, setPassword] = useState<string>(null);
+  const { setUser } = useContext(UserContext);
 
   const doLogin = async () => {
     try {
@@ -19,16 +21,13 @@ const Login = () => {
 
       // Get the returned user and update a new object.
       const user = new User(response.data);
+      localStorage.setItem("token", user.token)
 
-      // Store the token into the local storage.
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userId", response.data.id);
-      console.log(response.data.token);
-      console.log(user);
-      console.log(response.data.id);
+      // Store user to the context.
+      setUser(User)
 
       // Login successfully worked --> navigate to Homepage
-      navigate("/homepage/" + response.data.id);
+      navigate("/homepage");
     } catch (error) {
       alert(
         `Something went wrong during the login: \n${handleError(error)}`
