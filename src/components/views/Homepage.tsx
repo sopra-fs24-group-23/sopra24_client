@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 //import { Button } from "components/ui/Button";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,16 +10,17 @@ import CustomButton from "components/ui/CustomButton";
 import { Box, TextField, IconButton, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
+import UserContext from "../../contexts/UserContext";
 
 const Homepage = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
-  const { id } = useParams();
   const [username, setUsername] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [isHost, setIsHost] = useState(false);
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { user } = useContext(UserContext)
 
   const logout = async () => {
     const token = localStorage.getItem("token");
@@ -36,7 +37,7 @@ const Homepage = () => {
   };
   const saveUpdate = async () => {
     try {
-      const response = await api.put("/users/" + id, { username: username });
+      const response = await api.put("/users/" + user.id, { username: username });
       setProfile({ ...profile, username: username }); // Update local profile state
       alert("Username updated successfully!");
     } catch (error) {
@@ -99,7 +100,7 @@ const Homepage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await api.get("/users/" + id);
+        const response = await api.get("/users/" + user.id);
 
         setProfile(response.data);
       } catch (error) {
@@ -108,9 +109,10 @@ const Homepage = () => {
         alert("Something went wrong while fetching the user! See the console for details.");
       }
     }
-
-    fetchData();
-  }, []);
+    if (user) {
+      fetchData();
+    }
+  }, [user]);
 
   return (
     <HomepageBackgroundImage>

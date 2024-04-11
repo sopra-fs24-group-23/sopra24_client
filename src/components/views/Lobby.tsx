@@ -97,7 +97,6 @@ const Lobby = () => {
   }
 
   const handleCopyLobbyCode = () => {
-    sendMessage()
     navigator.clipboard.writeText(lobbyCode)
       .then(() => {
         console.log("Lobby code copied to clipboard");
