@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import GameFormField from "components/ui/GameFormField";
 import { api, handleError } from "helpers/api";
@@ -8,11 +8,13 @@ import BaseContainer from "components/ui/BaseContainer";
 import BackgroundImageLayout from "styles/views/BackgroundImageLayout";
 import CustomButton from "components/ui/CustomButton";
 import Box from "@mui/material/Box";
+import UserContext from "../../contexts/UserContext";
 
 const Register = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>(null);
   const [password, setPassword] = useState<string>(null);
+  const { setUser } = useContext(UserContext)
 
   const doRegister = async () => {
     try {
@@ -21,13 +23,11 @@ const Register = () => {
 
       // Get the returned user and update a new object.
       const user = new User(response.data);
+      // store user to context
+      localStorage.setItem("token", user.token)
+      setUser(user)
 
-      // Store the token into the local storage.
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userId", response.data.id);
-      console.log(response.data);
-
-      navigate("/homepage/" + response.data.id);
+      navigate("/homepage");
     } catch (error) {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }
@@ -41,8 +41,8 @@ const Register = () => {
     <BackgroundImageLayout>
       <Box sx={{
         position: "absolute",
-        top: "60%",
-        left: "20%",
+        top: "50%",
+        left: "25%",
         transform: "translate(-50%, -50%)",
         width: "clamp(300px, 50%, 500px)",
         display: "flex",
@@ -52,35 +52,38 @@ const Register = () => {
         height: "100vh",
       }}>
         <div className="login form">
-          <GameFormField
-            label="Username"
-            value={username}
-            onChange={(un: string) => setUsername(un)}
-          />
-          <div style={{ margin: "15px 0" }}></div>
-          <GameFormField
-            label="Password"
-            value={password}
-            onChange={(n) => setPassword(n)}
-          />
-          <div style={{ margin: "10px 0" }}></div>
-          <div className="login button-container">
-            <CustomButton
-              disabled={!username || !password}
-              sx={{ width: "100%" }}
-              onClick={() => doRegister()}
-            >
-              Register
-            </CustomButton>
-          </div>
-          <div style={{ margin: "10px 0" }}></div>
-          <div className="login button-container">
-            <CustomButton
-              sx={{ width: "100%" }}
-              onClick={() => getToLogin()}
-            >
-              Back to login
-            </CustomButton>
+          <img src="/Images/logo.png" alt="Logo" style={{ maxWidth: '400px' }} />
+          <div style={{ display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
+            <GameFormField
+              label="Username"
+              value={username}
+              onChange={(un: string) => setUsername(un)}
+            />
+            <div style={{ margin: "10px 0" }}></div>
+            <GameFormField
+              label="Password"
+              value={password}
+              onChange={(n) => setPassword(n)}
+            />
+            <div style={{ margin: "10px 0" }}></div>
+            <div className="login button-container">
+              <CustomButton
+                disabled={!username || !password}
+                sx={{ width: "100%" }}
+                onClick={() => doRegister()}
+              >
+                Register
+              </CustomButton>
+            </div>
+            <div style={{ margin: "10px 0" }}></div>
+            <div className="login button-container">
+              <CustomButton
+                sx={{ width: "100%" }}
+                onClick={() => getToLogin()}
+              >
+                Back to login
+              </CustomButton>
+            </div>
           </div>
         </div>
       </Box>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 //import { Button } from "components/ui/Button";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,16 +10,17 @@ import CustomButton from "components/ui/CustomButton";
 import { Box, TextField, IconButton, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
+import UserContext from "../../contexts/UserContext";
 
 const Homepage = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
-  const { id } = useParams();
   const [username, setUsername] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [isHost, setIsHost] = useState(false);
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { user } = useContext(UserContext)
 
   const logout = async () => {
     const token = localStorage.getItem("token");
@@ -36,7 +37,7 @@ const Homepage = () => {
   };
   const saveUpdate = async () => {
     try {
-      const response = await api.put("/users/" + id, { username: username });
+      const response = await api.put("/users/" + user.id, { username: username });
       setProfile({ ...profile, username: username }); // Update local profile state
       alert("Username updated successfully!");
     } catch (error) {
@@ -99,7 +100,7 @@ const Homepage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await api.get("/users/" + id);
+        const response = await api.get("/users/" + user.id);
 
         setProfile(response.data);
       } catch (error) {
@@ -108,17 +109,49 @@ const Homepage = () => {
         alert("Something went wrong while fetching the user! See the console for details.");
       }
     }
-
-    fetchData();
-  }, []);
+    if (user) {
+      fetchData();
+    }
+  }, [user]);
 
   return (
     <HomepageBackgroundImage>
       <Box sx={{
         display: "flex",
+        justifyContent: "flex-end",
+        alignItems: "center",
+        //height: "50vh", // Use viewport height to fill the screen
+        padding: "20px",
+        //display: "flex",
+        //flexDirection: "column",
+        //alignItems: "center",
+        //justifyContent: "space-between",
+        backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
+        borderColor: "black",
+        borderWidth: "2px",
+        borderStyle: "solid",
+        borderRadius: "27px",
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+        width: "90%",
+        //maxWidth: "800px",
+        height: "5%",
+        margin: "auto",
+        position: "relative",
+        //paddingTop: "20px",
+        //paddingBottom: "10px",
+        top: 30,
+        marginBottom: "30px",
+      }}>
+        <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px"}} />
+        <CustomButton sx={{ marginLeft: "auto" }} onClick={() => navigate("/game/instructions")}>Instructions</CustomButton>
+        <CustomButton sx={{ marginLeft: "15px" }} onClick={logout}>Logout</CustomButton>
+      </Box>
+      {/*Outer box*/}
+      <Box sx={{
+        display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: "left",
         //height: "50vh", // Use viewport height to fill the screen
         width: "80vw",
         padding: "20px",
@@ -141,20 +174,6 @@ const Homepage = () => {
         //paddingBottom: "10px",
         top: 30,
       }}>
-        <Box sx={{
-          display: "flex",
-          //flexDirection: "row",
-          justifyContent: "space-between",
-          //alignItems: "center",
-          width: "100%",
-          //position: "absolute",
-          //gap: "10px",
-          top: 20,
-          //left: "60%",
-        }}>
-          <CustomButton onClick={() => navigate("/game/instructions")}>Instructions</CustomButton>
-          <CustomButton onClick={logout}>Logout</CustomButton>
-        </Box>
         {/* Player's Name */}
         {profile && (
           <Typography variant="h2" gutterBottom
@@ -176,7 +195,7 @@ const Homepage = () => {
                 </IconButton>
               </Box>
             ) : (
-              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "left" }}>
                 {profile.username}
                 <EditIcon onClick={handleEditClick} sx={{ marginLeft: "10px", cursor: "pointer" }} />
               </Box>
@@ -188,7 +207,7 @@ const Homepage = () => {
           <div className="user-stats">
             <Box sx={{
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "right",
               width: "100%",
               my: 2,
               //position: "absolute",
