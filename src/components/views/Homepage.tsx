@@ -71,8 +71,10 @@ const Homepage = () => {
       // create lobby
       const requestBody = JSON.stringify({ token });
       const response = await api.post("/lobbies", requestBody);
-      const lobbyId = await response.json;
+      const lobbyId = await response.data.id;
+      console.log(lobbyId);
       localStorage.setItem("isHost", "true");
+      localStorage.setItem("lobbyCode", lobbyId);
 
       // Navigate to the game room using the game ID from the response
       navigate(`/lobbies/${response.data.id}`);

@@ -27,7 +27,9 @@ const Lobby = () => {
   const handleOpenGameSettings = () => setOpenGameSettings(true);
   const handleCloseGameSettings = () => setOpenGameSettings(false);
   const [isHost, setIsHost] = useState(false);
-  const [lobbyCode, setLobbyCode] = useState("testCode");
+  //const [lobbyCode, setLobbyCode] = useState("testCode");
+  //const {lobbyCode} = useParams();
+  const [lobbyCode, setLobbyCode] = useState("");
   const { lobbyId } = useParams();
   const [settings, setSettings] = useState({
     setting1: "Example setting value",
@@ -97,6 +99,7 @@ const Lobby = () => {
   }
 
   const handleCopyLobbyCode = () => {
+    setLobbyCode(localStorage.getItem("lobbyCode"));
     navigator.clipboard.writeText(lobbyCode)
       .then(() => {
         console.log("Lobby code copied to clipboard");
