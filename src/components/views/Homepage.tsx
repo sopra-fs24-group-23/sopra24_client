@@ -85,14 +85,15 @@ const Homepage = () => {
   };
 
   const joinLobby = async () => {
+    const token = localStorage.getItem("token");
     try {
       const lobbyId = prompt("Enter lobby ID: ");
       // API call to join a lobby by ID
-      const response = await api.post(`/lobbies/join/${lobbyId}`);
+      const response = await api.post(`/lobbies/join/${lobbyId}`,{ token: token });
       localStorage.setItem("isHost", "false");
 
       // Navigate to the lobby
-      navigate(`/lobby/${lobbyId}`);
+      navigate(`/lobbies/${lobbyId}`);
     } catch (error) {
       console.error(`Joining lobby failed: ${error}`);
       alert("Failed to join lobby. Please check the lobby ID and try again.");
