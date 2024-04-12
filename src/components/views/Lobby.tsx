@@ -65,7 +65,7 @@ const Lobby = () => {
     }
   }, [lobbyId, connect, subscribeClient])
 
-  const joinLobby = () => {
+  const joinLobby = () => { //dont think its needed here since we do it in the homepage- Nili
     const token = localStorage.getItem("token")
     send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }))
   }
@@ -108,6 +108,27 @@ const Lobby = () => {
         console.error("Failed to copy lobby code to clipboard:", error);
       });
   };
+  useEffect(() => {
+    if (lobbyId) {
+      connect(lobbyId).then(() => {
+        const subscription = subscribeClient(`/topic/lobbies/${lobbyId}/players`, (message: Message) => {
+          console.log("Received message on players topic: ", message.body);
+          try {
+            const playerData = JSON.parse(message.body);
+            setPlayers(playerData);
+          } catch (error) {
+            console.error("Error parsing player data:", error);
+          }
+        });
+
+        return () => {
+          console.log("Unsubscribing and disconnecting...");
+          unsubscribeClient(subscription);
+        };
+      });
+    }
+  }, [lobbyId, connect, subscribeClient, unsubscribeClient]);
+
 
   const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
     return (
@@ -253,10 +274,16 @@ const Lobby = () => {
             }}>
             Players
           </Typography>
-          <List sx={{
-            width: "100%",
-          }}>
-            {/* TODO: Add players */}
+          <List sx={{ width: "100%" }}>
+            {players.length > 0 ? (
+              players.map((player, index) => (
+                <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
+                  {player.username} {/* Adjust if your player object structure is different */}
+                </ListItem>
+              ))
+            ) : (
+              <Typography sx={{ textAlign: "center", marginTop: "20px" }}>No players yet</Typography>
+            )}
           </List>
         </Box>
         {/* Inner box for Lobby Code if isHost is true*/}
