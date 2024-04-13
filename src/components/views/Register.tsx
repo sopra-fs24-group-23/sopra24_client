@@ -24,8 +24,9 @@ const Register = () => {
       // Get the returned user and update a new object.
       const user = new User(response.data);
       // store user to context
-      localStorage.setItem("token", user.token)
       setUser(user)
+      localStorage.setItem("token", user.token)
+      localStorage.setItem("id", user.id)
 
       navigate("/homepage");
     } catch (error) {

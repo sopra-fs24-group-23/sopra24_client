@@ -136,8 +136,9 @@ const Homepage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await api.get("/users/" + user.id);
-
+        let id = localStorage.getItem("id");
+        console.log("THE ID IS")
+        const response = await api.get("/users/" + id);
         setProfile(response.data);
       } catch (error) {
         console.error(`Something went wrong while fetching the user: \n${handleError(error)}`);
@@ -145,9 +146,7 @@ const Homepage = () => {
         alert("Something went wrong while fetching the user! See the console for details.");
       }
     }
-    if (user) {
-      fetchData();
-    }
+    fetchData()
   }, [user]);
 
   return (

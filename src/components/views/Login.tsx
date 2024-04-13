@@ -25,6 +25,7 @@ const Login = () => {
       // Get the returned user and update a new object.
       const user = new User(response.data);
       localStorage.setItem("token", user.token)
+      localStorage.setItem("id", user.id)
 
       // Store user to the context.
       setUser(user);
