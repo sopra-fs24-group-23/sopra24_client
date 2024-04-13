@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import {GameGuard} from "../routeProtectors/GameGuard";
 import GameRouter from "./GameRouter";
 import {LoginGuard} from "../routeProtectors/LoginGuard";
@@ -39,7 +39,7 @@ const AppRouter = () => {
           <Route path="/game/*" element={<GameRouter/>} />
         </Route>
 
-        {/* Requesting the Base-URL redirects to login. */}
+        {/* Requesting the Base-URL redirects to login page. */}
         <Route path="/" element={
           <Navigate to="/login" replace />
         }/>
