@@ -1,6 +1,7 @@
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
 import React, { useState, useEffect, useContext } from "react";
 import { Spinner } from "../ui/Spinner";
+import PlayerList from "../ui/PlayerList";
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box, TextField, Typography, List, ListItem, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from "@mui/material";
@@ -9,6 +10,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs"
+import Player from "../../models/Player";
 
 interface GameSettingsProps {
   isHost: boolean;
@@ -43,11 +45,6 @@ const Lobby = () => {
   useEffect(() => {
     // logic executed on mount
     handleIsHost();
-
-    // logic executed on unmount
-    return () => {
-      disconnect()
-    }
   }, []);
 
   /** WEBSOCKET STUFF **/
@@ -57,18 +54,24 @@ const Lobby = () => {
     console.log("LOBBY ID CHANGED: " + lobbyId)
     if (lobbyId) {
       connect(lobbyId).then(() => {
+        // subscribe to playerList updates
         subscribeClient(
           `/topic/lobbies/${lobbyId}/players`,
-          (message: Message) => {console.log("Received message: " + message.body)}
+          (message: Message) => {
+            const receivedPlayers = JSON.parse(message.body)
+            setPlayers(receivedPlayers)
+          }
         )
+        // join lobby
+        const token = localStorage.getItem("token")
+        send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }))
       })
     }
-  }, [lobbyId, connect, subscribeClient])
-
-  const joinLobby = () => { //dont think its needed here since we do it in the homepage- Nili
-    const token = localStorage.getItem("token")
-    send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }))
-  }
+    return () => {
+      unsubscribeClient(`/topic/lobbies/${lobbyId}/players`)
+      disconnect()
+    }
+  }, [lobbyId, connect, subscribeClient, unsubscribeClient])
 
   const handleIsHost = () => {
     // isHost will be set to true if true
@@ -89,13 +92,7 @@ const Lobby = () => {
   };
 
   const handleLeaveGame = () => {
-    const userId = localStorage.getItem("userId");
-    if (userId) {
-      navigate(`/homepage/${userId}`);
-    } else {
-      console.error("User ID not found.");
-      navigate("/login");
-    }
+    navigate("/homepage")
   }
 
   const handleCopyLobbyCode = () => {
@@ -108,27 +105,6 @@ const Lobby = () => {
         console.error("Failed to copy lobby code to clipboard:", error);
       });
   };
-  useEffect(() => {
-    if (lobbyId) {
-      connect(lobbyId).then(() => {
-        const subscription = subscribeClient(`/topic/lobbies/${lobbyId}/players`, (message: Message) => {
-          console.log("Received message on players topic: ", message.body);
-          try {
-            const playerData = JSON.parse(message.body);
-            setPlayers(playerData);
-          } catch (error) {
-            console.error("Error parsing player data:", error);
-          }
-        });
-
-        return () => {
-          console.log("Unsubscribing and disconnecting...");
-          unsubscribeClient(subscription);
-        };
-      });
-    }
-  }, [lobbyId, connect, subscribeClient, unsubscribeClient]);
-
 
   const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
     return (
@@ -274,17 +250,7 @@ const Lobby = () => {
             }}>
             Players
           </Typography>
-          <List sx={{ width: "100%" }}>
-            {players.length > 0 ? (
-              players.map((player, index) => (
-                <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
-                  {player.username} {/* Adjust if your player object structure is different */}
-                </ListItem>
-              ))
-            ) : (
-              <Typography sx={{ textAlign: "center", marginTop: "20px" }}>No players yet</Typography>
-            )}
-          </List>
+          <PlayerList players={players}/>
         </Box>
         {/* Inner box for Lobby Code if isHost is true*/}
         {isHost && (
