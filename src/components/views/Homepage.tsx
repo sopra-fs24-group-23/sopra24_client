@@ -11,6 +11,7 @@ import { Box, TextField, IconButton, Typography, Dialog, DialogActions, DialogCo
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import UserContext from "../../contexts/UserContext";
+import { styled } from "@mui/system";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -21,6 +22,24 @@ const Homepage = () => {
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { user } = useContext(UserContext)
+  const [openJoinLobbyDialog, setOpenJoinLobbyDialog] = useState(false);
+  const [inputLobbyId, setInputLobbyId] = useState("");
+
+  // Currently not used because starts flickering when entering something in textfield
+  const CustomDialog = styled(Dialog)(({ theme }) => ({
+    "& .MuiDialogTitle-root": {
+      fontFamily: "Londrina Solid",
+    },
+    /*"& .MuiDialogContent-root": {
+      fontFamily: "Londrina Solid",
+    },
+    "& .MuiDialogContentText-root": {
+      fontFamily: "Londrina Solid",
+    },
+    ".MuiDialog-root": {
+      position: "fixed !important",
+    },*/
+  }));
 
   const logout = async () => {
     const token = localStorage.getItem("token");
@@ -84,16 +103,29 @@ const Homepage = () => {
     }
   };
 
+  const handleJoinLobbyOpenDialog = () => {
+    setOpenJoinLobbyDialog(true);
+  }
+
+  const handleJoinLobbyCloseDialog = () => {
+    setOpenJoinLobbyDialog(false);
+  }
+
   const joinLobby = async () => {
     const token = localStorage.getItem("token");
     try {
-      const lobbyId = prompt("Enter lobby ID: ");
+      // Use inputLobbyId from state
+      if (!inputLobbyId){
+        alert("Please enter lobby ID.");
+        return
+      }
+      //const lobbyId = prompt("Enter lobby ID: ");
       // API call to join a lobby by ID
-      const response = await api.post(`/lobbies/join/${lobbyId}`,{ token: token });
+      const response = await api.post(`/lobbies/join/${inputLobbyId}`,{ token: token });
       localStorage.setItem("isHost", "false");
 
       // Navigate to the lobby
-      navigate(`/lobbies/${lobbyId}`);
+      navigate(`/lobbies/${inputLobbyId}`);
     } catch (error) {
       console.error(`Joining lobby failed: ${error}`);
       alert("Failed to join lobby. Please check the lobby ID and try again.");
@@ -123,12 +155,7 @@ const Homepage = () => {
         display: "flex",
         justifyContent: "flex-end",
         alignItems: "center",
-        //height: "50vh", // Use viewport height to fill the screen
         padding: "20px",
-        //display: "flex",
-        //flexDirection: "column",
-        //alignItems: "center",
-        //justifyContent: "space-between",
         backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
         borderColor: "black",
         borderWidth: "2px",
@@ -140,8 +167,6 @@ const Homepage = () => {
         height: "5%",
         margin: "auto",
         position: "relative",
-        //paddingTop: "20px",
-        //paddingBottom: "10px",
         top: 30,
         marginBottom: "30px",
       }}>
@@ -158,10 +183,6 @@ const Homepage = () => {
         //height: "50vh", // Use viewport height to fill the screen
         width: "80vw",
         padding: "20px",
-        //display: "flex",
-        //flexDirection: "column",
-        //alignItems: "center",
-        //justifyContent: "space-between",
         backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
         borderColor: "black",
         borderWidth: "2px",
@@ -173,8 +194,6 @@ const Homepage = () => {
         // height: "70%",
         margin: "auto",
         position: "relative",
-        //paddingTop: "20px",
-        //paddingBottom: "10px",
         top: 30,
       }}>
         {/* Player's Name */}
@@ -283,7 +302,7 @@ const Homepage = () => {
           my: 2,
         }}>
           <CustomButton onClick={createLobby}>Create Lobby</CustomButton>
-          <CustomButton onClick={joinLobby}>Join Lobby</CustomButton>
+          <CustomButton onClick={() => setOpenJoinLobbyDialog(true)}>Join Lobby</CustomButton>
         </Box>
       </Box>
       {/* Dialog for error messages */}
@@ -299,6 +318,28 @@ const Homepage = () => {
           <CustomButton onClick={() => setIsErrorDialogOpen(false)}> Okay</CustomButton>
         </DialogActions>
       </Dialog>
+      <Dialog open={openJoinLobbyDialog} onClose={() => setOpenJoinLobbyDialog(false)}>
+  <DialogTitle>Join a Lobby</DialogTitle>
+  <DialogContent>
+    <DialogContentText>
+      Enter the ID of the lobby you wish to join:
+    </DialogContentText>
+    <TextField
+      autoFocus
+      margin="dense"
+      id="lobbyId"
+      label="Lobby ID"
+      type="text"
+      fullWidth
+      value={inputLobbyId}
+      onChange={(e) => setInputLobbyId(e.target.value)}
+    />
+  </DialogContent>
+  <DialogActions>
+    <CustomButton onClick={() => setOpenJoinLobbyDialog(false)}>Cancel</CustomButton>
+    <CustomButton onClick={joinLobby}>Join</CustomButton>
+  </DialogActions>
+</Dialog>
     </HomepageBackgroundImage>
   );
 };
