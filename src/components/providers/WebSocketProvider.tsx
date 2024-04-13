@@ -90,14 +90,14 @@ const WebSocketProvider = ({ children }) => {
     // error message in dev-environment
   }
 
-  function unsubscribeClient(name: string) {
+  function unsubscribeClient(destination: string) {
     if (stompClient.current && stompClient.current.active) {
       // retrieve request from requestList
-      const request = subscriptionRequests.current.get(name);
+      const request = subscriptionRequests.current.get(destination);
       // unsubscribe
       request.subscription.unsubscribe();
       // delete from  requestList
-      subscriptionRequests.current.delete(name);
+      subscriptionRequests.current.delete(destination);
     }
   }
 
