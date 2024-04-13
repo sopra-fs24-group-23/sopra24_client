@@ -24,31 +24,22 @@ const AppRouter = () => {
     <BrowserRouter>
       <Routes>
 
-        <Route path="/login" element={<LoginGuard />}>
+        {/* Only clients without a token can access this. */}
+        <Route element={<LoginGuard/>}>
           <Route path="/login" element={<Login/>} />
-        </Route>
-
-        <Route path="/game/*" element={<GameGuard />}>
-          <Route path="/game/*" element={<GameRouter base="/game"/>} />
-        </Route>
-
-
-        <Route path="/homepage" element={<GameGuard />}>
-          <Route path="/homepage" element={<Homepage/>} />
-        </Route>
-
-        <Route path="/game/instructions" element={<GameGuard />}>
-          <Route path="/game/instructions" element={<Instructions/>} />
-        </Route>
-
-        <Route path="/register" element={<LoginGuard />}>
           <Route path="/register" element={<Register/>} />
         </Route>
 
-        <Route exact path="/lobbies/:lobbyId" element={<Lobby />} />
+        {/* Only clients with a token can access this. */}
+        <Route element={<GameGuard/>}>
+          <Route path="/homepage" element={<Homepage/>} />
+          <Route path="/instructions" element={<Instructions/>} />
+          <Route path="/leaderboards" element={<GlobalLeaderboard/>} />
+          <Route path="/lobbies/:lobbyId" element={<Lobby/>} />
+          <Route path="/game/*" element={<GameRouter/>} />
+        </Route>
 
-        <Route path="/leaderboards" element={<GlobalLeaderboard />} />
-
+        {/* Requesting the Base-URL redirects to login. */}
         <Route path="/" element={
           <Navigate to="/login" replace />
         }/>

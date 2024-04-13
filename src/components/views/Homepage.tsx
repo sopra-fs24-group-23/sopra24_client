@@ -172,7 +172,7 @@ const Homepage = () => {
         marginBottom: "30px",
       }}>
         <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px" }} />
-        <CustomButton sx={{ marginLeft: "auto" }} onClick={() => navigate("/game/instructions")}>Instructions</CustomButton>
+        <CustomButton sx={{ marginLeft: "auto" }} onClick={() => navigate("/instructions")}>Instructions</CustomButton>
         <CustomButton sx={{ marginLeft: "15px" }} onClick={logout}>Logout</CustomButton>
       </Box>
       {/*Outer box*/}
