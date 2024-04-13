@@ -63,7 +63,7 @@ const Homepage = () => {
       console.error(`Failed to update username: ${error}`);
       // Default error message
       let message = "An unexpected error occured. Please try again.";
-      
+
       // If the Backend sends a specific error message, use it
       if (error.response && error.response.data && error.response.data.message) {
         message = error.response.data.message;
@@ -115,13 +115,14 @@ const Homepage = () => {
     const token = localStorage.getItem("token");
     try {
       // Use inputLobbyId from state
-      if (!inputLobbyId){
+      if (!inputLobbyId) {
         alert("Please enter lobby ID.");
+        
         return
       }
       //const lobbyId = prompt("Enter lobby ID: ");
       // API call to join a lobby by ID
-      const response = await api.post(`/lobbies/join/${inputLobbyId}`,{ token: token });
+      const response = await api.post(`/lobbies/join/${inputLobbyId}`, { token: token });
       localStorage.setItem("isHost", "false");
 
       // Navigate to the lobby
@@ -170,7 +171,7 @@ const Homepage = () => {
         top: 30,
         marginBottom: "30px",
       }}>
-        <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px"}} />
+        <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton sx={{ marginLeft: "auto" }} onClick={() => navigate("/game/instructions")}>Instructions</CustomButton>
         <CustomButton sx={{ marginLeft: "15px" }} onClick={logout}>Logout</CustomButton>
       </Box>
@@ -319,27 +320,27 @@ const Homepage = () => {
         </DialogActions>
       </Dialog>
       <Dialog open={openJoinLobbyDialog} onClose={() => setOpenJoinLobbyDialog(false)}>
-  <DialogTitle>Join a Lobby</DialogTitle>
-  <DialogContent>
-    <DialogContentText>
-      Enter the ID of the lobby you wish to join:
-    </DialogContentText>
-    <TextField
-      autoFocus
-      margin="dense"
-      id="lobbyId"
-      label="Lobby ID"
-      type="text"
-      fullWidth
-      value={inputLobbyId}
-      onChange={(e) => setInputLobbyId(e.target.value)}
-    />
-  </DialogContent>
-  <DialogActions>
-    <CustomButton onClick={() => setOpenJoinLobbyDialog(false)}>Cancel</CustomButton>
-    <CustomButton onClick={joinLobby}>Join</CustomButton>
-  </DialogActions>
-</Dialog>
+        <DialogTitle>Join a Lobby</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Enter the ID of the lobby you wish to join:
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="lobbyId"
+            label="Lobby ID"
+            type="text"
+            fullWidth
+            value={inputLobbyId}
+            onChange={(e) => setInputLobbyId(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <CustomButton onClick={() => setOpenJoinLobbyDialog(false)}>Cancel</CustomButton>
+          <CustomButton onClick={joinLobby}>Join</CustomButton>
+        </DialogActions>
+      </Dialog>
     </HomepageBackgroundImage>
   );
 };
