@@ -28,7 +28,7 @@ interface GameSettings {
   //categories: string[];
   maxRounds: number;
   votingDuration: number;
-  maxRoundsDuration: number;
+  inputDuration: number;
   scoreboardDuration: number;
   maxPlayers: number;
 }
@@ -54,7 +54,7 @@ const Lobby = () => {
     //categories: [],
     maxRounds: 10,
     votingDuration: 60,
-    maxRoundsDuration: 120,
+    inputDuration: 120,
     scoreboardDuration: 30,
     maxPlayers: 5,
   });
@@ -154,7 +154,7 @@ const Lobby = () => {
   const defaultSettings: GameSettings = {
     maxRounds: 10,
     votingDuration: 60,
-    maxRoundsDuration: 120,
+    inputDuration: 120,
     scoreboardDuration: 30,
     maxPlayers: 8,
   };
@@ -163,9 +163,11 @@ const Lobby = () => {
     // Create a local state for each TextField
     const [maxRounds, setMaxRounds] = useState(settings.maxRounds);
     const [votingDuration, setVotingDuration] = useState(settings.votingDuration);
-    const [maxRoundsDuration, setMaxRoundsDuration] = useState(settings.maxRoundsDuration);
+    const [inputDuration, setInputDuration] = useState(settings.inputDuration);
     const [scoreboardDuration, setScoreboardDuration] = useState(settings.scoreboardDuration);
     const [maxPlayers, setMaxPlayers] = useState(settings.maxPlayers);
+    // Needed to temporarily store the changes before the player clicks 'Save'
+    //const [tempSettings, setTempSettings] = useState(settings);
 
     const handleInputChange = (e, setLocalState) => {
       const inputValue = e.target.value;
@@ -206,9 +208,9 @@ const Lobby = () => {
             />
             <TextField
               label="Duration of a round (seconds)"
-              value={maxRoundsDuration}
-              onChange={(e) => handleInputChange(e, setMaxRoundsDuration)}
-              onBlur={(e) => handleInputBlur(e, 'maxRoundsDuration', maxRoundsDuration)}
+              value={inputDuration}
+              onChange={(e) => handleInputChange(e, setInputDuration)}
+              onBlur={(e) => handleInputBlur(e, 'inputDuration', inputDuration)}
             />
             <TextField
               label="Duration to view scoreboard (seconds)"
@@ -229,7 +231,7 @@ const Lobby = () => {
             {/*<Typography>Categories: {settings.categories.join(", ")}</Typography> */}
             <Typography>Max Rounds: {settings.maxRounds}</Typography>
             <Typography>Voting Duration (seconds): {settings.votingDuration}</Typography>
-            <Typography>Duration of a round (seconds): {settings.maxRoundsDuration}</Typography>
+            <Typography>Duration of a round (seconds): {settings.inputDuration}</Typography>
             <Typography>Duration to view scoreboard (seconds): {settings.scoreboardDuration}</Typography>
             <Typography>Max number of players (seconds): {settings.maxPlayers}</Typography>
           </>
