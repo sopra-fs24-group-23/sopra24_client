@@ -4,20 +4,39 @@ import { Spinner } from "../ui/Spinner";
 import PlayerList from "../ui/PlayerList";
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, TextField, Typography, List, ListItem, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Typography,
+  List,
+  ListItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+} from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
-import { Message } from "@stomp/stompjs"
-import Player from "../../models/Player";
+import { Message } from "@stomp/stompjs";
+import User from "../../models/User";
+import { api } from "helpers/api";
+
+interface GameSettings {
+  //categories: string[];
+  maxRounds: number;
+  votingDuration: number;
+  maxRoundsDuration: number;
+  scoreboardDuration: number;
+  maxPlayers: number;
+}
 
 interface GameSettingsProps {
   isHost: boolean;
-  settings: {
-    setting1: string;
-  };
-  onSettingsChange: (newSettings: { setting1: string }) => void;
+  settings: GameSettings;
+  onSettingsChange: (newSettings: GameSettings) => void;
 }
 
 const Lobby = () => {
@@ -29,17 +48,20 @@ const Lobby = () => {
   const handleOpenGameSettings = () => setOpenGameSettings(true);
   const handleCloseGameSettings = () => setOpenGameSettings(false);
   const [isHost, setIsHost] = useState(false);
-  //const [lobbyCode, setLobbyCode] = useState("testCode");
-  //const {lobbyCode} = useParams();
   const [lobbyCode, setLobbyCode] = useState("");
   const { lobbyId } = useParams();
-  const [settings, setSettings] = useState({
-    setting1: "Example setting value",
+  const [settings, setSettings] = useState<GameSettings>({
+    //categories: [],
+    maxRounds: 10,
+    votingDuration: 60,
+    maxRoundsDuration: 120,
+    scoreboardDuration: 30,
+    maxPlayers: 5,
   });
 
   /** Consuming Websocket Context
    * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
-  const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext)
+  const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
 
   /** On component Mount/Unmount**/
   useEffect(() => {
@@ -51,27 +73,37 @@ const Lobby = () => {
   // This useEffect is triggered as soon as the lobbyId param is set (or if it changes)
   // It checks that the lobbyId is not null, then calls functions from above (see line40)
   useEffect(() => {
-    console.log("LOBBY ID CHANGED: " + lobbyId)
+    console.log("LOBBY ID CHANGED: " + lobbyId);
     if (lobbyId) {
       connect(lobbyId).then(() => {
+        // subscribe to game settings updates
+        subscribeClient(
+          `/topic/lobbies/${lobbyId}/settings`,
+          (message: Message) => {
+            console.log("Received settings update:", message.body);
+            const receivedSettings = JSON.parse(message.body);
+            setSettings(receivedSettings);
+          },
+        );
         // subscribe to playerList updates
         subscribeClient(
           `/topic/lobbies/${lobbyId}/players`,
           (message: Message) => {
-            const receivedPlayers = JSON.parse(message.body)
-            setPlayers(receivedPlayers)
-          }
-        )
+            const receivedPlayers = JSON.parse(message.body);
+            setPlayers(receivedPlayers);
+          },
+        );
         // join lobby
-        const token = localStorage.getItem("token")
-        send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }))
-      })
+        const token = localStorage.getItem("token");
+        send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }));
+      });
     }
     return () => {
-      unsubscribeClient(`/topic/lobbies/${lobbyId}/players`)
-      disconnect()
-    }
-  }, [lobbyId, connect, subscribeClient, unsubscribeClient])
+      unsubscribeClient(`/topic/lobbies/${lobbyId}/settings`);
+      unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
+      disconnect();
+    };
+  }, [lobbyId, settings, connect, subscribeClient, unsubscribeClient]);
 
   const handleIsHost = () => {
     // isHost will be set to true if true
@@ -92,8 +124,8 @@ const Lobby = () => {
   };
 
   const handleLeaveGame = () => {
-    navigate("/homepage")
-  }
+    navigate("/homepage");
+  };
 
   const handleCopyLobbyCode = () => {
     setLobbyCode(localStorage.getItem("lobbyCode"));
@@ -106,27 +138,107 @@ const Lobby = () => {
       });
   };
 
+  const handleSaveSettings = async () => {
+    try {
+      const requestBody = JSON.stringify(settings);
+
+      // Send a Websocket message to update the gamesettings
+      send(`/app/lobbies/${lobbyId}/settings`, requestBody);
+
+      handleCloseGameSettings();
+    } catch (error) {
+      console.error("Failed to update game settings:", error);
+    }
+  };
+
+  const defaultSettings: GameSettings = {
+    maxRounds: 10,
+    votingDuration: 60,
+    maxRoundsDuration: 120,
+    scoreboardDuration: 30,
+    maxPlayers: 8,
+  };
+
   const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
+    // Create a local state for each TextField
+    const [maxRounds, setMaxRounds] = useState(settings.maxRounds);
+    const [votingDuration, setVotingDuration] = useState(settings.votingDuration);
+    const [maxRoundsDuration, setMaxRoundsDuration] = useState(settings.maxRoundsDuration);
+    const [scoreboardDuration, setScoreboardDuration] = useState(settings.scoreboardDuration);
+    const [maxPlayers, setMaxPlayers] = useState(settings.maxPlayers);
+
+    const handleInputChange = (e, setLocalState) => {
+      const inputValue = e.target.value;
+      if (!isNaN(Number(inputValue))) {
+        setLocalState(inputValue === '' ? '' : parseInt(inputValue));
+      }
+    };
+
+    const handleInputBlur = (e, settingKey, localState) => {
+      if (localState === '') {
+        onSettingsChange({ ...settings, [settingKey]: defaultSettings[settingKey] });
+      } else {
+        onSettingsChange({ ...settings, [settingKey]: localState });
+      }
+    };
+
     return (
       <>
         {isHost ? (
-          // Render editable fields for the host
-          <TextField
-            label="Setting 1"
-            defaultValue={settings.setting1}
-            onChange={(e) => onSettingsChange({ ...settings, setting1: e.target.value })}
-          />
+          <>
+            {/*Render editable fields for the host*/}
+            {/*<TextField
+              label="Categories"
+              defaultValue={settings.categories.join(", ")}
+              onChange={(e) => onSettingsChange({ ...settings, categories: e.target.value.split(", ") })}
+            />*/}
+            <TextField
+              label="Max Rounds"
+              value={maxRounds}
+              onChange={(e) => handleInputChange(e, setMaxRounds)}
+              onBlur={(e) => handleInputBlur(e, 'maxRounds', maxRounds)}
+            />
+            <TextField
+              label="Voting Duration (seconds)"
+              value={votingDuration}
+              onChange={(e) => handleInputChange(e, setVotingDuration)}
+              onBlur={(e) => handleInputBlur(e, 'votingDuration', votingDuration)}
+            />
+            <TextField
+              label="Duration of a round (seconds)"
+              value={maxRoundsDuration}
+              onChange={(e) => handleInputChange(e, setMaxRoundsDuration)}
+              onBlur={(e) => handleInputBlur(e, 'maxRoundsDuration', maxRoundsDuration)}
+            />
+            <TextField
+              label="Duration to view scoreboard (seconds)"
+              value={scoreboardDuration}
+              onChange={(e) => handleInputChange(e, setScoreboardDuration)}
+              onBlur={(e) => handleInputBlur(e, 'scoreboardDuration', scoreboardDuration)}
+            />
+            <TextField
+              label="Max number of players"
+              value={maxPlayers}
+              onChange={(e) => handleInputChange(e, setMaxPlayers)}
+              onBlur={(e) => handleInputBlur(e, 'maxPlayers', maxPlayers)}
+            />
+          </>
         ) : (
-          // Render read-only info for other players
-          <Typography>Setting 1: {settings.setting1}</Typography>
+          <>
+            {/* Render read-only info for other players*/}
+            {/*<Typography>Categories: {settings.categories.join(", ")}</Typography> */}
+            <Typography>Max Rounds: {settings.maxRounds}</Typography>
+            <Typography>Voting Duration (seconds): {settings.votingDuration}</Typography>
+            <Typography>Duration of a round (seconds): {settings.maxRoundsDuration}</Typography>
+            <Typography>Duration to view scoreboard (seconds): {settings.scoreboardDuration}</Typography>
+            <Typography>Max number of players (seconds): {settings.maxPlayers}</Typography>
+          </>
         )}
-        {/* Repeat for other settings */}
       </>
     );
   };
 
   let content = <Spinner />;
-
   return (
     <BackgroundImageLobby>
       <Box sx={{
@@ -155,7 +267,8 @@ const Lobby = () => {
         top: 30,
         marginBottom: "30px",
       }}>
-        <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px"}} />
+        <img src="/Images/logo.png" alt="Descriptive Text"
+             style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton
           onClick={handleOpenDialog}
           sx={{
@@ -217,9 +330,10 @@ const Lobby = () => {
             <DialogTitle>Game Settings</DialogTitle>
             <DialogContent>
               {/* Conditionally render settings based on user role (host or not) */}
-              <GameSettings isHost={isHost} settings={settings} onSettingsChange={onSettingsChange} />
+              <GameSettings isHost={isHost} settings={settings} onSettingsChange={setSettings} />
             </DialogContent>
             <DialogActions>
+              {isHost && <CustomButton onClick={handleSaveSettings}>Save</CustomButton>}
               <CustomButton onClick={handleCloseGameSettings}>Close</CustomButton>
             </DialogActions>
           </Dialog>
@@ -244,13 +358,13 @@ const Lobby = () => {
           top: isHost ? "-3%" : "10px",
         }}>
           <Typography variant="h4" gutterBottom
-            sx={{
-              fontFamily: "Londrina Solid",
-              textAlign: "center",
-            }}>
+                      sx={{
+                        fontFamily: "Londrina Solid",
+                        textAlign: "center",
+                      }}>
             Players
           </Typography>
-          <PlayerList players={players}/>
+          <PlayerList players={players} />
         </Box>
         {/* Inner box for Lobby Code if isHost is true*/}
         {isHost && (
@@ -274,12 +388,12 @@ const Lobby = () => {
           }}>
             {/* Lobby Code */}
             <Typography variant="h6" gutterBottom
-              sx={{
-                fontFamily: "Londrina Solid",
-                textAlign: "center",
-                position: "relative",
-                top: "30%",
-              }}>
+                        sx={{
+                          fontFamily: "Londrina Solid",
+                          textAlign: "center",
+                          position: "relative",
+                          top: "30%",
+                        }}>
               INVITE A FRIEND!
             </Typography>
             <Box sx={{
@@ -289,12 +403,12 @@ const Lobby = () => {
               width: "100%",
             }}>
               <Typography variant="body1" gutterBottom
-                sx={{
-                  fontFamily: "Courier New",
-                  textAlign: "center",
-                  position: "relative",
-                  top: "-10%",
-                }}>
+                          sx={{
+                            fontFamily: "Courier New",
+                            textAlign: "center",
+                            position: "relative",
+                            top: "-10%",
+                          }}>
                 {lobbyCode}
               </Typography>
               <Box sx={{
