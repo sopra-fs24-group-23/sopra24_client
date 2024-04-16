@@ -4,19 +4,39 @@ import { Spinner } from "../ui/Spinner";
 import PlayerList from "../ui/PlayerList";
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, TextField, Typography, List, ListItem, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Typography,
+  List,
+  ListItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+} from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
-import { Message } from "@stomp/stompjs"
+import { Message } from "@stomp/stompjs";
+import User from "../../models/User";
+import { api } from "helpers/api";
+
+interface GameSettings {
+  //categories: string[];
+  maxRounds: number;
+  votingDuration: number;
+  inputDuration: number;
+  scoreboardDuration: number;
+  maxPlayers: number;
+}
 
 interface GameSettingsProps {
   isHost: boolean;
-  settings: {
-    setting1: string;
-  };
-  onSettingsChange: (newSettings: { setting1: string }) => void;
+  settings: GameSettings;
+  onSettingsChange: (newSettings: GameSettings) => void;
 }
 
 const Lobby = () => {
@@ -28,17 +48,19 @@ const Lobby = () => {
   const handleOpenGameSettings = () => setOpenGameSettings(true);
   const handleCloseGameSettings = () => setOpenGameSettings(false);
   const [isHost, setIsHost] = useState(false);
-  //const [lobbyCode, setLobbyCode] = useState("testCode");
-  //const {lobbyCode} = useParams();
-  const [lobbyCode, setLobbyCode] = useState("");
   const { lobbyId } = useParams();
-  const [settings, setSettings] = useState({
-    setting1: "Example setting value",
+  const [settings, setSettings] = useState<GameSettings>({
+    //categories: [],
+    maxRounds: 10,
+    votingDuration: 60,
+    inputDuration: 120,
+    scoreboardDuration: 30,
+    maxPlayers: 5,
   });
 
   /** Consuming Websocket Context
    * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
-  const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext)
+  const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
 
   /** On component Mount/Unmount**/
   useEffect(() => {
@@ -50,50 +72,45 @@ const Lobby = () => {
   // This useEffect is triggered as soon as the lobbyId param is set (or if it changes)
   // It checks that the lobbyId is not null, then calls functions from above (see line40)
   useEffect(() => {
-   // console.log("LOBBY ID CHANGED: " + lobbyId)
-    //if (lobbyId) {
+    console.log("LOBBY ID CHANGED: " + lobbyId);
+    if (lobbyId) {
       connect(lobbyId).then(() => {
+        // subscribe to game settings updates
+        subscribeClient(
+          `/topic/lobbies/${lobbyId}/settings`,
+          (message: Message) => {
+            console.log("Received settings update:", message.body);
+            const receivedSettings = JSON.parse(message.body);
+            setSettings(receivedSettings);
+          },
+        );
         // subscribe to playerList updates
         subscribeClient(
           `/topic/lobbies/${lobbyId}/players`,
           (message: Message) => {
-            const receivedPlayers = JSON.parse(message.body)
-            setPlayers(receivedPlayers)
-          }
-        )
+            console.log(`Received Playerlist update: ${message.body}`)
+            const receivedPlayers = JSON.parse(message.body);
+            setPlayers(receivedPlayers);
+          },
+        );
         // join lobby
-        const token = localStorage.getItem("token")
-        send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }))
-      })
-   // }
-    return () => {
-      unsubscribeClient(`/topic/lobbies/${lobbyId}/players`)
-      disconnect()
+        const token = localStorage.getItem("token");
+        send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }));
+      });
     }
-  }, [ connect, subscribeClient, unsubscribeClient])
+
+    return () => {
+      unsubscribeClient(`/topic/lobbies/${lobbyId}/settings`);
+      unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
+      disconnect();
+    };
+  }, [lobbyId, settings, connect, subscribeClient, unsubscribeClient]);
 
   const handleIsHost = () => {
     // isHost will be set to true if true
     setIsHost(localStorage.getItem("isHost") === "true");
     console.log(isHost);
   };
-  useEffect(() => {
-    if (players) {
-      const connectAndSubscribe = async () => {
-        await connect(lobbyId);
-        subscribeClient(`/topic/lobbies/${lobbyId}/players`, (message) => {
-          const updatedPlayers = JSON.parse(message.body);
-          setPlayers(updatedPlayers); // Update your state with the new list
-        });
-      };
-      connectAndSubscribe();
-
-      return () => {
-        unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
-        disconnect();
-      };
-    }
-  }, [lobbyId, connect, subscribeClient, unsubscribeClient]);
 
   const onSettingsChange = (newSettings) => {
     setSettings(newSettings);
@@ -108,21 +125,11 @@ const Lobby = () => {
   };
 
   const handleLeaveGame = () => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }))
-      navigate("/homepage") // Redirect after sending the leave message
-    } else {
-      console.error("No token found. Please log in again.");
-      navigate("/login"); // Redirect to login if no token is found
-    }
+    navigate("/homepage");
   };
 
-
-
   const handleCopyLobbyCode = () => {
-    setLobbyCode(localStorage.getItem("lobbyCode"));
-    navigator.clipboard.writeText(lobbyCode)
+    navigator.clipboard.writeText(localStorage.getItem("lobbyCode"))
       .then(() => {
         console.log("Lobby code copied to clipboard");
       })
@@ -131,27 +138,114 @@ const Lobby = () => {
       });
   };
 
+  const defaultSettings: GameSettings = {
+    maxRounds: 10,
+    votingDuration: 60,
+    inputDuration: 120,
+    scoreboardDuration: 30,
+    maxPlayers: 8,
+  };
+
   const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
+    // Create a local state for each TextField
+    //const [maxRounds, setMaxRounds] = useState(settings.maxRounds);
+    //const [votingDuration, setVotingDuration] = useState(settings.votingDuration);
+    //const [inputDuration, setInputDuration] = useState(settings.inputDuration);
+    //const [scoreboardDuration, setScoreboardDuration] = useState(settings.scoreboardDuration);
+    // const [maxPlayers, setMaxPlayers] = useState(settings.maxPlayers);
+    // Needed to temporarily store the changes before the player clicks 'Save'
+    const [tempSettings, setTempSettings] = useState(settings);
+
+    const handleInputChange = (e, settingKey) => {
+      const inputValue = e.target.value;
+      if (!isNaN(Number(inputValue))) {
+        setTempSettings({ ...tempSettings, [settingKey]: inputValue === "" ? "" : parseInt(inputValue) });
+      }
+    };
+
+    const handleSaveSettings = async () => {
+      try {
+        // Update the local state
+        onSettingsChange(tempSettings);
+
+        // Send the updated settings to the server
+        const requestBody = JSON.stringify(tempSettings);
+        // Send a Websocket message to update the gamesettings
+        send(`/app/lobbies/${lobbyId}/settings`, requestBody);
+
+        handleCloseGameSettings();
+      } catch (error) {
+        console.error("Failed to update game settings:", error);
+      }
+    };
+
+    const handleCloseSettings = () => {
+      // Discard the temporary state
+      setTempSettings(settings);
+
+      handleCloseGameSettings();
+    };
+
     return (
       <>
         {isHost ? (
-          // Render editable fields for the host
-          <TextField
-            label="Setting 1"
-            defaultValue={settings.setting1}
-            onChange={(e) => onSettingsChange({ ...settings, setting1: e.target.value })}
-          />
+          <>
+            {/*Render editable fields for the host*/}
+            {/*<TextField
+              label="Categories"
+              defaultValue={settings.categories.join(", ")}
+              onChange={(e) => onSettingsChange({ ...settings, categories: e.target.value.split(", ") })}
+            />*/}
+            <TextField
+              label="Max Rounds"
+              value={tempSettings.maxRounds}
+              onChange={(e) => handleInputChange(e, "maxRounds")}
+            //onBlur={(e) => handleInputBlur(e, 'maxRounds', tempSettings.maxRounds)}
+            />
+            <TextField
+              label="Voting Duration (seconds)"
+              value={tempSettings.votingDuration}
+              onChange={(e) => handleInputChange(e, "votingDuration")}
+            //onBlur={(e) => handleInputBlur(e, 'votingDuration', tempSettings.votingDuration)}
+            />
+            <TextField
+              label="Duration of a round (seconds)"
+              value={tempSettings.inputDuration}
+              onChange={(e) => handleInputChange(e, "inputDuration")}
+            //onBlur={(e) => handleInputBlur(e, 'inputDuration', tempSettings.inputDuration)}
+            />
+            <TextField
+              label="Duration to view scoreboard (seconds)"
+              value={tempSettings.scoreboardDuration}
+              onChange={(e) => handleInputChange(e, "scoreboardDuration")}
+            //onBlur={(e) => handleInputBlur(e, 'scoreboardDuration', tempSettings.scoreboardDuration)}
+            />
+            <TextField
+              label="Max number of players"
+              value={tempSettings.maxPlayers}
+              onChange={(e) => handleInputChange(e, "maxPlayers")}
+            //onBlur={(e) => handleInputBlur(e, 'maxPlayers', tempSettings.maxPlayers)}
+            />
+            <CustomButton onClick={handleSaveSettings}>Save</CustomButton>
+          </>
         ) : (
-          // Render read-only info for other players
-          <Typography>Setting 1: {settings.setting1}</Typography>
+          <>
+            {/* Render read-only info for other players*/}
+            {/*<Typography>Categories: {settings.categories.join(", ")}</Typography> */}
+            <Typography>Max Rounds: {settings.maxRounds}</Typography>
+            <Typography>Voting Duration (seconds): {settings.votingDuration}</Typography>
+            <Typography>Duration of a round (seconds): {settings.inputDuration}</Typography>
+            <Typography>Duration to view scoreboard (seconds): {settings.scoreboardDuration}</Typography>
+            <Typography>Max number of players (seconds): {settings.maxPlayers}</Typography>
+          </>
         )}
-        {/* Repeat for other settings */}
+        <CustomButton onClick={handleCloseSettings}>Close</CustomButton>
       </>
     );
   };
 
   let content = <Spinner />;
-
+  
   return (
     <BackgroundImageLobby>
       <Box sx={{
@@ -180,7 +274,8 @@ const Lobby = () => {
         top: 30,
         marginBottom: "30px",
       }}>
-        <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px"}} />
+        <img src="/Images/logo.png" alt="Descriptive Text"
+          style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton
           onClick={handleOpenDialog}
           sx={{
@@ -242,11 +337,8 @@ const Lobby = () => {
             <DialogTitle>Game Settings</DialogTitle>
             <DialogContent>
               {/* Conditionally render settings based on user role (host or not) */}
-              <GameSettings isHost={isHost} settings={settings} onSettingsChange={onSettingsChange} />
+              <GameSettings isHost={isHost} settings={settings} onSettingsChange={setSettings} />
             </DialogContent>
-            <DialogActions>
-              <CustomButton onClick={handleCloseGameSettings}>Close</CustomButton>
-            </DialogActions>
           </Dialog>
         </Box>
         {/*
@@ -275,7 +367,7 @@ const Lobby = () => {
             }}>
             Players
           </Typography>
-          <PlayerList players={players}/>
+          <PlayerList players={players} />
         </Box>
         {/* Inner box for Lobby Code if isHost is true*/}
         {isHost && (
@@ -320,7 +412,6 @@ const Lobby = () => {
                   position: "relative",
                   top: "-10%",
                 }}>
-                {lobbyCode}
               </Typography>
               <Box sx={{
                 position: "relative",
