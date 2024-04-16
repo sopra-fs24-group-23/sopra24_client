@@ -117,14 +117,8 @@ const Homepage = () => {
       // Use inputLobbyId from state
       if (!inputLobbyId) {
         alert("Please enter lobby ID.");
-        
         return
       }
-      //const lobbyId = prompt("Enter lobby ID: ");
-      // API call to join a lobby by ID
-      const response = await api.post(`/lobbies/join/${inputLobbyId}`, { token: token });
-      localStorage.setItem("isHost", "false");
-
       // Navigate to the lobby
       navigate(`/lobbies/${inputLobbyId}`);
     } catch (error) {
