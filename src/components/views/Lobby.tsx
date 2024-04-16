@@ -48,7 +48,6 @@ const Lobby = () => {
   const handleOpenGameSettings = () => setOpenGameSettings(true);
   const handleCloseGameSettings = () => setOpenGameSettings(false);
   const [isHost, setIsHost] = useState(false);
-  const [lobbyCode, setLobbyCode] = useState("");
   const { lobbyId } = useParams();
   const [settings, setSettings] = useState<GameSettings>({
     //categories: [],
@@ -89,6 +88,7 @@ const Lobby = () => {
         subscribeClient(
           `/topic/lobbies/${lobbyId}/players`,
           (message: Message) => {
+            console.log(`Received Playerlist update: ${message.body}`)
             const receivedPlayers = JSON.parse(message.body);
             setPlayers(receivedPlayers);
           },
@@ -129,8 +129,7 @@ const Lobby = () => {
   };
 
   const handleCopyLobbyCode = () => {
-    setLobbyCode(localStorage.getItem("lobbyCode"));
-    navigator.clipboard.writeText(lobbyCode)
+    navigator.clipboard.writeText(localStorage.getItem("lobbyCode"))
       .then(() => {
         console.log("Lobby code copied to clipboard");
       })
@@ -413,7 +412,6 @@ const Lobby = () => {
                   position: "relative",
                   top: "-10%",
                 }}>
-                {lobbyCode}
               </Typography>
               <Box sx={{
                 position: "relative",
