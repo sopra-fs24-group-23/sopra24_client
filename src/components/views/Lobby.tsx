@@ -346,8 +346,7 @@ const Lobby = () => {
         </Box>
         {/*
         <CustomButton onClick={() => navigate(`/lobbies/${response.data.id}`)}>
-            Instructions
-    </CustomButton> */}
+            Instructions </CustomButton> */}
         {/* Inner box for player list*/}
         <Box sx={{
           backgroundColor: "#e0e0e0",
@@ -427,6 +426,13 @@ const Lobby = () => {
             </Box>
           </Box>
         )}
+        <Box sx={{
+          display: "flex",
+          position: "relative",
+          bottom: "1%",
+        }}>
+          <CustomButton>Start Game</CustomButton>
+      </Box>
       </Box>
     </BackgroundImageLobby>
   );
