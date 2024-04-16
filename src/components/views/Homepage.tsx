@@ -112,15 +112,18 @@ const Homepage = () => {
   }
 
   const joinLobby = async () => {
-    const token = localStorage.getItem("token");
     try {
-      // Use inputLobbyId from state
+
       if (!inputLobbyId) {
         alert("Please enter lobby ID.");
         return
       }
-      // Navigate to the lobby
-      navigate(`/lobbies/${inputLobbyId}`);
+
+      // check that the lobby-id is valid, then navigate to lobby
+      await api.get(`/lobbies/${inputLobbyId}`).then(() => {
+        navigate(`/lobbies/${inputLobbyId}`)
+      })
+
     } catch (error) {
       console.error(`Joining lobby failed: ${error}`);
       alert("Failed to join lobby. Please check the lobby ID and try again.");
