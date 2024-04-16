@@ -15,17 +15,18 @@ import User from "../../../models/User";
  * @param props
  */
 export const GameGuard = () => {
-  const { setUser } = useContext(UserContext)
+  const { user, setUser } = useContext(UserContext)
   const token = localStorage.getItem("token")
   const id = localStorage.getItem("id")
 
-  const fetchUser = async () => {
-    console.log("Fetching user from gameguard")
-    const response = api.get("/users/" + id);
-    setUser(new User(response.data))
-  }
   useEffect(() => {
-    if (token && id) {
+    if (token && id && user === null) {
+      const fetchUser = async () => {
+        console.log("Setting user from GameGuard")
+        const response = api.get("/users/" + id);
+        setUser(new User(response.data))
+      }
+
       fetchUser()
     }
   }, [token, id])
