@@ -100,29 +100,14 @@ const Lobby = () => {
     }
 
     return () => {
+      const token = localStorage.getItem("token");
+      send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
       unsubscribeClient(`/topic/lobbies/${lobbyId}/settings`);
       unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
       disconnect();
     };
   }, [lobbyId, settings, connect, subscribeClient, unsubscribeClient]);
 
-  useEffect(() => { //Min versuech playerlist zrendere nachdem en player dlobby verlah het, funktioniert ned
-    if (players) {
-      const connectAndSubscribe = async () => {
-        await connect(lobbyId);
-        subscribeClient(`/topic/lobbies/${lobbyId}/players`, (message) => {
-          const updatedPlayers = JSON.parse(message.body);
-          setPlayers(updatedPlayers); // Update your state with the new list
-        });
-      };
-      connectAndSubscribe();
-
-      return () => {
-        unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
-        disconnect();
-      };
-    }
-  }, [lobbyId, connect, subscribeClient, unsubscribeClient]);
 
   const handleIsHost = () => {
     // isHost will be set to true if true
@@ -143,14 +128,7 @@ const Lobby = () => {
   };
 
   const handleLeaveGame = () => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }))
-      navigate("/homepage") // Redirect after sending the leave message
-    } else {
-      console.error("No token found. Please log in again.");
-      navigate("/login"); // Redirect to login if no token is found
-    }
+    navigate("/homepage")
   };
 
   const handleCopyLobbyCode = () => {
