@@ -2,6 +2,8 @@ import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
 import React, { useState, useEffect, useContext } from "react";
 import { Spinner } from "../ui/Spinner";
 import PlayerList from "../ui/PlayerList";
+import CloseIcon from '@mui/icons-material/Close'; // Import close icon for the button
+
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -84,6 +86,7 @@ const Lobby = () => {
             setSettings(receivedSettings);
           },
         );
+
         // subscribe to playerList updates
         subscribeClient(
           `/topic/lobbies/${lobbyId}/players`,
@@ -93,6 +96,14 @@ const Lobby = () => {
             setPlayers(receivedPlayers);
           },
         );
+        subscribeClient(
+          `/topic/queue/kick`, (message: Message) => {
+            console.log(`Player kicked!: ${message.body}`)
+
+            if (message.body === 'redirect') {
+            navigate('/homepage'); // Redirect to homepage if kicked
+          }
+        });
         // join lobby
         const token = localStorage.getItem("token");
         send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }));
@@ -103,6 +114,7 @@ const Lobby = () => {
       const token = localStorage.getItem("token");
       send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
       unsubscribeClient(`/topic/lobbies/${lobbyId}/settings`);
+      unsubscribeClient(`/topic/queue/kick`);
       unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
       disconnect();
     };
@@ -139,6 +151,12 @@ const Lobby = () => {
       .catch((error) => {
         console.error("Failed to copy lobby code to clipboard:", error);
       });
+  };
+  const kickPlayer = (usernameToKick) => {
+    const token = localStorage.getItem("token");
+    if (token && isHost) { // Make sure only the host can kick players
+      send(`/app/lobbies/${lobbyId}/kick/${usernameToKick}`, JSON.stringify({ token }));
+    }
   };
 
   const defaultSettings: GameSettings = {
@@ -188,6 +206,7 @@ const Lobby = () => {
 
       handleCloseGameSettings();
     };
+
 
     return (
       <>
@@ -248,7 +267,7 @@ const Lobby = () => {
   };
 
   let content = <Spinner />;
-  
+
   return (
     <BackgroundImageLobby>
       <Box sx={{
@@ -364,14 +383,26 @@ const Lobby = () => {
           top: isHost ? "-3%" : "10px",
         }}>
           <Typography variant="h4" gutterBottom
-            sx={{
-              fontFamily: "Londrina Solid",
-              textAlign: "center",
-            }}>
+                      sx={{
+                        fontFamily: "Londrina Solid",
+                        textAlign: "center",
+                      }}>
             Players
           </Typography>
-          <PlayerList players={players} />
+          <List sx={{ width: "100%" }}>
+            {players.map((player, index) => (
+              <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                {player.username}
+                {isHost && player.username !== localStorage.getItem('username') && ( // Assuming the current user's username is stored
+                  <IconButton onClick={() => kickPlayer(player.username)} size="small">
+                    <CloseIcon />
+                  </IconButton>
+                )}
+              </ListItem>
+            ))}
+          </List>
         </Box>
+
         {/* Inner box for Lobby Code if isHost is true*/}
         {isHost && (
           <Box sx={{
@@ -431,5 +462,6 @@ const Lobby = () => {
     </BackgroundImageLobby>
   );
 };
+
 
 export default Lobby;
