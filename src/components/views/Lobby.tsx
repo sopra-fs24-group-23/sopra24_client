@@ -431,7 +431,7 @@ const Lobby = () => {
           position: "relative",
           bottom: "1%",
         }}>
-          <CustomButton>Start Game</CustomButton>
+          {isHost && <CustomButton disabled={players.length < 2}>Start Game</CustomButton>}
       </Box>
       </Box>
     </BackgroundImageLobby>
