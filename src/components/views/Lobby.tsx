@@ -10,7 +10,6 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs"
-import Player from "../../models/Player";
 
 interface GameSettingsProps {
   isHost: boolean;
@@ -51,8 +50,8 @@ const Lobby = () => {
   // This useEffect is triggered as soon as the lobbyId param is set (or if it changes)
   // It checks that the lobbyId is not null, then calls functions from above (see line40)
   useEffect(() => {
-    console.log("LOBBY ID CHANGED: " + lobbyId)
-    if (lobbyId) {
+   // console.log("LOBBY ID CHANGED: " + lobbyId)
+    //if (lobbyId) {
       connect(lobbyId).then(() => {
         // subscribe to playerList updates
         subscribeClient(
@@ -66,18 +65,35 @@ const Lobby = () => {
         const token = localStorage.getItem("token")
         send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }))
       })
-    }
+   // }
     return () => {
       unsubscribeClient(`/topic/lobbies/${lobbyId}/players`)
       disconnect()
     }
-  }, [lobbyId, connect, subscribeClient, unsubscribeClient])
+  }, [ connect, subscribeClient, unsubscribeClient])
 
   const handleIsHost = () => {
     // isHost will be set to true if true
     setIsHost(localStorage.getItem("isHost") === "true");
     console.log(isHost);
   };
+  useEffect(() => {
+    if (players) {
+      const connectAndSubscribe = async () => {
+        await connect(lobbyId);
+        subscribeClient(`/topic/lobbies/${lobbyId}/players`, (message) => {
+          const updatedPlayers = JSON.parse(message.body);
+          setPlayers(updatedPlayers); // Update your state with the new list
+        });
+      };
+      connectAndSubscribe();
+
+      return () => {
+        unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
+        disconnect();
+      };
+    }
+  }, [lobbyId, connect, subscribeClient, unsubscribeClient]);
 
   const onSettingsChange = (newSettings) => {
     setSettings(newSettings);
@@ -92,8 +108,17 @@ const Lobby = () => {
   };
 
   const handleLeaveGame = () => {
-    navigate("/homepage")
-  }
+    const token = localStorage.getItem("token");
+    if (token) {
+      send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }))
+      navigate("/homepage") // Redirect after sending the leave message
+    } else {
+      console.error("No token found. Please log in again.");
+      navigate("/login"); // Redirect to login if no token is found
+    }
+  };
+
+
 
   const handleCopyLobbyCode = () => {
     setLobbyCode(localStorage.getItem("lobbyCode"));
