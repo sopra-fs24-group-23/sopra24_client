@@ -139,6 +139,16 @@ const Lobby = () => {
     setOpenLeaveDialog(false);
   };
 
+  const handleStartGame = async () => {
+    try {
+      // Assuming you have a function to send WebSocket messages
+      // Replace `lobbyId` with your actual lobby ID variable
+      send(`/app/lobbies/${lobbyId}/startGame`, {});
+    } catch (error) {
+      console.error("Failed to start the game:", error);
+    }
+  };
+
   const handleLeaveGame = () => {
     navigate("/homepage")
   };
@@ -365,8 +375,7 @@ const Lobby = () => {
         </Box>
         {/*
         <CustomButton onClick={() => navigate(`/lobbies/${response.data.id}`)}>
-            Instructions
-    </CustomButton> */}
+            Instructions </CustomButton> */}
         {/* Inner box for player list*/}
         <Box sx={{
           backgroundColor: "#e0e0e0",
@@ -458,6 +467,13 @@ const Lobby = () => {
             </Box>
           </Box>
         )}
+        <Box sx={{
+          display: "flex",
+          position: "relative",
+          bottom: "1%",
+        }}>
+          {isHost && <CustomButton onClick={handleStartGame} disabled={players.length < 2}>Start Game</CustomButton>}
+      </Box>
       </Box>
     </BackgroundImageLobby>
   );
