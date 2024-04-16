@@ -127,6 +127,16 @@ const Lobby = () => {
     setOpenLeaveDialog(false);
   };
 
+  const handleStartGame = async () => {
+    try {
+      // Assuming you have a function to send WebSocket messages
+      // Replace `lobbyId` with your actual lobby ID variable
+      send(`/app/lobbies/${lobbyId}/startGame`, {});
+    } catch (error) {
+      console.error("Failed to start the game:", error);
+    }
+  };
+
   const handleLeaveGame = () => {
     navigate("/homepage")
   };
@@ -431,7 +441,7 @@ const Lobby = () => {
           position: "relative",
           bottom: "1%",
         }}>
-          <CustomButton>Start Game</CustomButton>
+          <CustomButton onClick={handleStartGame}>Start Game</CustomButton>
       </Box>
       </Box>
     </BackgroundImageLobby>
