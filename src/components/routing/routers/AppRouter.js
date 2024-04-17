@@ -44,6 +44,11 @@ const AppRouter = () => {
           <Navigate to="/login" replace />
         }/>
 
+        {/* Catch-all route if path doesn't match any of the above. */}
+        <Route path={"/*"} element={
+          <Navigate to="/login" replace />
+        }/>
+
       </Routes>
     </BrowserRouter>
   );
