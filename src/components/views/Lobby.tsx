@@ -15,6 +15,12 @@ import {
   DialogContent,
   DialogTitle,
   DialogContentText,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  FormControl,
+  InputLabel,
+  Grid,
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -24,7 +30,7 @@ import { Message } from "@stomp/stompjs";
 import UserContext from "../../contexts/UserContext";
 
 interface GameSettings {
-  //categories: string[];
+  categories: string[];
   maxRounds: number;
   votingDuration: number;
   inputDuration: number;
@@ -50,12 +56,12 @@ const Lobby = () => {
   const { lobbyId } = useParams();
   const { user } = useContext(UserContext);
   const [settings, setSettings] = useState<GameSettings>({
-    //categories: [],
-    maxRounds: 10,
-    votingDuration: 60,
-    inputDuration: 120,
+    categories: ["Country", "City"],
+    maxRounds: 5,
+    votingDuration: 30,
+    inputDuration: 60,
     scoreboardDuration: 30,
-    maxPlayers: 5,
+    maxPlayers: 4,
   });
 
   /** Consuming Websocket Context
@@ -159,38 +165,35 @@ const Lobby = () => {
     }
   };
 
-  const defaultSettings: GameSettings = {
-    maxRounds: 10,
-    votingDuration: 60,
-    inputDuration: 120,
-    scoreboardDuration: 30,
-    maxPlayers: 8,
-  };
-
   const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
-    // Create a local state for each TextField
-    //const [maxRounds, setMaxRounds] = useState(settings.maxRounds);
-    //const [votingDuration, setVotingDuration] = useState(settings.votingDuration);
-    //const [inputDuration, setInputDuration] = useState(settings.inputDuration);
-    //const [scoreboardDuration, setScoreboardDuration] = useState(settings.scoreboardDuration);
-    // const [maxPlayers, setMaxPlayers] = useState(settings.maxPlayers);
-    // Needed to temporarily store the changes before the player clicks 'Save'
+    // Needed to temporarily store changes. So changes are only saved when user clicks 'Save'
     const [tempSettings, setTempSettings] = useState(settings);
-
+    const initialCategories = settings.categories && settings.categories.length > 0 ? settings.categories : ["Country", "City"];
+    const [tempCategories, setTempCategories] = useState<string[]>(initialCategories);
     const handleInputChange = (e, settingKey) => {
       const inputValue = e.target.value;
       if (!isNaN(Number(inputValue))) {
         setTempSettings({ ...tempSettings, [settingKey]: inputValue === "" ? "" : parseInt(inputValue) });
       }
     };
+    const handleCategoryChange = (event: SelectChangeEvent<string[]>) => {
+      let newCategories = event.target.value as string[];
+      // If new category is empty, set it to the default categories
+      if (newCategories.length === 0) {
+        newCategories = ["Country", "City"];
+      }
+      setTempCategories(newCategories);
+    };
 
     const handleSaveSettings = async () => {
       try {
         // Update the local state
-        onSettingsChange(tempSettings);
+        const newSettings ={ ...tempSettings, categories: tempCategories };
+        onSettingsChange(newSettings);
+        setSettings(newSettings);
 
         // Send the updated settings to the server
-        const requestBody = JSON.stringify(tempSettings);
+        const requestBody = JSON.stringify(newSettings);
         // Send a Websocket message to update the gamesettings
         send(`/app/lobbies/${lobbyId}/settings`, requestBody);
 
@@ -203,53 +206,70 @@ const Lobby = () => {
     const handleCloseSettings = () => {
       // Discard the temporary state
       setTempSettings(settings);
+      setTempCategories(settings.categories);
 
       handleCloseGameSettings();
     };
 
-
     return (
       <>
         {isHost ? (
-          <>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
             {/*Render editable fields for the host*/}
-            {/*<TextField
-              label="Categories"
-              defaultValue={settings.categories.join(", ")}
-              onChange={(e) => onSettingsChange({ ...settings, categories: e.target.value.split(", ") })}
-            />*/}
+              {/*Categories Dropdown*/}
+            <FormControl sx={{ minWidth: 300}}>
+              <InputLabel>Categories</InputLabel>
+            <Select
+              multiple
+              value={tempCategories || []}
+              onChange={handleCategoryChange}
+              renderValue={(selected) => (selected as string[]).join(", ")}
+              >
+              <MenuItem value={"City"}>City</MenuItem>
+              <MenuItem value={"Country"}>Country</MenuItem>
+            </Select>
+            </FormControl>
+            </Grid>
+            <Grid item xs={6}>
             <TextField
               label="Max Rounds"
               value={tempSettings.maxRounds}
               onChange={(e) => handleInputChange(e, "maxRounds")}
-            //onBlur={(e) => handleInputBlur(e, 'maxRounds', tempSettings.maxRounds)}
             />
+            </Grid>
+            <Grid item xs={6}>
             <TextField
               label="Voting Duration (seconds)"
               value={tempSettings.votingDuration}
               onChange={(e) => handleInputChange(e, "votingDuration")}
-            //onBlur={(e) => handleInputBlur(e, 'votingDuration', tempSettings.votingDuration)}
             />
+            </Grid>
+            <Grid item xs={6}>
             <TextField
               label="Duration of a round (seconds)"
               value={tempSettings.inputDuration}
               onChange={(e) => handleInputChange(e, "inputDuration")}
-            //onBlur={(e) => handleInputBlur(e, 'inputDuration', tempSettings.inputDuration)}
             />
+            </Grid>
+            <Grid item xs={6}>
             <TextField
               label="Duration to view scoreboard (seconds)"
               value={tempSettings.scoreboardDuration}
               onChange={(e) => handleInputChange(e, "scoreboardDuration")}
-            //onBlur={(e) => handleInputBlur(e, 'scoreboardDuration', tempSettings.scoreboardDuration)}
             />
+            </Grid>
+            <Grid item xs={6}>
             <TextField
               label="Max number of players"
               value={tempSettings.maxPlayers}
               onChange={(e) => handleInputChange(e, "maxPlayers")}
-            //onBlur={(e) => handleInputBlur(e, 'maxPlayers', tempSettings.maxPlayers)}
             />
+            </Grid>
+            <Grid item xs={12}>
             <CustomButton onClick={handleSaveSettings}>Save</CustomButton>
-          </>
+            </Grid>
+          </Grid>
         ) : (
           <>
             {/* Render read-only info for other players*/}
@@ -353,7 +373,16 @@ const Lobby = () => {
           <CustomButton onClick={handleOpenGameSettings}>
             <SettingsIcon />
           </CustomButton>
-          <Dialog open={openGameSettings} onClose={handleCloseGameSettings}>
+          <Dialog open={openGameSettings} onClose={handleCloseGameSettings}
+            PaperProps={{
+              sx: {
+                width: "60%",
+                maxWidth: "none",
+                height: "60%",
+                maxHeight: "none",
+              }
+          }}
+          >
             <DialogTitle>Game Settings</DialogTitle>
             <DialogContent>
               {/* Conditionally render settings based on user role (host or not) */}
