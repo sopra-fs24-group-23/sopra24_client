@@ -88,7 +88,7 @@ const Lobby = () => {
             setPlayers(receivedPlayers);
           },
         );
-        if(user) {
+        if (user) {
           subscribeClient(
             `/queue/lobbies/${lobbyId}/kick/${user.username}`,
             (message: Message) => {
@@ -158,7 +158,7 @@ const Lobby = () => {
         console.error("Failed to copy lobby code to clipboard:", error);
       });
   };
-  const kickPlayer = ( usernameToKick: String ) => {
+  const kickPlayer = (usernameToKick: String) => {
     const token = localStorage.getItem("token");
     if (token) {
       send(`/app/lobbies/${lobbyId}/kick/${usernameToKick}`, JSON.stringify({ token }));
@@ -188,7 +188,7 @@ const Lobby = () => {
     const handleSaveSettings = async () => {
       try {
         // Update the local state
-        const newSettings ={ ...tempSettings, categories: tempCategories };
+        const newSettings = { ...tempSettings, categories: tempCategories };
         onSettingsChange(newSettings);
         setSettings(newSettings);
 
@@ -216,64 +216,64 @@ const Lobby = () => {
         {isHost ? (
           <Grid container spacing={2}>
             <Grid item xs={12}>
-            {/*Render editable fields for the host*/}
+              {/*Render editable fields for the host*/}
               {/*Categories Dropdown*/}
-            <FormControl sx={{ minWidth: 300}}>
-              <InputLabel>Categories</InputLabel>
-            <Select
-              multiple
-              value={tempCategories || []}
-              onChange={handleCategoryChange}
-              renderValue={(selected) => (selected as string[]).join(", ")}
-              >
-              <MenuItem value={"City"}>City</MenuItem>
-              <MenuItem value={"Country"}>Country</MenuItem>
-            </Select>
-            </FormControl>
+              <FormControl sx={{ minWidth: 300 }}>
+                <InputLabel>Categories</InputLabel>
+                <Select
+                  multiple
+                  value={tempCategories || []}
+                  onChange={handleCategoryChange}
+                  renderValue={(selected) => (selected as string[]).join(", ")}
+                >
+                  <MenuItem value={"City"}>City</MenuItem>
+                  <MenuItem value={"Country"}>Country</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={6}>
-            <TextField
-              label="Max Rounds"
-              value={tempSettings.maxRounds}
-              onChange={(e) => handleInputChange(e, "maxRounds")}
-            />
+              <TextField
+                label="Max Rounds"
+                value={tempSettings.maxRounds}
+                onChange={(e) => handleInputChange(e, "maxRounds")}
+              />
             </Grid>
             <Grid item xs={6}>
-            <TextField
-              label="Voting Duration (seconds)"
-              value={tempSettings.votingDuration}
-              onChange={(e) => handleInputChange(e, "votingDuration")}
-            />
+              <TextField
+                label="Voting Duration (seconds)"
+                value={tempSettings.votingDuration}
+                onChange={(e) => handleInputChange(e, "votingDuration")}
+              />
             </Grid>
             <Grid item xs={6}>
-            <TextField
-              label="Duration of a round (seconds)"
-              value={tempSettings.inputDuration}
-              onChange={(e) => handleInputChange(e, "inputDuration")}
-            />
+              <TextField
+                label="Duration of a round (seconds)"
+                value={tempSettings.inputDuration}
+                onChange={(e) => handleInputChange(e, "inputDuration")}
+              />
             </Grid>
             <Grid item xs={6}>
-            <TextField
-              label="Duration to view scoreboard (seconds)"
-              value={tempSettings.scoreboardDuration}
-              onChange={(e) => handleInputChange(e, "scoreboardDuration")}
-            />
+              <TextField
+                label="Duration to view scoreboard (seconds)"
+                value={tempSettings.scoreboardDuration}
+                onChange={(e) => handleInputChange(e, "scoreboardDuration")}
+              />
             </Grid>
             <Grid item xs={6}>
-            <TextField
-              label="Max number of players"
-              value={tempSettings.maxPlayers}
-              onChange={(e) => handleInputChange(e, "maxPlayers")}
-            />
+              <TextField
+                label="Max number of players"
+                value={tempSettings.maxPlayers}
+                onChange={(e) => handleInputChange(e, "maxPlayers")}
+              />
             </Grid>
             <Grid item xs={12}>
-            <CustomButton onClick={handleSaveSettings}>Save</CustomButton>
+              <CustomButton onClick={handleSaveSettings}>Save</CustomButton>
             </Grid>
           </Grid>
         ) : (
           <>
             {/* Render read-only info for other players*/}
-            {/*<Typography>Categories: {settings.categories.join(", ")}</Typography> */}
+            <Typography>Categories: {settings.categories.join(", ")}</Typography>
             <Typography>Max Rounds: {settings.maxRounds}</Typography>
             <Typography>Voting Duration (seconds): {settings.votingDuration}</Typography>
             <Typography>Duration of a round (seconds): {settings.inputDuration}</Typography>
@@ -381,7 +381,7 @@ const Lobby = () => {
                 height: "60%",
                 maxHeight: "none",
               }
-          }}
+            }}
           >
             <DialogTitle>Game Settings</DialogTitle>
             <DialogContent>
