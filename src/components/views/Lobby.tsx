@@ -21,6 +21,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs";
+import UserContext from "../../contexts/UserContext";
 
 interface GameSettings {
   //categories: string[];
@@ -47,6 +48,7 @@ const Lobby = () => {
   const handleCloseGameSettings = () => setOpenGameSettings(false);
   const [isHost, setIsHost] = useState(false);
   const { lobbyId } = useParams();
+  const { user } = useContext(UserContext);
   const [settings, setSettings] = useState<GameSettings>({
     //categories: [],
     maxRounds: 10,
@@ -80,11 +82,23 @@ const Lobby = () => {
             setPlayers(receivedPlayers);
           },
         );
+        if(user) {
+          subscribeClient(
+            `/queue/lobbies/${lobbyId}/kick/${user.username}`,
+            (message: Message) => {
+              console.log(`Received kick message: ${message.body}`)
+              alert("You were kicked from the lobby.")
+              navigate("/homepage")
+            },
+          );
+        }
         const token = localStorage.getItem("token");
         send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }));
       });
     }
+  }, [user]);
 
+  useEffect(() => {
     return () => {
       if (lobbyId) {
         const token = localStorage.getItem("token");
@@ -93,7 +107,7 @@ const Lobby = () => {
         unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
         disconnect();
       }
-    };
+    }
   }, []);
 
 
@@ -138,9 +152,9 @@ const Lobby = () => {
         console.error("Failed to copy lobby code to clipboard:", error);
       });
   };
-  const kickPlayer = (usernameToKick) => {
+  const kickPlayer = ( usernameToKick: String ) => {
     const token = localStorage.getItem("token");
-    if (token && isHost) { // Make sure only the host can kick players
+    if (token) {
       send(`/app/lobbies/${lobbyId}/kick/${usernameToKick}`, JSON.stringify({ token }));
     }
   };
