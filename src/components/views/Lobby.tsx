@@ -115,8 +115,17 @@ const Lobby = () => {
       }
     }
   }, []);
-
-
+/*
+  useEffect(() => {
+    subscribeClient(`/topic/games/${lobbyId}/state`, (message: Message) => {
+      const gameState = JSON.parse(message.body);
+      if (gameState.gamePhase === "SCOREBOARD") {
+        // Redirect to RoundScoreboard page/component
+        navigate(`/game/${lobbyId}/scoreboard`);
+      }
+    });
+  }, [lobbyId]);
+*/
   const handleIsHost = () => {
     // isHost will be set to true if true
     setIsHost(localStorage.getItem("isHost") === "true");
@@ -137,9 +146,7 @@ const Lobby = () => {
 
   const handleStartGame = async () => {
     try {
-      // Assuming you have a function to send WebSocket messages
-      // Replace `lobbyId` with your actual lobby ID variable
-      send(`/app/lobbies/${lobbyId}/startGame`, {});
+      send(`/app/games/${lobbyId}/start`, {});
     } catch (error) {
       console.error("Failed to start the game:", error);
     }
