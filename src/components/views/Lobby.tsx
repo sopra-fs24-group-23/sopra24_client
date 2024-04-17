@@ -1,8 +1,6 @@
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
 import React, { useState, useEffect, useContext } from "react";
-import { Spinner } from "../ui/Spinner";
-import PlayerList from "../ui/PlayerList";
-import CloseIcon from '@mui/icons-material/Close'; // Import close icon for the button
+import CloseIcon from "@mui/icons-material/Close"; // Import close icon for the button
 
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
@@ -23,8 +21,6 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs";
-import User from "../../models/User";
-import { api } from "helpers/api";
 
 interface GameSettings {
   //categories: string[];
@@ -63,21 +59,11 @@ const Lobby = () => {
   /** Consuming Websocket Context
    * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
-
   /** On component Mount/Unmount**/
   useEffect(() => {
-    // logic executed on mount
     handleIsHost();
-  }, []);
-
-  /** WEBSOCKET STUFF **/
-  // This useEffect is triggered as soon as the lobbyId param is set (or if it changes)
-  // It checks that the lobbyId is not null, then calls functions from above (see line40)
-  useEffect(() => {
-    console.log("LOBBY ID CHANGED: " + lobbyId);
     if (lobbyId) {
       connect(lobbyId).then(() => {
-        // subscribe to game settings updates
         subscribeClient(
           `/topic/lobbies/${lobbyId}/settings`,
           (message: Message) => {
@@ -86,8 +72,6 @@ const Lobby = () => {
             setSettings(receivedSettings);
           },
         );
-
-        // subscribe to playerList updates
         subscribeClient(
           `/topic/lobbies/${lobbyId}/players`,
           (message: Message) => {
@@ -96,29 +80,21 @@ const Lobby = () => {
             setPlayers(receivedPlayers);
           },
         );
-        subscribeClient(
-          `/topic/queue/kick`, (message: Message) => {
-            console.log(`Player kicked!: ${message.body}`)
-
-            if (message.body === 'redirect') {
-            navigate('/homepage'); // Redirect to homepage if kicked
-          }
-        });
-        // join lobby
         const token = localStorage.getItem("token");
         send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }));
       });
     }
 
     return () => {
-      const token = localStorage.getItem("token");
-      send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
-      unsubscribeClient(`/topic/lobbies/${lobbyId}/settings`);
-      unsubscribeClient(`/topic/queue/kick`);
-      unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
-      disconnect();
+      if (lobbyId) {
+        const token = localStorage.getItem("token");
+        send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
+        unsubscribeClient(`/topic/lobbies/${lobbyId}/settings`);
+        unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
+        disconnect();
+      }
     };
-  }, [lobbyId, settings, connect, subscribeClient, unsubscribeClient]);
+  }, []);
 
 
   const handleIsHost = () => {
@@ -276,8 +252,6 @@ const Lobby = () => {
     );
   };
 
-  let content = <Spinner />;
-
   return (
     <BackgroundImageLobby>
       <Box sx={{
@@ -306,7 +280,7 @@ const Lobby = () => {
         top: 30,
         marginBottom: "30px",
       }}>
-        <img src="/Images/logo.png" alt="Descriptive Text"
+        <img src="/images/logo.png" alt="Descriptive Text"
           style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton
           onClick={handleOpenDialog}
@@ -391,18 +365,17 @@ const Lobby = () => {
           position: "relative",
           top: isHost ? "-3%" : "10px",
         }}>
-          <Typography variant="h4" gutterBottom
-                      sx={{
-                        fontFamily: "Londrina Solid",
-                        textAlign: "center",
-                      }}>
+          <Typography variant="h4" gutterBottom sx={{
+            fontFamily: "Londrina Solid",
+            textAlign: "center",
+          }}>
             Players
           </Typography>
           <List sx={{ width: "100%" }}>
             {players.map((player, index) => (
-              <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 {player.username}
-                {isHost && player.username !== localStorage.getItem('username') && ( // Assuming the current user's username is stored
+                {isHost && player.username !== localStorage.getItem("username") && ( // Assuming the current user's username is stored
                   <IconButton onClick={() => kickPlayer(player.username)} size="small">
                     <CloseIcon />
                   </IconButton>
@@ -473,7 +446,7 @@ const Lobby = () => {
           bottom: "1%",
         }}>
           {isHost && <CustomButton onClick={handleStartGame} disabled={players.length < 2}>Start Game</CustomButton>}
-      </Box>
+        </Box>
       </Box>
     </BackgroundImageLobby>
   );
