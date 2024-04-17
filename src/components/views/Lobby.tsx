@@ -1,7 +1,7 @@
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
 import React, { useState, useEffect, useContext } from "react";
 import CloseIcon from "@mui/icons-material/Close"; // Import close icon for the button
-
+import StarsIcon from '@mui/icons-material/Stars';
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -387,14 +387,19 @@ const Lobby = () => {
           </Typography>
           <List sx={{ width: "100%" }}>
             {players.map((player, index) => (
+
               <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                {player.username}
-                {isHost && player.username !== localStorage.getItem("username") && ( // Assuming the current user's username is stored
+                <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, justifyContent: 'space-between' }}>
+                  {player.username}
+                  {index === 0 && <StarsIcon sx={{ color: 'black' }} />} {/* Black star icon for the last player in the list */}
+                </Box>
+                { isHost && player.username !== localStorage.getItem("username") && index !== 0 &&( // Assuming the current user's username is stored
                   <IconButton onClick={() => kickPlayer(player.username)} size="small">
-                    <CloseIcon />
-                  </IconButton>
+                <CloseIcon />
+              </IconButton>
                 )}
               </ListItem>
+
             ))}
           </List>
         </Box>
