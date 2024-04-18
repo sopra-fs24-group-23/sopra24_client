@@ -195,11 +195,18 @@ const Lobby = () => {
     const [tempSettings, setTempSettings] = useState(settings);
     const initialCategories = settings.categories && settings.categories.length > 0 ? settings.categories : ["Country", "City"];
     const [tempCategories, setTempCategories] = useState<string[]>(initialCategories);
+    const [errors, setErrors] = useState({
+      maxRounds: false,
+      votingDuration: false,
+      inputDuration: false,
+      scoreboardDuration: false,
+      maxPlayers: false,
+    });
     const handleInputChange = (e, settingKey) => {
       const inputValue = e.target.value;
       if (!isNaN(Number(inputValue))) {
-        setTempSettings({ ...tempSettings, [settingKey]: inputValue === "" ? "" : parseInt(inputValue) });
-      }
+          setTempSettings({ ...tempSettings, [settingKey]: inputValue === "" ? "" : parseInt(inputValue) });
+        }
     };
     const handleCategoryChange = (event: SelectChangeEvent<string[]>) => {
       let newCategories = event.target.value as string[];
@@ -212,17 +219,30 @@ const Lobby = () => {
 
     const handleSaveSettings = async () => {
       try {
-        // Update the local state
-        const newSettings = { ...tempSettings, categories: tempCategories };
-        onSettingsChange(newSettings);
-        setSettings(newSettings);
+        // Perform validation
+        const newErrors = {
+          maxRounds: tempSettings.maxRounds.toString() === "" || tempSettings.maxRounds === 0,
+          votingDuration: tempSettings.votingDuration.toString() === "" || tempSettings.votingDuration === 0,
+          inputDuration: tempSettings.inputDuration.toString() === "" || tempSettings.inputDuration === 0,
+          scoreboardDuration: tempSettings.scoreboardDuration.toString() === "" || tempSettings.scoreboardDuration === 0,
+          maxPlayers: tempSettings.maxPlayers.toString() === "" || tempSettings.maxPlayers === 0,
+        };
+        setErrors(newErrors);
 
-        // Send the updated settings to the server
-        const requestBody = JSON.stringify(newSettings);
-        // Send a Websocket message to update the gamesettings
-        send(`/app/lobbies/${lobbyId}/settings`, requestBody);
+        // If there are no errors, save the settings
+        if (!Object.values(newErrors).includes(true)) {
+          // Update the local state
+          const newSettings = { ...tempSettings, categories: tempCategories };
+          onSettingsChange(newSettings);
+          setSettings(newSettings);
 
-        handleCloseGameSettings();
+          // Send the updated settings to the server
+          const requestBody = JSON.stringify(newSettings);
+          // Send a Websocket message to update the gamesettings
+          send(`/app/lobbies/${lobbyId}/settings`, requestBody);
+
+          handleCloseGameSettings();
+        }
       } catch (error) {
         console.error("Failed to update game settings:", error);
       }
@@ -261,6 +281,8 @@ const Lobby = () => {
                 label="Max Rounds"
                 value={tempSettings.maxRounds}
                 onChange={(e) => handleInputChange(e, "maxRounds")}
+                error={errors.maxRounds}
+                helperText={errors.maxRounds ? "Can't be 0 or empty" : ""}
               />
             </Grid>
             <Grid item xs={6}>
@@ -268,6 +290,8 @@ const Lobby = () => {
                 label="Voting Duration (seconds)"
                 value={tempSettings.votingDuration}
                 onChange={(e) => handleInputChange(e, "votingDuration")}
+                error={errors.votingDuration}
+                helperText={errors.votingDuration ? "Can't be 0 or empty" : ""}
               />
             </Grid>
             <Grid item xs={6}>
@@ -275,6 +299,8 @@ const Lobby = () => {
                 label="Duration of a round (seconds)"
                 value={tempSettings.inputDuration}
                 onChange={(e) => handleInputChange(e, "inputDuration")}
+                error={errors.inputDuration}
+                helperText={errors.inputDuration ? "Can't be 0 or empty" : ""}
               />
             </Grid>
             <Grid item xs={6}>
@@ -282,6 +308,8 @@ const Lobby = () => {
                 label="Duration to view scoreboard (seconds)"
                 value={tempSettings.scoreboardDuration}
                 onChange={(e) => handleInputChange(e, "scoreboardDuration")}
+                error={errors.scoreboardDuration}
+                helperText={errors.scoreboardDuration ? "Can't be 0 or empty" : ""}
               />
             </Grid>
             <Grid item xs={6}>
@@ -289,6 +317,8 @@ const Lobby = () => {
                 label="Max number of players"
                 value={tempSettings.maxPlayers}
                 onChange={(e) => handleInputChange(e, "maxPlayers")}
+                error={errors.maxPlayers}
+                helperText={errors.maxPlayers ? "Can't be 0 or empty" : ""}
               />
             </Grid>
             <Grid item xs={12}>
