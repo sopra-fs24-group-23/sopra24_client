@@ -15,7 +15,7 @@ const RoundScoreboard = () => {
   const [players, setPlayers] = useState<Player[]>([]);
 
   // Subscribe to playerlist update and sort players by score in descending order
-  useEffect(() => {
+  /*useEffect(() => {
     connect(lobbyId).then(() => {
       subscribeClient(`/topic/games/${lobbyId}/state`,
         (message: Message) => {
@@ -30,7 +30,7 @@ const RoundScoreboard = () => {
       unsubscribeClient(`/topic/games/${lobbyId}/state`);
       disconnect();
     }
-  }, []);
+  }, []); */
 
 return (
   <BackgroundImageLobby>

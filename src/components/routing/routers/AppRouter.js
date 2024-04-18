@@ -9,6 +9,7 @@ import Homepage from "../../views/Homepage";
 import Instructions from "../../views/Instructions";
 import Lobby from "../../views/Lobby";
 import GlobalLeaderboard from "../../views/GlobalLeaderboard";
+import RoundScoreboard from "../../views/RoundScoreboard";
 
 /**
  * Main router of your application.
@@ -36,6 +37,7 @@ const AppRouter = () => {
           <Route path="/instructions" element={<Instructions/>} />
           <Route path="/leaderboards" element={<GlobalLeaderboard/>} />
           <Route path="/lobbies/:lobbyId" element={<Lobby/>} />
+          <Route path="/lobbies/:lobbyId/scoreboard" element={<RoundScoreboard/>} />
           <Route path="/game/*" element={<GameRouter/>} />
         </Route>
 

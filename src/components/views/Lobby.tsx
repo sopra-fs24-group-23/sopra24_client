@@ -98,6 +98,23 @@ const Lobby = () => {
             },
           );
         }
+        if (lobbyId) {
+          subscribeClient(
+            `/topic/games/${lobbyId}/state`,
+            (message: Message) => {
+              console.log(`Received GameState update: ${message.body}`);
+              const receivedGameState = JSON.parse(message.body);
+              if (receivedGameState.gamePhase === "SCOREBOARD") {
+                // Redirect to RoundScoreboard page/component
+                navigate(`/lobbies/${lobbyId}/scoreboard`);
+              }
+              if (receivedGameState.gamePhase === "INPUT") {
+                // Redirect to Input page/component
+                navigate(`/lobbies/${lobbyId}/input`);
+              }
+            }
+          )
+        }
         const token = localStorage.getItem("token");
         send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }));
       });
@@ -111,6 +128,7 @@ const Lobby = () => {
         send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
         unsubscribeClient(`/topic/lobbies/${lobbyId}/settings`);
         unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
+        unsubscribeClient(`/topic/games/${lobbyId}/state`);
         disconnect();
       }
     }
