@@ -37,7 +37,9 @@ const Login = () => {
       if (error.response) {
         // Check for specific error for incorrect credentials
         if (error.response.status === 400 && error.response.data.error === "Bad Request") {
-          errorMessage = "Your login credentials are incorrect. Please try again.";
+          errorMessage = "Password is incorrect. Please try again.";
+        } else if (error.response.data.message.includes("Cannot invoke")) {
+          errorMessage = "This username doesn't exist. Please try again.";
         } else {
           errorMessage = error.response.data.message || errorMessage;
         }
