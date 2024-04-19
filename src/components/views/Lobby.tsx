@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close"; // Import close icon for the 
 import StarsIcon from '@mui/icons-material/Stars';
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
+import { api } from "../../helpers/api"
 import {
   Box,
   TextField,
@@ -28,6 +29,7 @@ import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs";
 import UserContext from "../../contexts/UserContext";
+import User from "../../models/User";
 
 interface GameSettings {
   categories: string[];
@@ -114,6 +116,20 @@ const Lobby = () => {
         const token = localStorage.getItem("token");
         send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }));
       });
+    }
+
+    if (lobbyId && user) {
+      const fetchHost = async () => {
+        const response = api.get(`/lobbies/${lobbyId}/host`);
+        const host = new User(response.data);
+        if (user.username === host.username) {
+          setIsHost(true)
+        }
+        else {
+          setIsHost(false)
+        }
+      }
+      fetchHost()
     }
   }, [user]);
 
