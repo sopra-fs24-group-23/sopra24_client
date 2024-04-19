@@ -56,7 +56,7 @@ const Lobby = () => {
   const { lobbyId } = useParams();
   const { user } = useContext(UserContext);
   const [settings, setSettings] = useState<GameSettings>({
-    categories: ["Country", "City"],
+    categories: ["Country", "City", "Movie"],
     maxRounds: 5,
     votingDuration: 30,
     inputDuration: 60,
@@ -107,10 +107,6 @@ const Lobby = () => {
               if (receivedGameState.gamePhase === "SCOREBOARD") {
                 // Redirect to RoundScoreboard page/component
                 navigate(`/lobbies/${lobbyId}/scoreboard`);
-              }
-              if (receivedGameState.gamePhase === "INPUT") {
-                // Redirect to Input page/component
-                navigate(`/lobbies/${lobbyId}/input`);
               }
             }
           )
@@ -212,7 +208,7 @@ const Lobby = () => {
       let newCategories = event.target.value as string[];
       // If new category is empty, set it to the default categories
       if (newCategories.length === 0) {
-        newCategories = ["Country", "City"];
+        newCategories = ["Country", "City", "Movie"];
       }
       setTempCategories(newCategories);
     };
@@ -273,6 +269,7 @@ const Lobby = () => {
                 >
                   <MenuItem value={"City"}>City</MenuItem>
                   <MenuItem value={"Country"}>Country</MenuItem>
+                  <MenuItem value={"Movie"}>Movie</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
