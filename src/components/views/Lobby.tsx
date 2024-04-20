@@ -109,6 +109,7 @@ const Lobby = () => {
             console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
             if (receivedGameState.gamePhase === "SCOREBOARD") {
+              localStorage.setItem("gameState", JSON.stringify(receivedGameState));
               // Redirect to RoundScoreboard page/component
               navigate(`/lobbies/${lobbyId}/scoreboard`);
             }
