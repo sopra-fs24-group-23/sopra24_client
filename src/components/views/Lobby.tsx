@@ -117,25 +117,25 @@ const Lobby = () => {
 
     if (lobbyId && user) {
       const fetchHost = async () => {
-        const response = await api.get(`/lobbies/${lobbyId}/host`);
-        const host = new User(response.data);
-        console.log(`MYDEBUG ${user.username} equals ${host.username}?`)
-        if (user.username === host.username) {
-          console.log("MYDEBUG SETTING ISHOST TRUE")
-          setIsHost(true)
+        try {
+          const response = await api.get(`/lobbies/${lobbyId}/host`);
+          const host = new User(response.data);
+          console.log(`MYDEBUG ${user.username} equals ${host.username}?`)
+          if (user.username === host.username) {
+            console.log("MYDEBUG SETTING ISHOST TRUE")
+            setIsHost(true)
+          }
+          else {
+            console.log("MYDEBUG SETTING ISHOST FALSE")
+            setIsHost(false)
+          }
         }
-        else {
-          console.log("MYDEBUG SETTING ISHOST FALSE")
-          setIsHost(false)
+        catch (e) {
+          alert("Could not fetch lobby-host, returning to homepage.")
+          navigate("/homepage")
         }
       }
-      try {
-        fetchHost()
-      }
-      catch (e) {
-        alert("Could not fetch lobby-host, returning to homepage.")
-        navigate("/homepage")
-      }
+      fetchHost()
     }
   }, [user]);
 
