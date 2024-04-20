@@ -40,13 +40,11 @@ interface GameSettings {
   scoreboardDuration: number;
   maxPlayers: number;
 }
-
 interface GameSettingsProps {
   isHost: boolean;
   settings: GameSettings;
   onSettingsChange: (newSettings: GameSettings) => void;
 }
-
 const Lobby = () => {
   const [players, setPlayers] = useState([]);
   const [lobbyDetails, setLobbyDetails] = useState(null);
@@ -66,7 +64,6 @@ const Lobby = () => {
     scoreboardDuration: 30,
     maxPlayers: 4,
   });
-
   /** Consuming Websocket Context
    * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
@@ -107,7 +104,6 @@ const Lobby = () => {
               console.log(`Received GameState update: ${message.body}`);
               const receivedGameState = JSON.parse(message.body);
               if (receivedGameState.gamePhase === "SCOREBOARD") {
-                localStorage.setItem("gameState", JSON.stringify(receivedGameState));
                 // Redirect to RoundScoreboard page/component
                 navigate(`/lobbies/${lobbyId}/scoreboard`);
               }
@@ -170,15 +166,12 @@ const Lobby = () => {
   const onSettingsChange = (newSettings) => {
     setSettings(newSettings);
   };
-
   const handleOpenDialog = () => {
     setOpenLeaveDialog(true);
   };
-
   const handleCloseDialog = () => {
     setOpenLeaveDialog(false);
   };
-
   const handleStartGame = async () => {
     try {
       send(`/app/games/${lobbyId}/start`, {});
@@ -186,11 +179,9 @@ const Lobby = () => {
       console.error("Failed to start the game:", error);
     }
   };
-
   const handleLeaveGame = () => {
     navigate("/homepage")
   };
-
   const handleCopyLobbyCode = () => {
     navigator.clipboard.writeText(localStorage.getItem("lobbyCode"))
       .then(() => {
@@ -206,7 +197,6 @@ const Lobby = () => {
       send(`/app/lobbies/${lobbyId}/kick/${usernameToKick}`, JSON.stringify({ token }));
     }
   };
-
   const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
     // Needed to temporarily store changes. So changes are only saved when user clicks 'Save'
     const [tempSettings, setTempSettings] = useState(settings);
@@ -233,7 +223,6 @@ const Lobby = () => {
       }
       setTempCategories(newCategories);
     };
-
     const handleSaveSettings = async () => {
       try {
         // Perform validation
@@ -245,34 +234,28 @@ const Lobby = () => {
           maxPlayers: tempSettings.maxPlayers.toString() === "" || tempSettings.maxPlayers === 0,
         };
         setErrors(newErrors);
-
         // If there are no errors, save the settings
         if (!Object.values(newErrors).includes(true)) {
           // Update the local state
           const newSettings = { ...tempSettings, categories: tempCategories };
           onSettingsChange(newSettings);
           setSettings(newSettings);
-
           // Send the updated settings to the server
           const requestBody = JSON.stringify(newSettings);
           // Send a Websocket message to update the gamesettings
           send(`/app/lobbies/${lobbyId}/settings`, requestBody);
-
           handleCloseGameSettings();
         }
       } catch (error) {
         console.error("Failed to update game settings:", error);
       }
     };
-
     const handleCloseSettings = () => {
       // Discard the temporary state
       setTempSettings(settings);
       setTempCategories(settings.categories);
-
       handleCloseGameSettings();
     };
-
     return (
       <>
         {isHost ? (
@@ -358,7 +341,6 @@ const Lobby = () => {
       </>
     );
   };
-
   return (
     <BackgroundImageLobby>
       <Box sx={{
@@ -536,6 +518,4 @@ const Lobby = () => {
     </BackgroundImageLobby>
   );
 };
-
-
 export default Lobby;
