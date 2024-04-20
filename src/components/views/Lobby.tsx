@@ -107,6 +107,7 @@ const Lobby = () => {
               console.log(`Received GameState update: ${message.body}`);
               const receivedGameState = JSON.parse(message.body);
               if (receivedGameState.gamePhase === "SCOREBOARD") {
+                localStorage.setItem("gameState", JSON.stringify(receivedGameState));
                 // Redirect to RoundScoreboard page/component
                 navigate(`/lobbies/${lobbyId}/scoreboard`);
               }
@@ -120,7 +121,7 @@ const Lobby = () => {
 
     if (lobbyId && user) {
       const fetchHost = async () => {
-        const response = api.get(`/lobbies/${lobbyId}/host`);
+        const response = await api.get(`/lobbies/${lobbyId}/host`); // Ensure this is awaited
         const host = new User(response.data);
         if (user.username === host.username) {
           setIsHost(true)
@@ -129,7 +130,7 @@ const Lobby = () => {
           setIsHost(false)
         }
       }
-      fetchHost()
+      fetchHost();
     }
   }, [user]);
 
