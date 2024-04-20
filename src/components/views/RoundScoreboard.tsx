@@ -4,7 +4,7 @@ import { List, ListItem, Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs";
 import { useNavigate, useParams } from "react-router-dom";
-
+// TO-DO: not work with localStorage but Context
 interface Player {
   username: string;
   currentScore: number;
@@ -14,43 +14,13 @@ const RoundScoreboard = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const navigate = useNavigate();
   const [hasReceivedInitialState, setHasReceivedInitialState] = useState(false);
+  const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
+  const [maxRoundNumber, setMaxRoundNumber] = useState(0);
 
   /** Consuming Websocket Context
    * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
   /** On component Mount/Unmount**/
-  /*useEffect(() => {
-    connect(lobbyId).then(() => {
-      // Subscribe to playerlist update and sort players by score in descending order
-      subscribeClient(
-        `/topic/lobbies/${lobbyId}/players`,
-        (message: Message) => {
-          console.log(`Received Playerlist update: ${message.body}`)
-          const receivedPlayers = JSON.parse(message.body);
-          setPlayers(receivedPlayers);
-        },
-      );
-      if (lobbyId) {
-        subscribeClient(
-          `/topic/games/${lobbyId}/state`,
-          (message: Message) => {
-            console.log(`Received GameState update: ${message.body}`);
-            const receivedGameState = JSON.parse(message.body);
-            if (receivedGameState.gamePhase === "INPUT") {
-              // Redirect to Input page/component
-              navigate(`/lobbies/${lobbyId}/input`);
-            }
-          }
-        )
-      }
-    });
-
-    return () => {
-      unsubscribeClient(`/topic/games/${lobbyId}/state`);
-      unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
-      disconnect();
-    }
-  }, []);*/
 
   useEffect(() => {
    const currentState = localStorage.getItem("gameState");
@@ -75,18 +45,8 @@ const RoundScoreboard = () => {
           (message: Message) => {
             console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
-            /*console.log(receivedGameState);
-            console.log(`Game phase: ${receivedGameState.gamePhase}`);
-            // Update the players state with the players from the received game state
-            console.log("receivedGameState.players:", receivedGameState.players);
-            // Map each PlayerGetDTO to a Player object
-            const receivedPlayers = receivedGameState.players.map((playerDTO: any) => ({
-              username: playerDTO.username,
-              currentScore: playerDTO.currentScore,
-            }));
-            setPlayers(receivedPlayers);
-            console.log(players);
-            console.log(receivedPlayers); */
+            setCurrentRoundNumber(receivedGameState.currentRoundNumber);
+
             if (receivedGameState.gamePhase === "INPUT") {
               localStorage.setItem("gameState", JSON.stringify(receivedGameState));
               // Redirect to Input page/component
@@ -95,15 +55,29 @@ const RoundScoreboard = () => {
             }
           }
         )
+        // TO-DO: Work with Context to receive GameSettings here
+        // Subscribe to the game settings to get MaxRoundNumber
+        subscribeClient(
+          `/topic/games/${lobbyId}/settings`,
+          (message: Message) => {
+            console.log(`Received GameSettings update: ${message.body}`);
+            const receivedGameSettings = JSON.parse(message.body);
+            console.log("Before setting max round number");
+            setMaxRoundNumber(receivedGameSettings.maxRounds);
+            console.log(`MaxRoundNumber: ${receivedGameSettings.maxRounds}`);
+          })
       }
     });
 
     return () => {
       unsubscribeClient(`/topic/games/${lobbyId}/state`);
+      unsubscribeClient(`/topic/games/${lobbyId}/settings`);
       disconnect();
     }
   }, []);
-console.log(players);
+
+  // Sort players by score
+  const sortedPlayers = players.sort((a, b) => b.currentScore - a.currentScore);
 
 return (
   <BackgroundImageLobby>
@@ -125,8 +99,16 @@ return (
           fontFamily: "Londrina Solid",
           textAlign: "center",
         }}>
-          Scoreboard
+          {/* Is it the final round? If so display 'Final Scoreboard' */}
+          {currentRoundNumber === maxRoundNumber ? "Final Scoreboard" : "Scoreboard"}
         </Typography>
+        {currentRoundNumber === maxRoundNumber && sortedPlayers[0] && (
+          <Typography variant="h5" gutterBottom sx={{
+            fontFamily: "Londrina Solid",
+            textAlign: "center",}}>
+            Winner: {sortedPlayers[0].username}
+          </Typography>
+          )}
         <List sx={{ width: "100%" }}>
           {players.map((player, index) => (
             <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>

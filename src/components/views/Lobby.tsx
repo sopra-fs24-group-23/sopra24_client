@@ -97,19 +97,24 @@ const Lobby = () => {
             },
           );
         }
-        if (lobbyId) {
-          subscribeClient(
-            `/topic/games/${lobbyId}/state`,
-            (message: Message) => {
-              console.log(`Received GameState update: ${message.body}`);
-              const receivedGameState = JSON.parse(message.body);
-              if (receivedGameState.gamePhase === "SCOREBOARD") {
-                // Redirect to RoundScoreboard page/component
-                navigate(`/lobbies/${lobbyId}/scoreboard`);
-              }
+        subscribeClient(
+          `/topic/lobbies/${lobbyId}/close`,
+          () => {
+            alert("Sorry, the host has left the lobby! Returning you to the homepage.")
+            navigate("/homepage")
+          }
+        )
+        subscribeClient(
+          `/topic/games/${lobbyId}/state`,
+          (message: Message) => {
+            console.log(`Received GameState update: ${message.body}`);
+            const receivedGameState = JSON.parse(message.body);
+            if (receivedGameState.gamePhase === "SCOREBOARD") {
+              // Redirect to RoundScoreboard page/component
+              navigate(`/lobbies/${lobbyId}/scoreboard`);
             }
-          )
-        }
+          }
+        )
         const token = localStorage.getItem("token");
         send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }));
       });
@@ -117,25 +122,25 @@ const Lobby = () => {
 
     if (lobbyId && user) {
       const fetchHost = async () => {
-        const response = await api.get(`/lobbies/${lobbyId}/host`);
-        const host = new User(response.data);
-        console.log(`MYDEBUG ${user.username} equals ${host.username}?`)
-        if (user.username === host.username) {
-          console.log("MYDEBUG SETTING ISHOST TRUE")
-          setIsHost(true)
+        try {
+          const response = await api.get(`/lobbies/${lobbyId}/host`);
+          const host = new User(response.data);
+          console.log(`MYDEBUG ${user.username} equals ${host.username}?`)
+          if (user.username === host.username) {
+            console.log("MYDEBUG SETTING ISHOST TRUE")
+            setIsHost(true)
+          }
+          else {
+            console.log("MYDEBUG SETTING ISHOST FALSE")
+            setIsHost(false)
+          }
         }
-        else {
-          console.log("MYDEBUG SETTING ISHOST FALSE")
-          setIsHost(false)
+        catch (e) {
+          alert("Could not fetch lobby-host, returning to homepage.")
+          navigate("/homepage")
         }
       }
-      try {
-        fetchHost()
-      }
-      catch (e) {
-        alert("Could not fetch lobby-host, returning to homepage.")
-        navigate("/homepage")
-      }
+      fetchHost()
     }
   }, [user]);
 
@@ -180,6 +185,9 @@ const Lobby = () => {
     }
   };
   const handleLeaveGame = () => {
+    if (isHost) {
+      send(`/app/lobbies/${lobbyId}/delete`)
+    }
     navigate("/homepage")
   };
   const handleCopyLobbyCode = () => {
