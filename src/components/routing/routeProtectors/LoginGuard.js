@@ -9,6 +9,7 @@ export const LoginGuard = () => {
   if (!localStorage.getItem("token")) {
     return <Outlet />;
   }
+
   return <Navigate to="/homepage" replace />;
 };
 
