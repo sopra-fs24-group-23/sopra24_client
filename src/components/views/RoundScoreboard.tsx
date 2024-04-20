@@ -23,7 +23,7 @@ const RoundScoreboard = () => {
   /** On component Mount/Unmount**/
 
   useEffect(() => {
-   const currentState = localStorage.getItem("gameState");
+    const currentState = localStorage.getItem("gameState");
     if (currentState) {
       const parsedState = JSON.parse(currentState);
       console.log(parsedState);
@@ -79,8 +79,8 @@ const RoundScoreboard = () => {
   // Sort players by score
   const sortedPlayers = players.sort((a, b) => b.currentScore - a.currentScore);
 
-return (
-  <BackgroundImageLobby>
+  return (
+    <BackgroundImageLobby>
       <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
@@ -108,11 +108,11 @@ return (
             textAlign: "center",}}>
             Winner: {sortedPlayers[0].username}
           </Typography>
-          )}
+        )}
         <List sx={{ width: "100%" }}>
           {players.map((player, index) => (
             <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, justifyContent: 'space-between' }}>
+              <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, justifyContent: "space-between" }}>
                 {index + 1}. {player.username}
                 <Typography variant="body1">Score: {player.currentScore}</Typography>
               </Box>
@@ -120,8 +120,8 @@ return (
           ))}
         </List>
       </Box>
-  </BackgroundImageLobby>
-);
+    </BackgroundImageLobby>
+  );
 };
 
 export default RoundScoreboard;

@@ -113,9 +113,9 @@ const Homepage = () => {
 
   const joinLobby = async () => {
     try {
-
       if (!inputLobbyId) {
         alert("Please enter lobby ID.");
+
         return
       }
 

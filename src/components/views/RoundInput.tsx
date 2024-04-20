@@ -31,10 +31,10 @@ const RoundInput = () => {
   const handleDoneClick = async () => {
     // Send a message to the server indicating the player has finished inputting answers
     send(`/app/games/${lobbyId}/closeInputs`, {answers: userAnswers});
-   };
+  };
 
-return (
-  <BackgroundImageLobby>
+  return (
+    <BackgroundImageLobby>
       <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
@@ -66,8 +66,8 @@ return (
             Voting
         </CustomButton>
       </Box>
-  </BackgroundImageLobby>
-);
+    </BackgroundImageLobby>
+  );
 }
 
 export default RoundInput;
