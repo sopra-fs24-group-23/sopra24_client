@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import {Navigate, Outlet} from "react-router-dom";
 import PropTypes from "prop-types";
+import { api } from "../../../helpers/api";
+import UserContext from "../../../contexts/UserContext";
+import User from "../../../models/User";
 
 /**
  * routeProtectors interfaces can tell the router whether or not it should allow navigation to a requested route.
@@ -12,12 +15,28 @@ import PropTypes from "prop-types";
  * @param props
  */
 export const GameGuard = () => {
-  if (localStorage.getItem("token")) {
-    
+  const { user, setUser } = useContext(UserContext)
+  const token = localStorage.getItem("token")
+  const id = localStorage.getItem("id")
+
+  useEffect(() => {
+    if (token && id && user === null) {
+      const fetchUser = async () => {
+        console.log("Setting user from GameGuard")
+        const response = api.get("/users/" + id);
+        setUser(new User(response.data))
+      }
+
+      fetchUser()
+    }
+  }, [token, id])
+
+  if (token && id) {
     return <Outlet />;
   }
-  
-  return <Navigate to="/login" replace />;
+  else {
+    return <Navigate to="/login" replace />;
+  }
 };
 
 GameGuard.propTypes = {

@@ -13,7 +13,7 @@ const WebSocketProvider = ({ children }) => {
 
   /** Connect function, returns promise that is only resolved after successful connection,
    * otherwise rejected. Does nothing if the client is already initialized and connected **/
-  const connect = ( lobbyId: string ) => {
+  const connect = ( lobbyId: string ): Promise<void> => {
     return new Promise((resolve, reject) => {
       sessionId.current = lobbyId;
       // if client not initialized or inactive; create new one
@@ -65,6 +65,8 @@ const WebSocketProvider = ({ children }) => {
         destination: destination,
         body: body,
       });
+    } else {
+      console.error("Attempted to send a message without an active STOMP connection.");
     }
   }
 
@@ -90,14 +92,14 @@ const WebSocketProvider = ({ children }) => {
     // error message in dev-environment
   }
 
-  function unsubscribeClient(name: string) {
+  function unsubscribeClient(destination: string) {
     if (stompClient.current && stompClient.current.active) {
       // retrieve request from requestList
-      const request = subscriptionRequests.current.get(name);
+      const request = subscriptionRequests.current.get(destination);
       // unsubscribe
       request.subscription.unsubscribe();
       // delete from  requestList
-      subscriptionRequests.current.delete(name);
+      subscriptionRequests.current.delete(destination);
     }
   }
 

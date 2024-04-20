@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import {GameGuard} from "../routeProtectors/GameGuard";
 import GameRouter from "./GameRouter";
 import {LoginGuard} from "../routeProtectors/LoginGuard";
@@ -9,6 +9,7 @@ import Homepage from "../../views/Homepage";
 import Instructions from "../../views/Instructions";
 import Lobby from "../../views/Lobby";
 import GlobalLeaderboard from "../../views/GlobalLeaderboard";
+import RoundScoreboard from "../../views/RoundScoreboard";
 
 /**
  * Main router of your application.
@@ -24,32 +25,29 @@ const AppRouter = () => {
     <BrowserRouter>
       <Routes>
 
-        <Route path="/login" element={<LoginGuard />}>
+        {/* Only clients without a token can access this. */}
+        <Route element={<LoginGuard/>}>
           <Route path="/login" element={<Login/>} />
-        </Route>
-
-        <Route path="/game/*" element={<GameGuard />}>
-          <Route path="/game/*" element={<GameRouter base="/game"/>} />
-        </Route>
-
-
-        <Route path="/homepage" element={<GameGuard />}>
-          <Route path="/homepage" element={<Homepage/>} />
-        </Route>
-
-        <Route path="/game/instructions" element={<GameGuard />}>
-          <Route path="/game/instructions" element={<Instructions/>} />
-        </Route>
-
-        <Route path="/register" element={<LoginGuard />}>
           <Route path="/register" element={<Register/>} />
         </Route>
 
-        <Route exact path="/lobbies/:lobbyId" element={<Lobby />} />
+        {/* Only clients with a token can access this. */}
+        <Route element={<GameGuard/>}>
+          <Route path="/homepage" element={<Homepage/>} />
+          <Route path="/instructions" element={<Instructions/>} />
+          <Route path="/leaderboards" element={<GlobalLeaderboard/>} />
+          <Route path="/lobbies/:lobbyId" element={<Lobby/>} />
+          <Route path="/lobbies/:lobbyId/scoreboard" element={<RoundScoreboard/>} />
+          <Route path="/game/*" element={<GameRouter/>} />
+        </Route>
 
-        <Route path="/leaderboards" element={<GlobalLeaderboard />} />
-
+        {/* Requesting the Base-URL redirects to login page. */}
         <Route path="/" element={
+          <Navigate to="/login" replace />
+        }/>
+
+        {/* Catch-all route if path doesn't match any of the above. */}
+        <Route path={"/*"} element={
           <Navigate to="/login" replace />
         }/>
 

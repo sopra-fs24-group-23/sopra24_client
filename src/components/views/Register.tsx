@@ -9,12 +9,15 @@ import BackgroundImageLayout from "styles/views/BackgroundImageLayout";
 import CustomButton from "components/ui/CustomButton";
 import Box from "@mui/material/Box";
 import UserContext from "../../contexts/UserContext";
+import { DialogContentText, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 
 const Register = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>(null);
   const [password, setPassword] = useState<string>(null);
   const { setUser } = useContext(UserContext)
+  const [registerError, setRegisterError] = useState("");
+  const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
 
   const doRegister = async () => {
     try {
@@ -24,12 +27,23 @@ const Register = () => {
       // Get the returned user and update a new object.
       const user = new User(response.data);
       // store user to context
-      localStorage.setItem("token", user.token)
       setUser(user)
+      localStorage.setItem("token", user.token)
+      localStorage.setItem("id", user.id)
 
       navigate("/homepage");
     } catch (error) {
-      alert(`Something went wrong during the login: \n${handleError(error)}`);
+      let errorMessage = `Something went wrong during the registration: \n${handleError(error)}`;
+      if (error.response) {
+        // Check for specific error for non-unique username
+        if (error.response.status === 400 && error.response.data.error === "Bad Request") {
+          errorMessage = "This username is already taken. Please choose a different username!";
+        } else {
+          errorMessage = error.response.data.message || errorMessage;
+        }
+      }
+      setRegisterError(errorMessage);
+      setIsErrorDialogOpen(true);
     }
   };
 
@@ -86,6 +100,24 @@ const Register = () => {
             </div>
           </div>
         </div>
+        <Dialog
+          open={isErrorDialogOpen}
+          onClose={() => setIsErrorDialogOpen(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Registration Failed"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {registerError}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <CustomButton onClick={() => setIsErrorDialogOpen(false)}>
+              Close
+            </CustomButton>
+          </DialogActions>
+        </Dialog>
       </Box>
     </BackgroundImageLayout>
   );
