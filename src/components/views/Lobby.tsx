@@ -30,6 +30,7 @@ import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs";
 import UserContext from "../../contexts/UserContext";
 import User from "../../models/User";
+import PlayerList from "../ui/PlayerList";
 
 interface GameSettings {
   categories: string[];
@@ -71,7 +72,6 @@ const Lobby = () => {
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
   /** On component Mount/Unmount**/
   useEffect(() => {
-    handleIsHost();
     if (lobbyId) {
       connect(lobbyId).then(() => {
         subscribeClient(
@@ -121,16 +121,25 @@ const Lobby = () => {
 
     if (lobbyId && user) {
       const fetchHost = async () => {
-        const response = await api.get(`/lobbies/${lobbyId}/host`); // Ensure this is awaited
+        const response = await api.get(`/lobbies/${lobbyId}/host`);
         const host = new User(response.data);
+        console.log(`MYDEBUG ${user.username} equals ${host.username}?`)
         if (user.username === host.username) {
+          console.log("MYDEBUG SETTING ISHOST TRUE")
           setIsHost(true)
         }
         else {
+          console.log("MYDEBUG SETTING ISHOST FALSE")
           setIsHost(false)
         }
       }
-      fetchHost();
+      try {
+        fetchHost()
+      }
+      catch (e) {
+        alert("Could not fetch lobby-host, returning to homepage.")
+        navigate("/homepage")
+      }
     }
   }, [user]);
 
@@ -157,11 +166,6 @@ const Lobby = () => {
     });
   }, [lobbyId]);
 */
-  const handleIsHost = () => {
-    // isHost will be set to true if true
-    setIsHost(localStorage.getItem("isHost") === "true");
-    console.log(isHost);
-  };
 
   const onSettingsChange = (newSettings) => {
     setSettings(newSettings);
@@ -463,44 +467,8 @@ const Lobby = () => {
         <CustomButton onClick={() => navigate(`/lobbies/${response.data.id}`)}>
             Instructions </CustomButton> */}
         {/* Inner box for player list*/}
-        <Box sx={{
-          backgroundColor: "#e0e0e0",
-          borderColor: "black",
-          borderWidth: "2px",
-          borderStyle: "solid",
-          width: "60%",
-          height: "60%",
-          margin: "auto",
-          padding: "20px",
-          borderRadius: "10px",
-          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-          position: "relative",
-          top: isHost ? "-3%" : "10px",
-        }}>
-          <Typography variant="h4" gutterBottom sx={{
-            fontFamily: "Londrina Solid",
-            textAlign: "center",
-          }}>
-            Players
-          </Typography>
-          <List sx={{ width: "100%" }}>
-            {players.map((player, index) => (
 
-              <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, justifyContent: 'space-between' }}>
-                  {player.username}
-                  {index === 0 && <StarsIcon sx={{ color: 'black' }} />} {/* Black star icon for the last player in the list */}
-                </Box>
-                { isHost && player.username !== localStorage.getItem("username") && index !== 0 &&( // Assuming the current user's username is stored
-                  <IconButton onClick={() => kickPlayer(player.username)} size="small">
-                <CloseIcon />
-              </IconButton>
-                )}
-              </ListItem>
-
-            ))}
-          </List>
-        </Box>
+        <PlayerList players={players} hostView={isHost} kickPlayer={kickPlayer} />
 
         {/* Inner box for Lobby Code if isHost is true*/}
         {isHost && (
