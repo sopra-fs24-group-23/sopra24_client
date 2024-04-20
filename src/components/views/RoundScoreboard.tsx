@@ -53,6 +53,16 @@ const RoundScoreboard = () => {
   }, []);*/
 
   useEffect(() => {
+   const currentState = localStorage.getItem("gameState");
+    if (currentState) {
+      const parsedState = JSON.parse(currentState);
+      console.log(parsedState);
+      const players = parsedState.players.map((player: any) => ({
+        username: player.username,
+        currentScore: player.currentScore,
+      }));
+      setPlayers(players);
+    }
     console.log(`lobbyId: ${lobbyId}`);
     connect(lobbyId).then(() => {
       console.log("Connected to WebSocket");
@@ -65,7 +75,7 @@ const RoundScoreboard = () => {
           (message: Message) => {
             console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
-            console.log(receivedGameState);
+            /*console.log(receivedGameState);
             console.log(`Game phase: ${receivedGameState.gamePhase}`);
             // Update the players state with the players from the received game state
             console.log("receivedGameState.players:", receivedGameState.players);
@@ -76,8 +86,9 @@ const RoundScoreboard = () => {
             }));
             setPlayers(receivedPlayers);
             console.log(players);
-            console.log(receivedPlayers);
+            console.log(receivedPlayers); */
             if (receivedGameState.gamePhase === "INPUT") {
+              localStorage.setItem("gameState", JSON.stringify(receivedGameState));
               // Redirect to Input page/component
               navigate(`/lobbies/${lobbyId}/input`);
               //setHasReceivedInitialState(true);
