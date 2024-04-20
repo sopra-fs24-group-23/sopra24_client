@@ -66,7 +66,7 @@ const Register = () => {
         height: "100vh",
       }}>
         <div className="login form">
-          <img src="/Images/logo.png" alt="Logo" style={{ maxWidth: '400px' }} />
+          <img src="/Images/logo.png" alt="Logo" style={{ maxWidth: "400px" }} />
           <div style={{ display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
             <GameFormField
               label="Username"

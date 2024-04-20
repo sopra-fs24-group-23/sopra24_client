@@ -10,9 +10,31 @@ const RoundInput = () => {
   const { lobbyId } = useParams();
   const navigate = useNavigate();
   const [hasReceivedInitialState, setHasReceivedInitialState] = useState(false);
+  const [userAnswers, setUserAnswers] = useState([]); // Define userAnswers state
 
-return (
-  <BackgroundImageLobby>
+  const { send } = useContext(WebSocketContext);
+  const { subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
+
+  useEffect(() => {
+    const subscription = subscribeClient(`/topic/games/${lobbyId}/state`, (message) => {
+      const gameState = JSON.parse(message.body);
+      if (gameState.currentPhase === "VOTING") {
+        navigate(`/lobbies/${lobbyId}/voting`);
+      }
+    });
+
+    return () => {
+      unsubscribeClient(subscription);
+    };
+  }, [lobbyId, navigate, subscribeClient, unsubscribeClient]);
+
+  const handleDoneClick = async () => {
+    // Send a message to the server indicating the player has finished inputting answers
+    send(`/app/games/${lobbyId}/closeInputs`, {answers: userAnswers});
+  };
+
+  return (
+    <BackgroundImageLobby>
       <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
@@ -33,12 +55,15 @@ return (
         }}>
           Write words that start with LETTER
         </Typography>
-        <CustomButton>
+        <CustomButton onClick={handleDoneClick}>
             Done
         </CustomButton>
+        <CustomButton onClick={() => navigate(`/lobbies/${lobbyId}/voting`)}>
+            Voting
+        </CustomButton>
       </Box>
-  </BackgroundImageLobby>
-);
+    </BackgroundImageLobby>
+  );
 }
 
 export default RoundInput;

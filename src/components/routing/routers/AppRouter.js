@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import {GameGuard} from "../routeProtectors/GameGuard";
-import GameRouter from "./GameRouter";
 import {LoginGuard} from "../routeProtectors/LoginGuard";
 import Login from "../../views/Login";
 import Register from "../../views/Register";
@@ -10,6 +9,8 @@ import Instructions from "../../views/Instructions";
 import Lobby from "../../views/Lobby";
 import GlobalLeaderboard from "../../views/GlobalLeaderboard";
 import RoundScoreboard from "../../views/RoundScoreboard";
+import RoundInput from "../../views/RoundInput";
+import RoundVoting from "../../views/RoundVoting";
 
 /**
  * Main router of your application.
@@ -38,7 +39,8 @@ const AppRouter = () => {
           <Route path="/leaderboards" element={<GlobalLeaderboard/>} />
           <Route path="/lobbies/:lobbyId" element={<Lobby/>} />
           <Route path="/lobbies/:lobbyId/scoreboard" element={<RoundScoreboard/>} />
-          <Route path="/game/*" element={<GameRouter/>} />
+          <Route path="/lobbies/:lobbyId/input" element={<RoundInput />} />
+          <Route path="/lobbies/:lobbyId/voting" element={<RoundVoting />} />
         </Route>
 
         {/* Requesting the Base-URL redirects to login page. */}

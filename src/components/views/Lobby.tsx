@@ -1,7 +1,5 @@
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
 import React, { useState, useEffect, useContext } from "react";
-import CloseIcon from "@mui/icons-material/Close"; // Import close icon for the button
-import StarsIcon from '@mui/icons-material/Stars';
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../helpers/api"
@@ -156,18 +154,6 @@ const Lobby = () => {
       }
     }
   }, []);
-/*
-  useEffect(() => {
-    subscribeClient(`/topic/games/${lobbyId}/state`, (message: Message) => {
-      const gameState = JSON.parse(message.body);
-      if (gameState.gamePhase === "SCOREBOARD") {
-        // Redirect to RoundScoreboard page/component
-        navigate(`/game/${lobbyId}/scoreboard`);
-      }
-    });
-  }, [lobbyId]);
-*/
-
   const onSettingsChange = (newSettings) => {
     setSettings(newSettings);
   };
@@ -220,8 +206,8 @@ const Lobby = () => {
     const handleInputChange = (e, settingKey) => {
       const inputValue = e.target.value;
       if (!isNaN(Number(inputValue))) {
-          setTempSettings({ ...tempSettings, [settingKey]: inputValue === "" ? "" : parseInt(inputValue) });
-        }
+        setTempSettings({ ...tempSettings, [settingKey]: inputValue === "" ? "" : parseInt(inputValue) });
+      }
     };
     const handleCategoryChange = (event: SelectChangeEvent<string[]>) => {
       let newCategories = event.target.value as string[];
@@ -264,6 +250,7 @@ const Lobby = () => {
       setTempCategories(settings.categories);
       handleCloseGameSettings();
     };
+
     return (
       <>
         {isHost ? (
@@ -349,6 +336,7 @@ const Lobby = () => {
       </>
     );
   };
+
   return (
     <BackgroundImageLobby>
       <Box sx={{
@@ -526,4 +514,5 @@ const Lobby = () => {
     </BackgroundImageLobby>
   );
 };
+
 export default Lobby;
