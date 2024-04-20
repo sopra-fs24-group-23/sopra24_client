@@ -9,7 +9,7 @@ const RoundVoting = () => {
 
   return (
     <BackgroundImageLobby>
-        <Box sx={{
+      <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
         borderWidth: "2px",
@@ -22,14 +22,14 @@ const RoundVoting = () => {
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         position: "relative",
         top: "10px",
+      }}>
+        <Typography variant="h4" gutterBottom sx={{
+          fontFamily: "Londrina Solid",
+          textAlign: "center",
         }}>
-            <Typography variant="h4" gutterBottom sx={{
-                fontFamily: "Londrina Solid",
-                textAlign: "center",
-            }}>
-                Vote for wrong answers!
-            </Typography>
-        </Box>
+            Vote for wrong answers!
+        </Typography>
+      </Box>
     </BackgroundImageLobby>
   );
 };

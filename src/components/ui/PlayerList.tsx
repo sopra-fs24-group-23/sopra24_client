@@ -11,7 +11,7 @@ const PlayerList = ({ players, hostView, kickPlayer } ) => {
     // if player is host --> host icon
     if (player.isHost) {
       return (
-        <StarsIcon sx={{ color: 'black' }} />
+        <StarsIcon sx={{ color: "black" }} />
       )
     }
     // if player is not host, display cross if it is host view
@@ -56,7 +56,7 @@ const PlayerList = ({ players, hostView, kickPlayer } ) => {
       <List sx={{ width: "100%" }}>
         {players.map((player, index) => (
           <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, justifyContent: 'space-between' }}>
+            <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, justifyContent: "space-between" }}>
               {player.username}
             </Box>
             {determineIcon(hostView, player)}
