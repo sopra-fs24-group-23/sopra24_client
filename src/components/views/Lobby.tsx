@@ -63,6 +63,8 @@ const Lobby = () => {
     scoreboardDuration: 30,
     maxPlayers: 4,
   });
+  const { setGamePhase } = useContext(GamePhaseContext);
+
   /** Consuming Websocket Context
    * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
@@ -108,8 +110,11 @@ const Lobby = () => {
           (message: Message) => {
             console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
+            // Update the gamePhase in the context
+            setGamePhase(receivedGameState.gamePhase);
+
             if (receivedGameState.gamePhase === "SCOREBOARD") {
-              localStorage.setItem("gameState", JSON.stringify(receivedGameState));
+              //localStorage.setItem("gameState", JSON.stringify(receivedGameState));
               // Redirect to RoundScoreboard page/component
               navigate(`/lobbies/${lobbyId}/scoreboard`);
             }

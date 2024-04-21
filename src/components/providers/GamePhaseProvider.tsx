@@ -1,19 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, ReactNode } from "react";
 import GamePhaseContext from "../../contexts/GamePhaseContext";
-import PropTypes from "prop-types";
 
-const GamePhaseProvider = ( { children } ) => {
-  const [gamePhase, setGamePhase] = useState(null);
-
-  return(
-    <GamePhaseContext.Provider value={{ gamePhase, setGamePhase }}>
-  {children}
-  </GamePhaseContext.Provider>
-)
+interface GamePhaseProviderProps {
+  children: ReactNode;
 }
+const GamePhaseProvider: React.FC<GamePhaseProviderProps> = ({ children }) => {
+  const [gamePhase, setGamePhase] = useState<any>(null);
+  const [players, setPlayers] = useState<any[]>([]);
 
-GamePhaseProvider.propTypes = {
-  children: PropTypes.node,
+  return (
+    <GamePhaseContext.Provider value={{ gamePhase, setGamePhase, players, setPlayers }}>
+      {children}
+    </GamePhaseContext.Provider>
+  );
 };
 
 export default GamePhaseProvider;
