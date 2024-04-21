@@ -5,12 +5,14 @@ import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomButton from "components/ui/CustomButton";
+import TextField from "@mui/material/TextField";
 
 const RoundInput = () => {
   const { lobbyId } = useParams();
   const navigate = useNavigate();
   const [hasReceivedInitialState, setHasReceivedInitialState] = useState(false);
-  const [userAnswers, setUserAnswers] = useState([]); // Define userAnswers state
+  const [userAnswers, setUserAnswers] = useState({}); // Adjust to hold answers for each category
+  const [inputPhaseClosed, setInputPhaseClosed] = useState(false);
 
   const { send } = useContext(WebSocketContext);
   const { subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
@@ -20,17 +22,18 @@ const RoundInput = () => {
       const gameState = JSON.parse(message.body);
       if (gameState.currentPhase === "VOTING") {
         navigate(`/lobbies/${lobbyId}/voting`);
+      } else if (gameState.currentPhase === "AWAITING_ANSWERS") {
+        setInputPhaseClosed(true); // Set input phase as closed based on server message
       }
     });
-
     return () => {
       unsubscribeClient(subscription);
     };
-  }, [lobbyId, navigate, subscribeClient, unsubscribeClient]);
+  }, [lobbyId, navigate, subscribeClient, unsubscribeClient, setInputPhaseClosed]);
 
   const handleDoneClick = async () => {
     // Send a message to the server indicating the player has finished inputting answers
-    send(`/app/games/${lobbyId}/closeInputs`, {answers: userAnswers});
+    send(`/app/games/${lobbyId}/closeInputs`, JSON.stringify({answers: userAnswers}));
   };
 
   return (
@@ -59,6 +62,11 @@ const RoundInput = () => {
         }}>
           Write words that start with A
         </Typography>
+        <TextField label="Country" onChange={(e) => setUserAnswers({...userAnswers, country: e.target.value})} />
+        <TextField label="City" onChange={(e) => setUserAnswers({...userAnswers, city: e.target.value})} />
+        <TextField label="Movie" onChange={(e) => setUserAnswers({...userAnswers, movie: e.target.value})} />
+        <TextField label="Animal" onChange={(e) => setUserAnswers({...userAnswers, animal: e.target.value})} />
+        <TextField label="Fruit" onChange={(e) => setUserAnswers({...userAnswers, fruit: e.target.value})} />
         <CustomButton onClick={handleDoneClick}>
             Done
         </CustomButton>
