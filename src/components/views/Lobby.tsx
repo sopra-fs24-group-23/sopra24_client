@@ -29,6 +29,7 @@ import { Message } from "@stomp/stompjs";
 import UserContext from "../../contexts/UserContext";
 import User from "../../models/User";
 import PlayerList from "../ui/PlayerList";
+import GamePhaseContext from "../../contexts/GamePhaseContext";
 
 interface GameSettings {
   categories: string[];
@@ -108,6 +109,7 @@ const Lobby = () => {
             console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
             if (receivedGameState.gamePhase === "SCOREBOARD") {
+              localStorage.setItem("gameState", JSON.stringify(receivedGameState));
               // Redirect to RoundScoreboard page/component
               navigate(`/lobbies/${lobbyId}/scoreboard`);
             }

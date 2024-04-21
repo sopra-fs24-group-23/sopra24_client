@@ -51,10 +51,10 @@ const RoundInput = () => {
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         position: "relative",
         top: "10px",
-        alignItems: 'center',
-        justifyContent: 'center',
-        display: 'flex',
-        flexDirection: 'column',
+        alignItems: "center",
+        justifyContent: "center",
+        display: "flex",
+        flexDirection: "column",
       }}>
         <Typography variant="h4" gutterBottom sx={{
           fontFamily: "Londrina Solid",
