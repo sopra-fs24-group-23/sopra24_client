@@ -18,22 +18,22 @@ const RoundScoreboard = () => {
   const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
   const [maxRoundNumber, setMaxRoundNumber] = useState(0);
   const { gamePhase, setGamePhase } = useContext(GamePhaseContext);
- /* const [mountId, setMountId] = useState(0);
-
-  useEffect(() => {
-    setMountId(prevMountId => prevMountId + 1);
-  }, []);
-
-  useEffect(() => {
-    // Retrieve the current gamePhase when the component is mounted
-    if (gamePhase === "SCOREBOARD" && gamePhase.players) {
-      const players = gamePhase.players.map((player: any) => ({
-        username: player.username,
-        currentScore: player.currentScore,
-      }));
-      setPlayers(players);
-    }
-  }, [mountId]); */
+  /* const [mountId, setMountId] = useState(0);
+ 
+   useEffect(() => {
+     setMountId(prevMountId => prevMountId + 1);
+   }, []);
+ 
+   useEffect(() => {
+     // Retrieve the current gamePhase when the component is mounted
+     if (gamePhase === "SCOREBOARD" && gamePhase.players) {
+       const players = gamePhase.players.map((player: any) => ({
+         username: player.username,
+         currentScore: player.currentScore,
+       }));
+       setPlayers(players);
+     }
+   }, [mountId]); */
 
   /** Consuming Websocket Context
    * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
@@ -132,7 +132,8 @@ const RoundScoreboard = () => {
         {currentRoundNumber === maxRoundNumber && sortedPlayers[0] && (
           <Typography variant="h5" gutterBottom sx={{
             fontFamily: "Londrina Solid",
-            textAlign: "center",}}>
+            textAlign: "center",
+          }}>
             Winner: {sortedPlayers[0].username}
           </Typography>
         )}

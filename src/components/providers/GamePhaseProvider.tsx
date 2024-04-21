@@ -8,11 +8,11 @@ const GamePhaseProvider: React.FC<GamePhaseProviderProps> = ({ children }) => {
   const [gamePhase, setGamePhase] = useState<any>(null);
   const [players, setPlayers] = useState<any[]>([]);
 
-  return(
+  return (
     <GamePhaseContext.Provider value={{ gamePhase, setGamePhase, players, setPlayers }}>
-  {children}
-  </GamePhaseContext.Provider>
-);
+      {children}
+    </GamePhaseContext.Provider>
+  );
 };
 
 export default GamePhaseProvider;

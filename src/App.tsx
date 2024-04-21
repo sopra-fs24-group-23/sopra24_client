@@ -10,9 +10,9 @@ const App = () => {
     <WebSocketProvider>
       <UserProvider>
         <GamePhaseProvider>
-        <div>
-          <AppRouter/>
-        </div>
+          <div>
+            <AppRouter />
+          </div>
         </GamePhaseProvider>
       </UserProvider>
     </WebSocketProvider>

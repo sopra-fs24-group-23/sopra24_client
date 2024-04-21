@@ -22,7 +22,7 @@ const RoundVoting = () => {
           const receivedGameState = JSON.parse(message.body);
           setPlayersAnswers(receivedGameState.players.map((player: any) => player.currentAnswers));
           setGameSettings(receivedGameState.gameSettings);
-      }
+        }
       );
     });
 
@@ -74,7 +74,7 @@ const RoundVoting = () => {
           fontFamily: "Londrina Solid",
           textAlign: "center",
         }}>
-            Vote for wrong answers!
+          Vote for wrong answers!
         </Typography>
         {/* Iterate over all players to render their answers */}
         {playersAnswers.map((player) => renderPlayerAnswers(player))}
