@@ -4,7 +4,8 @@ import { List, ListItem, Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs";
 import { useNavigate, useParams } from "react-router-dom";
-// TO-DO: not work with localStorage but Context
+import UserContext from "../../contexts/UserContext";
+import GamePhaseContext from "../../contexts/GamePhaseContext";
 interface Player {
   username: string;
   currentScore: number;
@@ -16,6 +17,23 @@ const RoundScoreboard = () => {
   const [hasReceivedInitialState, setHasReceivedInitialState] = useState(false);
   const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
   const [maxRoundNumber, setMaxRoundNumber] = useState(0);
+  const { gamePhase, setGamePhase } = useContext(GamePhaseContext);
+ /* const [mountId, setMountId] = useState(0);
+
+  useEffect(() => {
+    setMountId(prevMountId => prevMountId + 1);
+  }, []);
+
+  useEffect(() => {
+    // Retrieve the current gamePhase when the component is mounted
+    if (gamePhase === "SCOREBOARD" && gamePhase.players) {
+      const players = gamePhase.players.map((player: any) => ({
+        username: player.username,
+        currentScore: player.currentScore,
+      }));
+      setPlayers(players);
+    }
+  }, [mountId]); */
 
   /** Consuming Websocket Context
    * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
@@ -23,11 +41,19 @@ const RoundScoreboard = () => {
   /** On component Mount/Unmount**/
 
   useEffect(() => {
-    const currentState = localStorage.getItem("gameState");
-    if (currentState) {
+    //const currentState = localStorage.getItem("gameState");
+    /*if (currentState) {
       const parsedState = JSON.parse(currentState);
       console.log(parsedState);
       const players = parsedState.players.map((player: any) => ({
+        username: player.username,
+        currentScore: player.currentScore,
+      }));
+      setPlayers(players);
+    } */
+    if (gamePhase && gamePhase.players) {
+      console.log(gamePhase);
+      const players = gamePhase.players.map((player: any) => ({
         username: player.username,
         currentScore: player.currentScore,
       }));
@@ -48,7 +74,8 @@ const RoundScoreboard = () => {
             setCurrentRoundNumber(receivedGameState.currentRoundNumber);
 
             if (receivedGameState.gamePhase === "INPUT") {
-              localStorage.setItem("gameState", JSON.stringify(receivedGameState));
+              //localStorage.setItem("gameState", JSON.stringify(receivedGameState));
+              setGamePhase(receivedGameState);
               // Redirect to Input page/component
               navigate(`/lobbies/${lobbyId}/input`);
               //setHasReceivedInitialState(true);
