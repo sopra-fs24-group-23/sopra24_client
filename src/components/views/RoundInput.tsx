@@ -6,6 +6,7 @@ import { Message } from "@stomp/stompjs";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomButton from "components/ui/CustomButton";
 import TextField from "@mui/material/TextField";
+import  Answer from "models/Answer.js"
 
 const RoundInput = () => {
   const { lobbyId } = useParams();
@@ -13,28 +14,65 @@ const RoundInput = () => {
   const [hasReceivedInitialState, setHasReceivedInitialState] = useState(false);
   const [userAnswers, setUserAnswers] = useState({}); // Adjust to hold answers for each category
   const [inputPhaseClosed, setInputPhaseClosed] = useState(false);
+  const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
 
-  const { send } = useContext(WebSocketContext);
-  const { subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
 
   useEffect(() => {
-    const subscription = subscribeClient(`/topic/games/${lobbyId}/state`, (message) => {
-      const gameState = JSON.parse(message.body);
-      if (gameState.currentPhase === "VOTING") {
-        navigate(`/lobbies/${lobbyId}/voting`);
-      } else if (gameState.currentPhase === "AWAITING_ANSWERS") {
-        setInputPhaseClosed(true); // Set input phase as closed based on server message
-      }
+    connect(lobbyId).then(() => {
+      const subscription = subscribeClient(`/topic/games/${lobbyId}/state`, (message) => {
+        const gameState = JSON.parse(message.body);
+        if (gameState.currentPhase === "VOTING") {
+          navigate(`/lobbies/${lobbyId}/voting`);
+        } else if (gameState.currentPhase === "AWAITING_ANSWERS") {
+          setInputPhaseClosed(true); // Set input phase as closed based on server message
+        }
+      });
+
+      // The cleanup function needs to be inside the then() to ensure it has access to the subscription
+      return () => {
+        unsubscribeClient(subscription);
+      };
     });
-    return () => {
-      unsubscribeClient(subscription);
-    };
+
+    // It's important to include an empty return statement here to handle cases where the component unmounts before the connection is established
+    return () => {};
+
   }, [lobbyId, navigate, subscribeClient, unsubscribeClient, setInputPhaseClosed]);
 
   const handleDoneClick = async () => {
-    // Send a message to the server indicating the player has finished inputting answers
-    send(`/app/games/${lobbyId}/closeInputs`, JSON.stringify({answers: userAnswers}));
+    console.log("Sending userAnswers:", userAnswers);
+
+    if (Object.keys(userAnswers).length > 0) {
+      const playerId = localStorage.getItem('id'); // Retrieve player ID from localStorage
+      const answersList = Object.entries(userAnswers).map(([category, answer]) => ({
+        category: category,
+        answer: answer,
+        isDoubted: false,
+        isJoker: false,
+        isUnique: true,
+        isCorrect: null
+      }));
+
+      // Ensure the structure matches what backend expects: an object with 'answers' key containing an array of answer objects
+      const payload = {
+        answers: answersList
+      };
+
+      // Log the final payload for debugging
+      console.log("Final payload being sent:", JSON.stringify(payload));
+
+      // Send the payload to the server
+      send(`/app/games/${lobbyId}/closeInputs`, JSON.stringify(payload));
+    } else {
+      console.error("No answers to send.");
+    }
   };
+
+
+
+
+
+
 
   return (
     <BackgroundImageLobby>
@@ -66,7 +104,7 @@ const RoundInput = () => {
         <TextField label="City" onChange={(e) => setUserAnswers({...userAnswers, city: e.target.value})} />
         <TextField label="Movie" onChange={(e) => setUserAnswers({...userAnswers, movie: e.target.value})} />
         <TextField label="Animal" onChange={(e) => setUserAnswers({...userAnswers, animal: e.target.value})} />
-        <TextField label="Fruit" onChange={(e) => setUserAnswers({...userAnswers, fruit: e.target.value})} />
+        <TextField label="Celebrity" onChange={(e) => setUserAnswers({...userAnswers, celebrity: e.target.value})} />
         <CustomButton onClick={handleDoneClick}>
             Done
         </CustomButton>

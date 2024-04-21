@@ -61,6 +61,7 @@ const WebSocketProvider = ({ children }) => {
    * NOTICE: this method DOES NOT CALL JSON.stringify() on the body -> do it in client code!**/
   function send(destination: string, body: any) {
     if (stompClient.current && stompClient.current.active) {
+      console.log("Sending message to", destination, "with body:", body);
       stompClient.current.publish({
         destination: destination,
         body: body,
