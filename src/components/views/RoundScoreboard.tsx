@@ -17,7 +17,7 @@ const RoundScoreboard = () => {
   const [hasReceivedInitialState, setHasReceivedInitialState] = useState(false);
   const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
   const [maxRoundNumber, setMaxRoundNumber] = useState(0);
-  const { gamePhase, setGamePhase } = useContext(GamePhaseContext);
+  const { gameState, setGameStateVariable, gamePhase, setGamePhase } = useContext(GamePhaseContext);
   /* const [mountId, setMountId] = useState(0);
  
    useEffect(() => {
@@ -72,7 +72,6 @@ const RoundScoreboard = () => {
             console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
             setCurrentRoundNumber(receivedGameState.currentRoundNumber);
-
             if (receivedGameState.gamePhase === "INPUT") {
               //localStorage.setItem("gameState", JSON.stringify(receivedGameState));
               setGamePhase(receivedGameState);
@@ -102,6 +101,18 @@ const RoundScoreboard = () => {
       disconnect();
     }
   }, []);
+
+
+  useEffect(() => {
+    if (gameState) {
+      console.log(`GameState players are: ${gameState.players}`)
+      const players = gameState.players.map((player: any) => ({
+        username: player.username,
+        currentScore: player.currentScore,
+      }));
+      setPlayers(players);
+    }
+  }, [gameState])
 
   // Sort players by score
   const sortedPlayers = players.sort((a, b) => b.currentScore - a.currentScore);

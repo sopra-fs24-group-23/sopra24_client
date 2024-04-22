@@ -66,7 +66,7 @@ const Lobby = () => {
 
   /* Context Variables*/
   const { user } = useContext(UserContext);
-  const { setGamePhase } = useContext(GamePhaseContext);
+  const { setGameStateVariable, setGamePhase } = useContext(GamePhaseContext);
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
 
   /** On component Mount/Unmount**/
@@ -113,12 +113,16 @@ const Lobby = () => {
           (message: Message) => {
             console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
+
             // Update the gamePhase in the context
+            setGameStateVariable(receivedGameState)
+
             setGamePhase(receivedGameState.gamePhase);
 
             if (receivedGameState.gamePhase === "SCOREBOARD") {
               //localStorage.setItem("gameState", JSON.stringify(receivedGameState));
               // Redirect to RoundScoreboard page/component
+              gameStarting.current = true;
               navigate(`/lobbies/${lobbyId}/scoreboard`);
             }
           }
