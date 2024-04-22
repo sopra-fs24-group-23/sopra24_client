@@ -21,10 +21,13 @@ const RoundInput = () => {
     connect(lobbyId).then(() => {
       const subscription = subscribeClient(`/topic/games/${lobbyId}/state`, (message) => {
         const gameState = JSON.parse(message.body);
+        if (gameState.currentPhase === "AWAITING_ANSWERS") {
+          submitAllAnswers();
+          console.log("submitted all answers")
+          setInputPhaseClosed(true); // Set input phase as closed based on server message
+        }
         if (gameState.currentPhase === "VOTING") {
           navigate(`/lobbies/${lobbyId}/voting`);
-        } else if (gameState.currentPhase === "AWAITING_ANSWERS") {
-          setInputPhaseClosed(true); // Set input phase as closed based on server message
         }
       });
 
@@ -38,6 +41,7 @@ const RoundInput = () => {
     return () => {};
 
   }, [lobbyId, navigate, subscribeClient, unsubscribeClient, setInputPhaseClosed]);
+
 
   const handleDoneClick = async () => {
     console.log("Sending userAnswers:", userAnswers);
@@ -63,6 +67,26 @@ const RoundInput = () => {
 
       // Send the payload to the server
       send(`/app/games/${lobbyId}/closeInputs`, JSON.stringify(payload));
+    } else {
+      console.error("No answers to send.");
+    }
+  };
+  const submitAllAnswers = () => {
+    console.log("Automatically sending all userAnswers:", userAnswers);
+
+    if (Object.keys(userAnswers).length > 0) {
+      const answersList = Object.entries(userAnswers).map(([category, answer]) => ({
+        category,
+        answer,
+        isDoubted: false,
+        isJoker: false,
+        isUnique: true,
+        isCorrect: null
+      }));
+
+      const payload = { answers: answersList };
+      console.log("Final payload being sent:", JSON.stringify(payload));
+      send(`/app/games/${lobbyId}/setAnswers`, JSON.stringify(payload));
     } else {
       console.error("No answers to send.");
     }

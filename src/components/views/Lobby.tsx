@@ -276,6 +276,7 @@ const Lobby = () => {
                   <MenuItem value={"City"}>City</MenuItem>
                   <MenuItem value={"Country"}>Country</MenuItem>
                   <MenuItem value={"Movie"}>Movie</MenuItem>
+
                 </Select>
               </FormControl>
             </Grid>
