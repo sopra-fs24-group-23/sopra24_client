@@ -1,5 +1,5 @@
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../helpers/api"
@@ -7,8 +7,6 @@ import {
   Box,
   TextField,
   Typography,
-  List,
-  ListItem,
   Dialog,
   DialogActions,
   DialogContent,
@@ -29,7 +27,7 @@ import { Message } from "@stomp/stompjs";
 import UserContext from "../../contexts/UserContext";
 import User from "../../models/User";
 import PlayerList from "../ui/PlayerList";
-import GamePhaseContext from "../../contexts/GamePhaseContext";
+import GameStateContext from "../../contexts/GameStateContext";
 
 interface GameSettings {
   categories: string[];
@@ -46,7 +44,6 @@ interface GameSettingsProps {
 }
 const Lobby = () => {
   const [players, setPlayers] = useState([]);
-  const [lobbyDetails, setLobbyDetails] = useState(null);
   const navigate = useNavigate();
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
   const [openGameSettings, setOpenGameSettings] = useState(false);
@@ -54,7 +51,6 @@ const Lobby = () => {
   const handleCloseGameSettings = () => setOpenGameSettings(false);
   const [isHost, setIsHost] = useState(false);
   const { lobbyId } = useParams();
-  const { user } = useContext(UserContext);
   const [settings, setSettings] = useState<GameSettings>({
     categories: ["Country", "City", "Movie"],
     maxRounds: 5,
@@ -63,11 +59,16 @@ const Lobby = () => {
     scoreboardDuration: 30,
     maxPlayers: 4,
   });
-  const { setGamePhase } = useContext(GamePhaseContext);
 
-  /** Consuming Websocket Context
-   * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
+  /* Variables used to determine correct clean-up action */
+  const gameStarting = useRef(false);
+  const lobbyClosing = useRef(false);
+
+  /* Context Variables*/
+  const { user } = useContext(UserContext);
+  const { setGameStateVariable, setGamePhase } = useContext(GameStateContext);
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
+
   /** On component Mount/Unmount**/
   useEffect(() => {
     if (lobbyId) {
@@ -101,7 +102,9 @@ const Lobby = () => {
         subscribeClient(
           `/topic/lobbies/${lobbyId}/close`,
           () => {
-            alert("Sorry, the host has left the lobby! Returning you to the homepage.")
+            lobbyClosing.current = true
+            // host doesn't need to be notified
+            if (!isHost) alert("Sorry, the host has left the lobby! Returning you to the homepage.")
             navigate("/homepage")
           }
         )
@@ -110,12 +113,13 @@ const Lobby = () => {
           (message: Message) => {
             console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
-            // Update the gamePhase in the context
-            setGamePhase(receivedGameState.gamePhase);
 
+            // Update the gamePhase in the context
+            setGameStateVariable(receivedGameState)
             if (receivedGameState.gamePhase === "SCOREBOARD") {
               //localStorage.setItem("gameState", JSON.stringify(receivedGameState));
               // Redirect to RoundScoreboard page/component
+              gameStarting.current = true;
               navigate(`/lobbies/${lobbyId}/scoreboard`);
             }
           }
@@ -149,11 +153,14 @@ const Lobby = () => {
     }
   }, [user]);
 
+  /* Cleanup useEffect */
   useEffect(() => {
     return () => {
-      if (lobbyId) {
+      // only unsub & dc if player is leaving the lobby
+      if (!gameStarting.current) {
         const token = localStorage.getItem("token");
-        send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
+        // only send leave-message if lobby isn't closing
+        if (!lobbyClosing.current) send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
         unsubscribeClient(`/topic/lobbies/${lobbyId}/settings`);
         unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
         unsubscribeClient(`/topic/games/${lobbyId}/state`);
@@ -161,9 +168,7 @@ const Lobby = () => {
       }
     }
   }, []);
-  const onSettingsChange = (newSettings) => {
-    setSettings(newSettings);
-  };
+
   const handleOpenDialog = () => {
     setOpenLeaveDialog(true);
   };
@@ -172,6 +177,7 @@ const Lobby = () => {
   };
   const handleStartGame = async () => {
     try {
+      gameStarting.current = true;
       send(`/app/games/${lobbyId}/start`, {});
     } catch (error) {
       console.error("Failed to start the game:", error);

@@ -4,8 +4,7 @@ import { List, ListItem, Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs";
 import { useNavigate, useParams } from "react-router-dom";
-import UserContext from "../../contexts/UserContext";
-import GamePhaseContext from "../../contexts/GamePhaseContext";
+import GameStateContext from "../../contexts/GameStateContext";
 interface Player {
   username: string;
   currentScore: number;
@@ -17,23 +16,7 @@ const RoundScoreboard = () => {
   const [hasReceivedInitialState, setHasReceivedInitialState] = useState(false);
   const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
   const [maxRoundNumber, setMaxRoundNumber] = useState(0);
-  const { gamePhase, setGamePhase } = useContext(GamePhaseContext);
-  /* const [mountId, setMountId] = useState(0);
- 
-   useEffect(() => {
-     setMountId(prevMountId => prevMountId + 1);
-   }, []);
- 
-   useEffect(() => {
-     // Retrieve the current gamePhase when the component is mounted
-     if (gamePhase === "SCOREBOARD" && gamePhase.players) {
-       const players = gamePhase.players.map((player: any) => ({
-         username: player.username,
-         currentScore: player.currentScore,
-       }));
-       setPlayers(players);
-     }
-   }, [mountId]); */
+  const { gameState, setGameStateVariable } = useContext(GameStateContext);
 
   /** Consuming Websocket Context
    * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
@@ -41,24 +24,6 @@ const RoundScoreboard = () => {
   /** On component Mount/Unmount**/
 
   useEffect(() => {
-    //const currentState = localStorage.getItem("gameState");
-    /*if (currentState) {
-      const parsedState = JSON.parse(currentState);
-      console.log(parsedState);
-      const players = parsedState.players.map((player: any) => ({
-        username: player.username,
-        currentScore: player.currentScore,
-      }));
-      setPlayers(players);
-    } */
-    if (gamePhase && gamePhase.players) {
-      console.log(gamePhase);
-      const players = gamePhase.players.map((player: any) => ({
-        username: player.username,
-        currentScore: player.currentScore,
-      }));
-      setPlayers(players);
-    }
     console.log(`lobbyId: ${lobbyId}`);
     connect(lobbyId).then(() => {
       console.log("Connected to WebSocket");
@@ -71,11 +36,10 @@ const RoundScoreboard = () => {
           (message: Message) => {
             console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
-            setCurrentRoundNumber(receivedGameState.currentRoundNumber);
+            setGameStateVariable(receivedGameState)
 
             if (receivedGameState.gamePhase === "INPUT") {
               //localStorage.setItem("gameState", JSON.stringify(receivedGameState));
-              setGamePhase(receivedGameState);
               // Redirect to Input page/component
               navigate(`/lobbies/${lobbyId}/input`);
               //setHasReceivedInitialState(true);
@@ -102,6 +66,18 @@ const RoundScoreboard = () => {
       disconnect();
     }
   }, []);
+
+
+  useEffect(() => {
+    if (gameState) {
+      console.log(`GameState players are: ${gameState.players}`)
+      const players = gameState.players.map((player: any) => ({
+        username: player.username,
+        currentScore: player.currentScore,
+      }));
+      setPlayers(players);
+    }
+  }, [gameState])
 
   // Sort players by score
   const sortedPlayers = players.sort((a, b) => b.currentScore - a.currentScore);

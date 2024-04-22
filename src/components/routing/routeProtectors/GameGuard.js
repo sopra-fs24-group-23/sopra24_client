@@ -12,7 +12,6 @@ import User from "../../../models/User";
  * <Outlet /> is rendered --> The content inside the <GameGuard> in the App.js file, i.e. the user is able to access the main app.
  * If the user isn't authenticated, the components redirects to the /login screen
  * @Guard
- * @param props
  */
 export const GameGuard = () => {
   const { user, setUser } = useContext(UserContext)
@@ -22,8 +21,7 @@ export const GameGuard = () => {
   useEffect(() => {
     if (token && id && user === null) {
       const fetchUser = async () => {
-        console.log("Setting user from GameGuard")
-        const response = api.get("/users/" + id);
+        const response = await api.get("/users/" + id);
         setUser(new User(response.data))
       }
 
