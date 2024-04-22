@@ -102,8 +102,9 @@ const Lobby = () => {
         subscribeClient(
           `/topic/lobbies/${lobbyId}/close`,
           () => {
-            lobbyClosing.current = true;
-            alert("Sorry, the host has left the lobby! Returning you to the homepage.")
+            lobbyClosing.current = true
+            // host doesn't need to be notified
+            if (!isHost) alert("Sorry, the host has left the lobby! Returning you to the homepage.")
             navigate("/homepage")
           }
         )
