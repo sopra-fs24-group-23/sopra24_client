@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import CustomButton from "components/ui/CustomButton";
 import TextField from "@mui/material/TextField";
 import  Answer from "models/Answer.js"
+import GameStateContext from "../../contexts/GameStateContext";
 
 const RoundInput = () => {
   const { lobbyId } = useParams();
@@ -15,18 +16,22 @@ const RoundInput = () => {
   const [userAnswers, setUserAnswers] = useState({}); // Adjust to hold answers for each category
   const [inputPhaseClosed, setInputPhaseClosed] = useState(false);
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
+  const { setGameStateVariable, setGamePhase } = useContext(GameStateContext);
+
 
 
   useEffect(() => {
     connect(lobbyId).then(() => {
       const subscription = subscribeClient(`/topic/games/${lobbyId}/state`, (message) => {
         const gameState = JSON.parse(message.body);
-        if (gameState.currentPhase === "AWAITING_ANSWERS") {
+        setGameStateVariable(gameState)
+        if (gameState.gamePhase === "AWAITING_ANSWERS") {
+
           submitAllAnswers();
           console.log("submitted all answers")
           setInputPhaseClosed(true); // Set input phase as closed based on server message
         }
-        if (gameState.currentPhase === "VOTING") {
+        if (gameState.gamePhase === "VOTING") {
           navigate(`/lobbies/${lobbyId}/voting`);
         }
       });
@@ -71,13 +76,13 @@ const RoundInput = () => {
       console.error("No answers to send.");
     }
   };
-  const submitAllAnswers = () => {
+  const submitAllAnswers = async () => {
     console.log("Automatically sending all userAnswers:", userAnswers);
 
     if (Object.keys(userAnswers).length > 0) {
       const answersList = Object.entries(userAnswers).map(([category, answer]) => ({
-        category,
-        answer,
+        category: category,
+        answer: answer,
         isDoubted: false,
         isJoker: false,
         isUnique: true,
