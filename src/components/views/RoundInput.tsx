@@ -34,6 +34,14 @@ const RoundInput = () => {
         if (gameState.gamePhase === "VOTING") {
           navigate(`/lobbies/${lobbyId}/voting`);
         }
+        if (gameState.players) {
+          // Update local state based on the latest game state
+          const updatedAnswers = {};
+          gameState.players.forEach(player => {
+            updatedAnswers[player.id] = player.currentAnswers;
+          });
+          setUserAnswers(updatedAnswers); // This might need adjustments based on your data structure
+        }
       });
 
       // The cleanup function needs to be inside the then() to ensure it has access to the subscription
@@ -47,54 +55,44 @@ const RoundInput = () => {
 
   }, [lobbyId, navigate, subscribeClient, unsubscribeClient, setInputPhaseClosed]);
 
+  const handleInputChange = (category, value) => {
+    const updatedAnswers = {...userAnswers, [category]: value};
+    setUserAnswers(updatedAnswers);
+    localStorage.setItem('userAnswers', JSON.stringify(updatedAnswers)); // Sync with local storage
+  };
+
+  useEffect(() => {
+    // Load from local storage on component mount
+    const savedAnswers = JSON.parse(localStorage.getItem('userAnswers'));
+    if (savedAnswers) {
+      setUserAnswers(savedAnswers);
+    }
+  }, []);
+
+  const formatAndSendAnswers = (answers) => {
+    const answersList = Object.entries(answers).map(([category, answer]) => ({
+      category: category,
+      answer: answer,
+      isDoubted: false,
+      isJoker: false,
+      isUnique: true,
+      isCorrect: null
+    }));
+
+    const payload = { answers: answersList };
+    console.log("Payload being sent:", JSON.stringify(payload));
+    send(`/app/games/${lobbyId}/setAnswers`, JSON.stringify(payload));
+  };
 
   const handleDoneClick = async () => {
-    console.log("Sending userAnswers:", userAnswers);
-
-    if (Object.keys(userAnswers).length > 0) {
-      const playerId = localStorage.getItem('id'); // Retrieve player ID from localStorage
-      const answersList = Object.entries(userAnswers).map(([category, answer]) => ({
-        category: category,
-        answer: answer,
-        isDoubted: false,
-        isJoker: false,
-        isUnique: true,
-        isCorrect: null
-      }));
-
-      // Ensure the structure matches what backend expects: an object with 'answers' key containing an array of answer objects
-      const payload = {
-        answers: answersList
-      };
-
-      // Log the final payload for debugging
-      console.log("Final payload being sent:", JSON.stringify(payload));
-
-      // Send the payload to the server
-      send(`/app/games/${lobbyId}/closeInputs`, JSON.stringify(payload));
-    } else {
-      console.error("No answers to send.");
-    }
+    console.log("Manually sending userAnswers:", userAnswers);
+    formatAndSendAnswers(userAnswers);
   };
+
   const submitAllAnswers = async () => {
-    console.log("Automatically sending all userAnswers:", userAnswers);
-
-    if (Object.keys(userAnswers).length > 0) {
-      const answersList = Object.entries(userAnswers).map(([category, answer]) => ({
-        category: category,
-        answer: answer,
-        isDoubted: false,
-        isJoker: false,
-        isUnique: true,
-        isCorrect: null
-      }));
-
-      const payload = { answers: answersList };
-      console.log("Final payload being sent:", JSON.stringify(payload));
-      send(`/app/games/${lobbyId}/setAnswers`, JSON.stringify(payload));
-    } else {
-      console.error("No answers to send.");
-    }
+    console.log("Automatically sending all userAnswers from storage:", userAnswers);
+    const storedAnswers = JSON.parse(localStorage.getItem('userAnswers')) || {};
+    formatAndSendAnswers(storedAnswers);
   };
 
 
@@ -129,11 +127,11 @@ const RoundInput = () => {
         }}>
           Write words that start with A
         </Typography>
-        <TextField label="Country" onChange={(e) => setUserAnswers({...userAnswers, country: e.target.value})} />
-        <TextField label="City" onChange={(e) => setUserAnswers({...userAnswers, city: e.target.value})} />
-        <TextField label="Movie" onChange={(e) => setUserAnswers({...userAnswers, movie: e.target.value})} />
-        <TextField label="Animal" onChange={(e) => setUserAnswers({...userAnswers, animal: e.target.value})} />
-        <TextField label="Celebrity" onChange={(e) => setUserAnswers({...userAnswers, celebrity: e.target.value})} />
+        <TextField label="Country" onChange={(e) => handleInputChange('country', e.target.value)} />
+        <TextField label="City" onChange={(e) => handleInputChange('city', e.target.value)} />
+        <TextField label="Movie" onChange={(e) => handleInputChange('movie', e.target.value)} />
+        <TextField label="Animal" onChange={(e) => handleInputChange('animal', e.target.value)} />
+        <TextField label="Celebrity" onChange={(e) => handleInputChange('celebrity', e.target.value)} />
         <CustomButton onClick={handleDoneClick}>
             Done
         </CustomButton>
