@@ -17,6 +17,7 @@ const RoundScoreboard = () => {
   const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
   const [maxRoundNumber, setMaxRoundNumber] = useState(0);
   const { gameState, setGameStateVariable } = useContext(GameStateContext);
+  const gamePhase = gameState.gamePhase;
 
   /** Consuming Websocket Context
    * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
@@ -61,11 +62,9 @@ const RoundScoreboard = () => {
     });
 
     return () => {
-      unsubscribeClient(`/topic/games/${lobbyId}/state`);
-      unsubscribeClient(`/topic/games/${lobbyId}/settings`);
       disconnect();
     }
-  }, []);
+  }, [gamePhase]);
 
 
   useEffect(() => {
@@ -77,7 +76,7 @@ const RoundScoreboard = () => {
       }));
       setPlayers(players);
     }
-  }, [gameState])
+  }, [])
 
   // Sort players by score
   const sortedPlayers = players.sort((a, b) => b.currentScore - a.currentScore);
