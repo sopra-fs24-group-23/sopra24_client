@@ -14,7 +14,7 @@ const GameStateProvider: React.FC<GamePhaseProviderProps> = ({ children }) => {
 
   const setGameStateVariable = ( gameStateData ) => {
     if (!isProduction()) {
-      console.log(`DEBUG setting gameState in context to: ${gameStateData}`)
+      console.log(`DEBUG setting gameState in context to: ${JSON.stringify(gameStateData)}`)
     }
     setGameState(new GameState(gameStateData))
   }
