@@ -12,6 +12,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import UserContext from "../../contexts/UserContext";
 import { styled } from "@mui/system";
+import { isProduction } from "../../helpers/isProduction";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -42,13 +43,20 @@ const Homepage = () => {
   }));
 
   const logout = async () => {
-    const token = localStorage.getItem("token");
-    console.log(token);
-    await api.post("/logout", { token: token });
+    if (isProduction()) {
+      const token = localStorage.getItem("token");
+      console.log(token);
+      await api.post("/logout", { token: token });
 
-    localStorage.removeItem("token");
-    navigate("/login");
-    console.log(localStorage.getItem("token"));
+      localStorage.removeItem("token");
+      navigate("/login");
+      console.log(localStorage.getItem("token"));
+    }
+    else {
+      localStorage.removeItem("token")
+      localStorage.removeItem("id")
+      navigate("/login")
+    }
   };
 
   const handleEditClick = () => {
