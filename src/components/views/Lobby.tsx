@@ -28,6 +28,7 @@ import UserContext from "../../contexts/UserContext";
 import User from "../../models/User";
 import PlayerList from "../ui/PlayerList";
 import GameStateContext from "../../contexts/GameStateContext";
+import GameSettingsContext from "../../contexts/GameSettingsContext";
 
 interface GameSettings {
   categories: string[];
@@ -68,6 +69,7 @@ const Lobby = () => {
   const { user } = useContext(UserContext);
   const { setGameStateVariable, setGamePhase } = useContext(GameStateContext);
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
+  const { setGameSettingsVariable } = useContext(GameSettingsContext);
 
   /** On component Mount/Unmount**/
   useEffect(() => {
@@ -79,6 +81,7 @@ const Lobby = () => {
             console.log("Received settings update:", message.body);
             const receivedSettings = JSON.parse(message.body);
             setSettings(receivedSettings);
+            setGameSettingsVariable(receivedSettings)
           },
         );
         subscribeClient(
