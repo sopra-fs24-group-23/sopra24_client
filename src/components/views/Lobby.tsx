@@ -27,7 +27,7 @@ import { Message } from "@stomp/stompjs";
 import UserContext from "../../contexts/UserContext";
 import User from "../../models/User";
 import PlayerList from "../ui/PlayerList";
-import GamePhaseContext from "../../contexts/GamePhaseContext";
+import GameStateContext from "../../contexts/GameStateContext";
 
 interface GameSettings {
   categories: string[];
@@ -66,7 +66,7 @@ const Lobby = () => {
 
   /* Context Variables*/
   const { user } = useContext(UserContext);
-  const { setGameStateVariable, setGamePhase } = useContext(GamePhaseContext);
+  const { setGameStateVariable, setGamePhase } = useContext(GameStateContext);
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
 
   /** On component Mount/Unmount**/
@@ -116,9 +116,6 @@ const Lobby = () => {
 
             // Update the gamePhase in the context
             setGameStateVariable(receivedGameState)
-
-            setGamePhase(receivedGameState.gamePhase);
-
             if (receivedGameState.gamePhase === "SCOREBOARD") {
               //localStorage.setItem("gameState", JSON.stringify(receivedGameState));
               // Redirect to RoundScoreboard page/component

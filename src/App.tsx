@@ -2,18 +2,18 @@ import React from "react";
 import AppRouter from "./components/routing/routers/AppRouter";
 import WebSocketProvider from "./components/providers/WebSocketProvider";
 import UserProvider from "./components/providers/UserProvider";
-import GamePhaseProvider from "./components/providers/GamePhaseProvider";
+import GameStateProvider from "./components/providers/GameStateProvider";
 
 
 const App = () => {
   return (
     <WebSocketProvider>
       <UserProvider>
-        <GamePhaseProvider>
+        <GameStateProvider>
           <div>
             <AppRouter />
           </div>
-        </GamePhaseProvider>
+        </GameStateProvider>
       </UserProvider>
     </WebSocketProvider>
   );
