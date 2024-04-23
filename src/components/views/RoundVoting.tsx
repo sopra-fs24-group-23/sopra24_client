@@ -38,6 +38,8 @@ const RoundVoting = () => {
   }, []);
   useEffect(() => {
     if (gameState.gamePhase === "AWAITING_VOTES" && doubts.length > 0) {
+      console.log("Sending doubts to backend:", JSON.stringify(doubts));
+
       send(`/app/games/${lobbyId}/doubt`, JSON.stringify(doubts));
       setDoubts([]); // Clear doubts after sending
     }
@@ -51,9 +53,9 @@ const RoundVoting = () => {
       username: playerId,
       category: category,
     };
-    // Add new doubt to the existing list
-    setDoubts(currentDoubts => [...currentDoubts, newDoubt]);
-  }
+    setDoubts(doubts => [...doubts, newDoubt]);
+  };
+
 
 
   // Render the players and their answers
