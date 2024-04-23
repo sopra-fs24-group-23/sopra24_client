@@ -25,46 +25,12 @@ const RoundScoreboard = () => {
   /** On component Mount/Unmount**/
 
   useEffect(() => {
-    console.log(`lobbyId: ${lobbyId}`);
-    connect(lobbyId).then(() => {
-      console.log("Connected to WebSocket");
-      // Request another state update
-      send(`/app/games/${lobbyId}/state`, {});
-      // Subscribe to game state updates
-      if (lobbyId) {
-        subscribeClient(
-          `/topic/games/${lobbyId}/state`,
-          (message: Message) => {
-            console.log(`Received GameState update: ${message.body}`);
-            const receivedGameState = JSON.parse(message.body);
-            setGameStateVariable(receivedGameState)
-
-            if (receivedGameState.gamePhase === "INPUT") {
-              //localStorage.setItem("gameState", JSON.stringify(receivedGameState));
-              // Redirect to Input page/component
-              navigate(`/lobbies/${lobbyId}/input`);
-              //setHasReceivedInitialState(true);
-            }
-          }
-        )
-        // TO-DO: Work with Context to receive GameSettings here
-        // Subscribe to the game settings to get MaxRoundNumber
-        subscribeClient(
-          `/topic/games/${lobbyId}/settings`,
-          (message: Message) => {
-            console.log(`Received GameSettings update: ${message.body}`);
-            const receivedGameSettings = JSON.parse(message.body);
-            console.log("Before setting max round number");
-            setMaxRoundNumber(receivedGameSettings.maxRounds);
-            console.log(`MaxRoundNumber: ${receivedGameSettings.maxRounds}`);
-          })
+    if (gameState && gameState.gamePhase) {
+      if (gameState.gamePhase === "INPUT") {
+        navigate(`/lobbies/${lobbyId}/input`)
       }
-    });
-
-    return () => {
-      disconnect();
     }
-  }, [gamePhase]);
+  }, [gameState]);
 
 
   useEffect(() => {

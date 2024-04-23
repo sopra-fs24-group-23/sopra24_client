@@ -1,5 +1,5 @@
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { List, ListItem, Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs";
@@ -8,66 +8,34 @@ import CustomButton from "components/ui/CustomButton";
 import TextField from "@mui/material/TextField";
 import  Answer from "models/Answer.js"
 import GameStateContext from "../../contexts/GameStateContext";
+import GameSettingsContext from "../../contexts/GameSettingsContext";
 
 const RoundInput = () => {
-  const { lobbyId } = useParams();
+  /* Context Variables */
+  const { gameSettings } = useContext(GameSettingsContext);
+  const { disconnect, send } = useContext(WebSocketContext);
+  const { gameState } = useContext(GameStateContext);
+
+  const { gameId } = useParams();
   const navigate = useNavigate();
-  const [hasReceivedInitialState, setHasReceivedInitialState] = useState(false);
-  const [userAnswers, setUserAnswers] = useState({}); // Adjust to hold answers for each category
-  const [inputPhaseClosed, setInputPhaseClosed] = useState(false);
-  const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
-  const { setGameStateVariable, setGamePhase } = useContext(GameStateContext);
-
-
+  const inputRefs = useRef(false);
 
   useEffect(() => {
-    connect(lobbyId).then(() => {
-      const subscription = subscribeClient(`/topic/games/${lobbyId}/state`, (message) => {
-        const gameState = JSON.parse(message.body);
-        setGameStateVariable(gameState)
-        if (gameState.gamePhase === "AWAITING_ANSWERS") {
-
-          submitAllAnswers();
-          console.log("submitted all answers")
-          setInputPhaseClosed(true); // Set input phase as closed based on server message
-        }
-        if (gameState.gamePhase === "VOTING") {
-          navigate(`/lobbies/${lobbyId}/voting`);
-        }
-        if (gameState.players) {
-          // Update local state based on the latest game state
-          const updatedAnswers = {};
-          gameState.players.forEach(player => {
-            updatedAnswers[player.id] = player.currentAnswers;
-          });
-          setUserAnswers(updatedAnswers); // This might need adjustments based on your data structure
-        }
-      });
-
-      // The cleanup function needs to be inside the then() to ensure it has access to the subscription
-      return () => {
-        unsubscribeClient(subscription);
-      };
-    });
-
-    // It's important to include an empty return statement here to handle cases where the component unmounts before the connection is established
-    return () => {};
-
-  }, [lobbyId, navigate, subscribeClient, unsubscribeClient, setInputPhaseClosed]);
-
-  const handleInputChange = (category, value) => {
-    const updatedAnswers = {...userAnswers, [category]: value};
-    setUserAnswers(updatedAnswers);
-    localStorage.setItem('userAnswers', JSON.stringify(updatedAnswers)); // Sync with local storage
-  };
-
-  useEffect(() => {
-    // Load from local storage on component mount
-    const savedAnswers = JSON.parse(localStorage.getItem('userAnswers'));
-    if (savedAnswers) {
-      setUserAnswers(savedAnswers);
+    if (gameSettings.categories) {
+      console.log("DEBUG refs were initialized")
+      inputRefs.current = gameSettings.categories.reduce((acc, category) => ({ ...acc, [category]: "" }), {})
     }
-  }, []);
+  }, [gameSettings]);
+
+  useEffect(() => {
+    if (gameState.gamePhase === "AWAITING_ANSWERS") {
+      handleAwaitingAnswers()
+    }
+  }, [gameState]);
+
+  const handleInputChange = (pCategory, value) => {
+    inputRefs.current[pCategory] = value
+  };
 
   const formatAndSendAnswers = (answers) => {
     const answersList = Object.entries(answers).map(([category, answer]) => ({
@@ -81,25 +49,17 @@ const RoundInput = () => {
 
     const payload = { answers: answersList };
     console.log("Payload being sent:", JSON.stringify(payload));
-    send(`/app/games/${lobbyId}/setAnswers`, JSON.stringify(payload));
+    send(`/app/games/${gameId}/setAnswers`, JSON.stringify(payload));
   };
 
-  const handleDoneClick = async () => {
-    console.log("Manually sending userAnswers:", userAnswers);
-    formatAndSendAnswers(userAnswers);
-  };
+  const handleDone = () => {
+    send(`/app/games/${gameId}/closeInput`)
+  }
 
-  const submitAllAnswers = async () => {
-    console.log("Automatically sending all userAnswers from storage:", userAnswers);
-    const storedAnswers = JSON.parse(localStorage.getItem('userAnswers')) || {};
-    formatAndSendAnswers(storedAnswers);
-  };
-
-
-
-
-
-
+  const handleAwaitingAnswers = () => {
+    console.log("DEBUG Sending answers to BE")
+    formatAndSendAnswers(inputRefs.current);
+  }
 
   return (
     <BackgroundImageLobby>
@@ -127,20 +87,30 @@ const RoundInput = () => {
         }}>
           Write words that start with A
         </Typography>
-        <TextField label="Country" onChange={(e) => handleInputChange('country', e.target.value)} />
-        <TextField label="City" onChange={(e) => handleInputChange('city', e.target.value)} />
-        <TextField label="Movie" onChange={(e) => handleInputChange('movie', e.target.value)} />
-        <TextField label="Animal" onChange={(e) => handleInputChange('animal', e.target.value)} />
-        <TextField label="Celebrity" onChange={(e) => handleInputChange('celebrity', e.target.value)} />
-        <CustomButton onClick={handleDoneClick}>
+        <Box sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          flexWrap: "wrap",
+          width: "90%"
+        }}>
+        {gameSettings && gameSettings.categories && gameSettings.categories.map((category) => (
+            <TextField
+              label={category}
+              key={category}
+              onChange={(e) => handleInputChange(category, e.target.value)}
+            />))}
+        </Box>
+        <CustomButton onClick={handleDone}>
             Done
         </CustomButton>
-        <CustomButton onClick={() => navigate(`/lobbies/${lobbyId}/voting`)}>
+        <CustomButton onClick={() => navigate(`/lobbies/${gameId}/voting`)}>
             Voting
         </CustomButton>
       </Box>
     </BackgroundImageLobby>
-  );
+  )
 }
 
 export default RoundInput;
