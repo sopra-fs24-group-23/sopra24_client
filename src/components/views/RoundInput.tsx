@@ -1,12 +1,10 @@
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { List, ListItem, Typography, Box, } from "@mui/material";
+import { Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";
-import { Message } from "@stomp/stompjs";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomButton from "components/ui/CustomButton";
 import TextField from "@mui/material/TextField";
-import  Answer from "models/Answer.js"
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import UserContext from "../../contexts/UserContext";
@@ -68,7 +66,7 @@ const RoundInput = () => {
   };
 
   const handleDone = () => {
-    send(`/app/games/${lobbyId}/closeInput`)
+    send(`/app/games/${lobbyId}/close-inputs`)
   }
 
   const handleAwaitingAnswers = () => {
@@ -119,9 +117,6 @@ const RoundInput = () => {
         </Box>
         <CustomButton onClick={handleDone}>
             Done
-        </CustomButton>
-        <CustomButton onClick={() => navigate(`/lobbies/${lobbyId}/voting`)}>
-            Voting
         </CustomButton>
       </Box>
     </BackgroundImageLobby>
