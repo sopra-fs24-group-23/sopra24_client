@@ -9,14 +9,16 @@ import TextField from "@mui/material/TextField";
 import  Answer from "models/Answer.js"
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
+import UserContext from "../../contexts/UserContext";
 
 const RoundInput = () => {
   /* Context Variables */
   const { gameSettings } = useContext(GameSettingsContext);
   const { disconnect, send } = useContext(WebSocketContext);
   const { gameState } = useContext(GameStateContext);
+  const { user } = useContext(UserContext);
 
-  const { gameId } = useParams();
+  const { lobbyId } = useParams();
   const navigate = useNavigate();
   const inputRefs = useRef(false);
 
@@ -47,13 +49,12 @@ const RoundInput = () => {
       isCorrect: null
     }));
 
-    const payload = { answers: answersList };
-    console.log("Payload being sent:", JSON.stringify(payload));
-    send(`/app/games/${gameId}/setAnswers`, JSON.stringify(payload));
+    console.log("Payload being sent:", JSON.stringify(answersList));
+    send(`/app/games/${lobbyId}/answers/${user.username}`, JSON.stringify(answersList));
   };
 
   const handleDone = () => {
-    send(`/app/games/${gameId}/closeInput`)
+    send(`/app/games/${lobbyId}/closeInput`)
   }
 
   const handleAwaitingAnswers = () => {
@@ -105,7 +106,7 @@ const RoundInput = () => {
         <CustomButton onClick={handleDone}>
             Done
         </CustomButton>
-        <CustomButton onClick={() => navigate(`/lobbies/${gameId}/voting`)}>
+        <CustomButton onClick={() => navigate(`/lobbies/${lobbyId}/voting`)}>
             Voting
         </CustomButton>
       </Box>
