@@ -4,6 +4,9 @@ import { Typography, List, ListItem, Box } from "@mui/material";
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import GameStateContext from "../../contexts/GameStateContext";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import IconButton from "@mui/material/IconButton";
+import WebSocketContext from "../../contexts/WebSocketContext";
 
 const RoundVoting = () => {
   const { lobbyId } = useParams();
@@ -13,6 +16,7 @@ const RoundVoting = () => {
   /* Context variables */
   const { setGameSettingsVariable, gameSettings } = useContext(GameSettingsContext);
   const { gameState, setGameStateVariable } = useContext(GameStateContext);
+  const { send } = useContext(WebSocketContext);
 
 
   useEffect(() => {
@@ -28,6 +32,15 @@ const RoundVoting = () => {
       navigate(`/lobbies/${lobbyId}/voting-results`);
     }
   }, []);
+
+  // Function to handle the doubt of a player's answer
+  const handleDoubt = (playerId, category) => {
+    const vote = {
+      username: playerId,
+      category: category,
+    };
+    send(`/app/games/${lobbyId}/doubt`, JSON.stringify([vote]));
+  }
 
   // Render the players and their answers
   const renderPlayerAnswers = (player) => {
@@ -51,6 +64,9 @@ const RoundVoting = () => {
             <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
               <Typography>{answer.category}</Typography>
               <Typography>{answer ? answer.answer : "-"}</Typography>
+              <IconButton onClick={() => handleDoubt(player.id, answer.category)}>
+                <CancelOutlinedIcon />
+              </IconButton>
             </Box>
           );
         })}
@@ -66,7 +82,7 @@ const RoundVoting = () => {
         borderWidth: "2px",
         borderStyle: "solid",
         width: "60%",
-        height: "60%",
+        height: "auto",
         margin: "auto",
         padding: "20px",
         borderRadius: "10px",
