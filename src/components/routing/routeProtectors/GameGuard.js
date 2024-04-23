@@ -24,8 +24,12 @@ export const GameGuard = () => {
         const response = await api.get("/users/" + id);
         setUser(new User(response.data))
       }
-
-      fetchUser()
+      try {
+        fetchUser()
+      }
+      catch (e) {
+        alert("There was an error fetching the user, you might need to log-in or register again.")
+      }
     }
   }, [token, id])
 
