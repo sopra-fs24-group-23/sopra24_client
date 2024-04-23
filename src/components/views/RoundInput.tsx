@@ -8,7 +8,8 @@ import TextField from "@mui/material/TextField";
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import UserContext from "../../contexts/UserContext";
-
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import IconButton from "@mui/material/IconButton";
 const RoundInput = () => {
   /* Context Variables */
   const { gameSettings } = useContext(GameSettingsContext);
@@ -18,13 +19,22 @@ const RoundInput = () => {
 
   const { lobbyId } = useParams();
   const navigate = useNavigate();
-  const inputRefs = useRef(false);
+  //const inputRefs = useRef(false);
+  const inputRefs = useRef<InputRefType>({});
   const gameContinuing = useRef(false);
+  const [jokerCategory, setJokerCategory] = useState("");
+
+  type InputRefType = {
+    [key: string]: {
+      answer: string;
+      isJoker: boolean;
+    };
+  };
 
   useEffect(() => {
     if (gameSettings.categories) {
       console.log("DEBUG refs were initialized")
-      inputRefs.current = gameSettings.categories.reduce((acc, category) => ({ ...acc, [category]: "" }), {})
+      inputRefs.current = gameSettings.categories.reduce((acc, category) => ({ ...acc, [category]: { answer: "", isJoker: false} }), {})
     }
   }, [gameSettings]);
 
@@ -48,18 +58,41 @@ const RoundInput = () => {
   }, [])
 
   const handleInputChange = (pCategory, value) => {
-    inputRefs.current[pCategory] = value
+    inputRefs.current[pCategory] = {
+      answer: value,
+      isJoker: pCategory === jokerCategory
+    };
+  };
+
+  const handleJokerClick = (category) => {
+    // Reset the isJoker property of the previous jokerCategory to false
+    if (jokerCategory) {
+      inputRefs.current[jokerCategory] = {
+        ...inputRefs.current[jokerCategory],
+        isJoker: false
+      };
+    }
+    // Set the new jokerCategory and update the isJoker property of the corresponding category in inputRefs.current
+    setJokerCategory(category);
+    inputRefs.current[category] = {
+      ...inputRefs.current[category],
+      isJoker: true
+    };
   };
 
   const formatAndSendAnswers = (answers) => {
-    const answersList = Object.entries(answers).map(([category, answer]) => ({
-      category: category,
-      answer: answer,
-      isDoubted: false,
-      isJoker: false,
-      isUnique: false,
-      isCorrect: false
-    }));
+    //const answersList = Object.entries(answers).map(([category, { answer, isJoker }]) => ({
+    const answersList = Object.entries(answers).map(([category, value]) => {
+      const { answer, isJoker } = value as { answer: string; isJoker: boolean; };
+      return {
+        category: category,
+        answer: answer,
+        isDoubted: false,
+        isJoker: isJoker,
+        isUnique: false,
+        isCorrect: false
+      }
+    });
 
     console.log("Payload being sent:", JSON.stringify(answersList));
     send(`/app/games/${lobbyId}/answers/${user.username}`, JSON.stringify(answersList));
@@ -102,18 +135,24 @@ const RoundInput = () => {
         </Typography>
         <Box sx={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
           flexWrap: "wrap",
           width: "90%"
         }}>
         {gameSettings && gameSettings.categories && gameSettings.categories.map((category) => (
-            <TextField
+          <Box key={category} sx={{ margin: "10px 0" }}>
+          <TextField
               label={category}
               key={category}
               onChange={(e) => handleInputChange(category, e.target.value)}
-            />))}
+            />
+            <IconButton onClick={() => handleJokerClick(category)}>
+              <AutoAwesomeIcon style={{ color: jokerCategory === category ? "green" : "grey" }} />
+            </IconButton>
+            </Box>
+            ))}
         </Box>
         <CustomButton onClick={handleDone}>
             Done
