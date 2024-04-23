@@ -67,7 +67,7 @@ const Lobby = () => {
 
   /* Context Variables*/
   const { user } = useContext(UserContext);
-  const { setGameStateVariable, setGamePhase } = useContext(GameStateContext);
+  const { setGameStateVariable } = useContext(GameStateContext);
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
   const { setGameSettingsVariable } = useContext(GameSettingsContext);
 
@@ -285,7 +285,8 @@ const Lobby = () => {
                   <MenuItem value={"City"}>City</MenuItem>
                   <MenuItem value={"Country"}>Country</MenuItem>
                   <MenuItem value={"Movie"}>Movie</MenuItem>
-
+                  <MenuItem value={"Animal"}>Animal</MenuItem>
+                  <MenuItem value={"Celebrity"}>Celebrity</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
