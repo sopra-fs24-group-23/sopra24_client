@@ -13,6 +13,8 @@ const RoundVoting = () => {
   const { lobbyId } = useParams();
   const navigate = useNavigate();
   const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
+  const [doubts, setDoubts] = useState([]);
+
 
   /* Context variables */
   const { setGameSettingsVariable, gameSettings } = useContext(GameSettingsContext);
@@ -34,15 +36,25 @@ const RoundVoting = () => {
       navigate(`/lobbies/${lobbyId}/voting-results`);
     }
   }, []);
+  useEffect(() => {
+    if (gameState.gamePhase === "AWAITING_VOTES" && doubts.length > 0) {
+      send(`/app/games/${lobbyId}/doubt`, JSON.stringify(doubts));
+      setDoubts([]); // Clear doubts after sending
+    }
+  }, [gameState.gamePhase, doubts, lobbyId, send]);
 
   // Function to handle the doubt of a player's answer
+
+
   const handleDoubt = (playerId, category) => {
-    const vote = {
+    const newDoubt = {
       username: playerId,
       category: category,
     };
-    send(`/app/games/${lobbyId}/doubt`, JSON.stringify([vote]));
+    // Add new doubt to the existing list
+    setDoubts(currentDoubts => [...currentDoubts, newDoubt]);
   }
+
 
   // Render the players and their answers
   const renderPlayerAnswers = (player) => {
