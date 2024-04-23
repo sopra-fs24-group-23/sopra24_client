@@ -82,7 +82,7 @@ const RoundVoting = () => {
               <Typography>{answer.category}</Typography>
               <Typography sx={{ flex: isCurrentUser ? "1" : "none", textAlign: "center" }}>{answer ? answer.answer : "-"}</Typography>
               {!isCurrentUser && (
-              <IconButton onClick={() => handleDoubt(player.id, answer.category)}>
+              <IconButton onClick={() => handleDoubt(player.username, answer.category)}>
                 <CancelOutlinedIcon />
               </IconButton>
               )}
