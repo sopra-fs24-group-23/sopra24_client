@@ -1,51 +1,90 @@
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { List, ListItem, Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";
-import { Message } from "@stomp/stompjs";
 import { useNavigate, useParams } from "react-router-dom";
 import GameStateContext from "../../contexts/GameStateContext";
+import GameSettingsContext from "../../contexts/GameSettingsContext";
 interface Player {
   username: string;
   currentScore: number;
 }
 const RoundScoreboard = () => {
   const { lobbyId } = useParams();
-  const [players, setPlayers] = useState<Player[]>([]);
   const navigate = useNavigate();
-  const [hasReceivedInitialState, setHasReceivedInitialState] = useState(false);
+  const [players, setPlayers] = useState<Player[]>([]);
   const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
   const [maxRoundNumber, setMaxRoundNumber] = useState(0);
-  const { gameState, setGameStateVariable } = useContext(GameStateContext);
-  const gamePhase = gameState.gamePhase;
+  const gameContinuing = useRef(false)
+  let sortedPlayers = [];
 
-  /** Consuming Websocket Context
-   * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
-  const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
-  /** On component Mount/Unmount**/
+  /* Context Variables */
+  const { gameState } = useContext(GameStateContext);
+  const { gameSettings } = useContext(GameSettingsContext);
+  const { disconnect, send, unsubscribeAll } = useContext(WebSocketContext);
+
+  /* JSX Variables*/
+  let header = (
+    <Typography variant="h4" gutterBottom sx={{
+      fontFamily: "Londrina Solid",
+      textAlign: "center",
+    }}>
+      Scoreboard
+    </Typography>
+  )
 
   useEffect(() => {
-    if (gameState && gameState.gamePhase) {
-      if (gameState.gamePhase === "INPUT") {
-        navigate(`/lobbies/${lobbyId}/input`)
+    if (gameState) {
+      if (gameState.gamePhase) {
+        if (gameState.gamePhase === "INPUT") {
+          gameContinuing.current = true;
+          navigate(`/lobbies/${lobbyId}/input`)
+        }
+      }
+      if (gameState.players) {
+        const players = gameState.players.map((player: any) => ({
+          username: player.username,
+          currentScore: player.currentScore,
+        }));
+        sortedPlayers = players.sort((a, b) => b.currentScore - a.currentScore);
+        setPlayers(players);
+      }
+      if (gameState.currentRoundNumber &&
+        gameSettings.maxRounds &&
+        gameState.currentRoundNumber === gameSettings.maxRounds) {
+        console.log("roundnumber: " + gameState.currentRoundNumber + " maxrounds: " + gameSettings.maxRounds)
+        header = (
+          <div>
+            <Typography variant="h4" gutterBottom sx={{
+              fontFamily: "Londrina Solid",
+              textAlign: "center",
+            }}>
+              Final Scoreboard
+            </Typography>
+            <Typography variant="h5" gutterBottom sx={{
+              fontFamily: "Londrina Solid",
+              textAlign: "center",
+            }}>
+              Winner: {sortedPlayers[0].username}
+            </Typography>
+          </div>
+        )
       }
     }
   }, [gameState]);
 
-
   useEffect(() => {
-    if (gameState) {
-      console.log(`GameState players are: ${gameState.players}`)
-      const players = gameState.players.map((player: any) => ({
-        username: player.username,
-        currentScore: player.currentScore,
-      }));
-      setPlayers(players);
+    return () => {
+      if (!gameContinuing.current) {
+        const token = localStorage.getItem("token");
+        send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
+        unsubscribeAll()
+        disconnect()
+      }
     }
   }, [])
 
   // Sort players by score
-  const sortedPlayers = players.sort((a, b) => b.currentScore - a.currentScore);
 
   return (
     <BackgroundImageLobby>
@@ -63,21 +102,7 @@ const RoundScoreboard = () => {
         position: "relative",
         top: "10px",
       }}>
-        <Typography variant="h4" gutterBottom sx={{
-          fontFamily: "Londrina Solid",
-          textAlign: "center",
-        }}>
-          {/* Is it the final round? If so display 'Final Scoreboard' */}
-          {currentRoundNumber === maxRoundNumber ? "Final Scoreboard" : "Scoreboard"}
-        </Typography>
-        {currentRoundNumber === maxRoundNumber && sortedPlayers[0] && (
-          <Typography variant="h5" gutterBottom sx={{
-            fontFamily: "Londrina Solid",
-            textAlign: "center",
-          }}>
-            Winner: {sortedPlayers[0].username}
-          </Typography>
-        )}
+        {header}
         <List sx={{ width: "100%" }}>
           {players.map((player, index) => (
             <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
