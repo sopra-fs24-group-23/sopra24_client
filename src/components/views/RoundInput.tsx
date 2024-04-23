@@ -14,13 +14,14 @@ import UserContext from "../../contexts/UserContext";
 const RoundInput = () => {
   /* Context Variables */
   const { gameSettings } = useContext(GameSettingsContext);
-  const { disconnect, send } = useContext(WebSocketContext);
+  const { unsubscribeAll, disconnect, send } = useContext(WebSocketContext);
   const { gameState } = useContext(GameStateContext);
   const { user } = useContext(UserContext);
 
   const { lobbyId } = useParams();
   const navigate = useNavigate();
   const inputRefs = useRef(false);
+  const gameContinuing = useRef(false);
 
   useEffect(() => {
     if (gameSettings.categories) {
@@ -31,9 +32,22 @@ const RoundInput = () => {
 
   useEffect(() => {
     if (gameState.gamePhase === "AWAITING_ANSWERS") {
+      gameContinuing.current = true;
       handleAwaitingAnswers()
+      navigate(`/lobbies/${lobbyId}/voting`)
     }
   }, [gameState]);
+
+  useEffect(() => {
+    return () => {
+      if (!gameContinuing.current) {
+        const token = localStorage.getItem("token");
+        send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
+        unsubscribeAll()
+        disconnect()
+      }
+    }
+  }, [])
 
   const handleInputChange = (pCategory, value) => {
     inputRefs.current[pCategory] = value
@@ -86,7 +100,7 @@ const RoundInput = () => {
           fontFamily: "Londrina Solid",
           textAlign: "center",
         }}>
-          Write words that start with A
+          Answers must start with {gameState.currentLetter}
         </Typography>
         <Box sx={{
           display: "flex",
