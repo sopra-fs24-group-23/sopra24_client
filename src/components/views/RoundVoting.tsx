@@ -7,6 +7,7 @@ import GameStateContext from "../../contexts/GameStateContext";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
+import UserContext from "../../contexts/UserContext";
 
 const RoundVoting = () => {
   const { lobbyId } = useParams();
@@ -17,6 +18,7 @@ const RoundVoting = () => {
   const { setGameSettingsVariable, gameSettings } = useContext(GameSettingsContext);
   const { gameState, setGameStateVariable } = useContext(GameStateContext);
   const { send } = useContext(WebSocketContext);
+  const { user } = useContext(UserContext);
 
 
   useEffect(() => {
@@ -59,14 +61,17 @@ const RoundVoting = () => {
         <Typography variant="h6">{player.username}</Typography>
         {/* Iterate over the player's currentAnswers */}
         {player.currentAnswers.map((answer, index) => {
+          const isCurrentUser = user.username === player.username;
 
           return (
             <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
               <Typography>{answer.category}</Typography>
-              <Typography>{answer ? answer.answer : "-"}</Typography>
+              <Typography sx={{ flex: isCurrentUser ? "1" : "none", textAlign: "center" }}>{answer ? answer.answer : "-"}</Typography>
+              {!isCurrentUser && (
               <IconButton onClick={() => handleDoubt(player.id, answer.category)}>
                 <CancelOutlinedIcon />
               </IconButton>
+              )}
             </Box>
           );
         })}
