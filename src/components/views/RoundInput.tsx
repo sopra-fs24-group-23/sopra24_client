@@ -57,8 +57,8 @@ const RoundInput = () => {
       answer: answer,
       isDoubted: false,
       isJoker: false,
-      isUnique: true,
-      isCorrect: null
+      isUnique: false,
+      isCorrect: false
     }));
 
     console.log("Payload being sent:", JSON.stringify(answersList));
