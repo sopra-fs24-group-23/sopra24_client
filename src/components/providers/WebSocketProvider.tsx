@@ -104,8 +104,16 @@ const WebSocketProvider = ({ children }) => {
     }
   }
 
+  function unsubscribeAll() {
+    if (stompClient.current && stompClient.current.active) {
+      subscriptionRequests.current.forEach((destination, request) => {
+        request.subscription.unsubscribe();
+      })
+    }
+  }
+
   return (
-    <WebSocketContext.Provider value={{ connect, disconnect, send, subscribeClient, unsubscribeClient }}>
+    <WebSocketContext.Provider value={{ connect, disconnect, send, subscribeClient, unsubscribeClient, unsubscribeAll }}>
       {children}
     </WebSocketContext.Provider>
   );
