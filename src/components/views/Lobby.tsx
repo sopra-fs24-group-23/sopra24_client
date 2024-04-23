@@ -107,7 +107,7 @@ const Lobby = () => {
           () => {
             lobbyClosing.current = true
             // host doesn't need to be notified
-            if (!isHost) alert("Sorry, the host has left the lobby! Returning you to the homepage.")
+            if (!isHost) alert("Sorry, the host has left the game! Returning you to the homepage.")
             navigate("/homepage")
           }
         )
@@ -300,7 +300,7 @@ const Lobby = () => {
             </Grid>
             <Grid item xs={6}>
               <TextField
-                label="Voting Duration (seconds)"
+                label="Time-limit for voting (seconds)"
                 value={tempSettings.votingDuration}
                 onChange={(e) => handleInputChange(e, "votingDuration")}
                 error={errors.votingDuration}
@@ -309,7 +309,7 @@ const Lobby = () => {
             </Grid>
             <Grid item xs={6}>
               <TextField
-                label="Duration of a round (seconds)"
+                label="Time-limit for answering (seconds)"
                 value={tempSettings.inputDuration}
                 onChange={(e) => handleInputChange(e, "inputDuration")}
                 error={errors.inputDuration}
@@ -343,10 +343,10 @@ const Lobby = () => {
             {/* Render read-only info for other players*/}
             <Typography>Categories: {settings.categories.join(", ")}</Typography>
             <Typography>Max Rounds: {settings.maxRounds}</Typography>
-            <Typography>Voting Duration (seconds): {settings.votingDuration}</Typography>
-            <Typography>Duration of a round (seconds): {settings.inputDuration}</Typography>
+            <Typography>Time-limit to vote (seconds): {settings.votingDuration}</Typography>
+            <Typography>Time-limit to answer (seconds): {settings.inputDuration}</Typography>
             <Typography>Duration to view scoreboard (seconds): {settings.scoreboardDuration}</Typography>
-            <Typography>Max number of players (seconds): {settings.maxPlayers}</Typography>
+            <Typography>Max number of players: {settings.maxPlayers}</Typography>
           </>
         )}
         <CustomButton onClick={handleCloseSettings}>Close</CustomButton>
