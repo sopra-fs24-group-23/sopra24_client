@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
+import { Typography } from "@mui/material";
 
 const Countdown = (duration: number, description: string) => {
   const [counter, setCounter] = useState(duration)
@@ -14,9 +15,12 @@ const Countdown = (duration: number, description: string) => {
   }, []);
 
   return (
-    <TextField>
+    <Typography sx={{
+      fontFamily: "Londrina Solid",
+      textAlign: "center",
+    }}>
       {description}{counter}
-    </TextField>
+    </Typography>
   )
 }
 
