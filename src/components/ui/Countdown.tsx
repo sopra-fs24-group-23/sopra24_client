@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 
-const Timer = (duration: number, description: string) => {
+const Countdown = (duration: number, description: string) => {
   const [counter, setCounter] = useState(duration)
 
   useEffect(() => {
@@ -20,4 +20,4 @@ const Timer = (duration: number, description: string) => {
   )
 }
 
-export default Timer;
+export default Countdown;
