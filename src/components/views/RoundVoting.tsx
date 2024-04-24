@@ -8,6 +8,7 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import UserContext from "../../contexts/UserContext";
+import Countdown from "../ui/Countdown";
 
 const RoundVoting = () => {
   const { lobbyId } = useParams();
@@ -116,6 +117,7 @@ const RoundVoting = () => {
         }}>
           Did somebody use a joker here ?!
         </Typography>
+        <Countdown duration={gameSettings.votingDuration}/>
         {/* Iterate over all players to render their answers */}
         {gameState.players.map((player) => (
           <React.Fragment key={player.id}>

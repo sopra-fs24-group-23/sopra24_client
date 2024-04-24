@@ -10,6 +10,7 @@ import GameSettingsContext from "../../contexts/GameSettingsContext";
 import UserContext from "../../contexts/UserContext";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import IconButton from "@mui/material/IconButton";
+import Countdown from "../ui/Countdown";
 const RoundInput = () => {
   /* Context Variables */
   const { gameSettings } = useContext(GameSettingsContext);
@@ -142,6 +143,7 @@ const RoundInput = () => {
         }}>
           Answers must start with {gameState.currentLetter}
         </Typography>
+        <Countdown duration={gameSettings.inputDuration}/>
         <Box sx={{
           display: "flex",
           flexDirection: "column",

@@ -5,6 +5,8 @@ import WebSocketContext from "../../contexts/WebSocketContext";
 import { useNavigate, useParams } from "react-router-dom";
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
+import Countdown from "../ui/Countdown";
+
 interface Player {
   username: string;
   currentScore: number;
@@ -80,6 +82,7 @@ const RoundScoreboard = () => {
         top: "10px",
       }}>
         {header}
+        <Countdown duration={parseInt(gameSettings.scoreboardDuration)}/>
         <List sx={{ width: "100%" }}>
           {players.map((player, index) => (
             <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>

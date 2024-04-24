@@ -3,6 +3,8 @@ import { Box, Typography } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import GameStateContext from "../../contexts/GameStateContext";
 import { useNavigate, useParams } from "react-router-dom";
+import Countdown from "../ui/Countdown";
+import GameSettingsContext from "../../contexts/GameSettingsContext";
 
 const VotingResults = () => {
   const { lobbyId } = useParams();
@@ -10,10 +12,10 @@ const VotingResults = () => {
   const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
 
   /* Context variables */
-  const { gameState, setGameStateVariable } = useContext(GameStateContext);
+  const { gameState } = useContext(GameStateContext);
+  const { gameSettings } = useContext(GameSettingsContext);
 
   useEffect(() => {
-
     // Access the current answers of all players
     const answers = gameState.players.map(player => player.currentAnswers);
     setAllPlayersAnswers(answers);
@@ -50,6 +52,7 @@ const VotingResults = () => {
         }}>
           Voting Results!
         </Typography>
+        <Countdown duration={gameSettings.scoreboardDuration}/>
       </Box>
     </BackgroundImageLobby>
   );
