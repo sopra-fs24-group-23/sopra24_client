@@ -39,6 +39,8 @@ const Instructions = () => {
         borderRadius: "27px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         width: "90%",
+        //minHeight: "100px",
+        //maxHeight: "100px",
         //maxWidth: "800px",
         height: "5%",
         margin: "auto",

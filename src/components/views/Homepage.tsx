@@ -168,11 +168,13 @@ const Homepage = () => {
         borderRadius: "27px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         width: "90%",
+        //minHeight: "100px",
+        //maxHeight: "100px",
         //maxWidth: "800px",
         height: "5%",
         margin: "auto",
         position: "relative",
-        top: 30,
+        top: 7,
         marginBottom: "30px",
       }}>
         <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px" }} />
@@ -199,7 +201,7 @@ const Homepage = () => {
         // height: "70%",
         margin: "auto",
         position: "relative",
-        top: 30,
+        top: 10,
       }}>
         {/* Player's Name */}
         {profile && (
