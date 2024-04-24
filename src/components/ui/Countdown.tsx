@@ -18,9 +18,9 @@ const Countdown = ({ duration, description}) => {
     <Typography variant="h5" sx={{
       fontFamily: "Londrina Solid",
       textAlign: "center",
-      color: counter < 6 ? "red" : "black",
+      color: counter < 6 ? counter === 0 ? "black" : "red" : "black",
     }}>
-      {description}{counter}
+      {description}{counter > 0 ? counter : "Loading..."}
     </Typography>
   )
 }
