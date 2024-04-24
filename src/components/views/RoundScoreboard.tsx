@@ -49,27 +49,6 @@ const RoundScoreboard = () => {
         sortedPlayers = players.sort((a, b) => b.currentScore - a.currentScore);
         setPlayers(players);
       }
-      if (gameState.currentRoundNumber &&
-        gameSettings.maxRounds &&
-        gameState.currentRoundNumber === gameSettings.maxRounds) {
-        console.log("roundnumber: " + gameState.currentRoundNumber + " maxrounds: " + gameSettings.maxRounds)
-        header = (
-          <div>
-            <Typography variant="h4" gutterBottom sx={{
-              fontFamily: "Londrina Solid",
-              textAlign: "center",
-            }}>
-              Final Scoreboard
-            </Typography>
-            <Typography variant="h5" gutterBottom sx={{
-              fontFamily: "Londrina Solid",
-              textAlign: "center",
-            }}>
-              Winner: {sortedPlayers[0].username}
-            </Typography>
-          </div>
-        )
-      }
     }
   }, [gameState]);
 
@@ -83,8 +62,6 @@ const RoundScoreboard = () => {
       }
     }
   }, [])
-
-  // Sort players by score
 
   return (
     <BackgroundImageLobby>
