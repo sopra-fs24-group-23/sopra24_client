@@ -53,7 +53,7 @@ const Lobby = () => {
   const [isHost, setIsHost] = useState(false);
   const { lobbyId } = useParams();
   const [settings, setSettings] = useState<GameSettings>({
-    categories: ["Country", "City", "Movie"],
+    categories: ["Country", "City", "Movie/Series"],
     maxRounds: 5,
     votingDuration: 30,
     inputDuration: 60,
@@ -229,7 +229,7 @@ const Lobby = () => {
       let newCategories = event.target.value as string[];
       // If new category is empty, set it to the default categories
       if (newCategories.length === 0) {
-        newCategories = ["Country", "City", "Movie"];
+        newCategories = ["Country", "City", "Movie/Series"];
       }
       setTempCategories(newCategories);
     };
@@ -284,7 +284,7 @@ const Lobby = () => {
                 >
                   <MenuItem value={"City"}>City</MenuItem>
                   <MenuItem value={"Country"}>Country</MenuItem>
-                  <MenuItem value={"Movie"}>Movie</MenuItem>
+                  <MenuItem value={"Movie/Series"}>Movie/Series</MenuItem>
                   <MenuItem value={"Animal"}>Animal</MenuItem>
                   <MenuItem value={"Celebrity"}>Celebrity</MenuItem>
                 </Select>
@@ -363,10 +363,6 @@ const Lobby = () => {
         alignItems: "center",
         //height: "50vh", // Use viewport height to fill the screen
         padding: "20px",
-        //display: "flex",
-        //flexDirection: "column",
-        //alignItems: "center",
-        //justifyContent: "space-between",
         backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
         borderColor: "black",
         borderWidth: "2px",
@@ -374,12 +370,9 @@ const Lobby = () => {
         borderRadius: "27px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         width: "90%",
-        //maxWidth: "800px",
         height: "5%",
         margin: "auto",
         position: "relative",
-        //paddingTop: "20px",
-        //paddingBottom: "10px",
         top: 30,
         marginBottom: "30px",
       }}>
