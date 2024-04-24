@@ -1,27 +1,33 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import TextField from "@mui/material/TextField";
+import React, { useEffect, useState } from "react";
 import { Typography } from "@mui/material";
+import PropTypes from "prop-types";
 
-const Countdown = (duration: number, description: string) => {
+const Countdown = ({ duration, description}) => {
   const [counter, setCounter] = useState(duration)
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCounter(prevCounter => prevCounter > 0 ? prevCounter -1 : 0)
+      const currentCount = counter;
+      setCounter(currentCount > 0 ? currentCount-1 : 0)
     }, 1000);
 
     return () => clearInterval(timer)
-  }, []);
+  }, [counter]);
 
   return (
-    <Typography sx={{
+    <Typography variant="h5" sx={{
       fontFamily: "Londrina Solid",
       textAlign: "center",
+      color: counter < 6 ? "red" : "black",
     }}>
       {description}{counter}
     </Typography>
   )
+}
+
+Countdown.propTypes = {
+  duration: PropTypes.number,
+  description: PropTypes.string
 }
 
 export default Countdown;
