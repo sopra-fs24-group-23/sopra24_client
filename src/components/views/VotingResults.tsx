@@ -1,8 +1,33 @@
 import BackgroundImageLobby from "../../styles/views/BackgroundImageLobby";
 import { Box, Typography } from "@mui/material";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import GameStateContext from "../../contexts/GameStateContext";
+import { useNavigate, useParams } from "react-router-dom";
 
 const VotingResults = () => {
+  const { lobbyId } = useParams();
+  const navigate = useNavigate();
+  const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
+
+  /* Context variables */
+  const { gameState, setGameStateVariable } = useContext(GameStateContext);
+
+  useEffect(() => {
+
+    // Access the current answers of all players
+    const answers = gameState.players.map(player => player.currentAnswers);
+    setAllPlayersAnswers(answers);
+
+    if (gameState.gamePhase === "SCOREBOARD") {
+      navigate(`/lobbies/${lobbyId}/scoreboard`);
+    }
+    if (gameState.gamePhase === "ENDED") {
+      navigate(`/lobbies/${lobbyId}/winners`);
+    }
+  }, []);
+
+
+
   return (
     <BackgroundImageLobby>
       <Box sx={{
