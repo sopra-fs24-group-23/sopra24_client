@@ -35,7 +35,8 @@ const RoundVoting = () => {
     if (gameState.gamePhase === "VOTING_RESULTS") {
       navigate(`/lobbies/${lobbyId}/voting-results`);
     }
-  }, []);
+  }, [gameState.gamePhase]);
+
   useEffect(() => {
     if (gameState.gamePhase === "AWAITING_VOTES" && doubts.length > 0) {
       console.log("Sending doubts to backend:", JSON.stringify(doubts));
