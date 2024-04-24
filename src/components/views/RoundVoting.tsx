@@ -36,14 +36,15 @@ const RoundVoting = () => {
       navigate(`/lobbies/${lobbyId}/voting-results`);
     }
   }, []);
+
   useEffect(() => {
-    if (gameState.gamePhase === "AWAITING_VOTES" && doubts.length > 0) {
+    if (gameState.gamePhase === "AWAITING_VOTES") {
       console.log("Sending doubts to backend:", JSON.stringify(doubts));
 
       send(`/app/games/${lobbyId}/doubt/${user.username}`, JSON.stringify(doubts));
       setDoubts([]); // Clear doubts after sending
     }
-  }, [gameState.gamePhase, doubts, lobbyId, send]);
+  }, [gameState]);
 
   // Function to handle the doubt of a player's answer
 
