@@ -5,7 +5,13 @@ import PropTypes from "prop-types";
 const GameFormField = (props) => {
   return (
     <div>
-      <TextField id="outlined-basic" label={props.label} variant="outlined" defaultValue={props.value} onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.onChange(event.target.value)}
+      <TextField
+        id="outlined-basic"
+        label={props.label}
+        type={props.type}
+        variant="outlined"
+        defaultValue={props.value}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.onChange(event.target.value)}
         sx={{
           "& label": {
             fontFamily: "Londrina Solid, cursive",
@@ -22,6 +28,7 @@ GameFormField.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
   onChange: PropTypes.func,
+  type: PropTypes.string
 };
 
 export default GameFormField;

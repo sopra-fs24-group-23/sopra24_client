@@ -78,6 +78,7 @@ const Login = () => {
             <div style={{ margin: "10px 0" }}></div>
             <GameFormField
               label="Password"
+              type="password"
               value={password}
               onChange={(n) => setPassword(n)}
             />
