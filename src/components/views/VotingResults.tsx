@@ -28,7 +28,32 @@ const VotingResults = () => {
     }
   }, [gameState.gamePhase]);
 
-
+  const renderPlayerAnswers = (player) => {
+    return (
+      <Box key={player.id} sx={{
+        backgroundColor: "white",
+        borderRadius: "10px",
+        padding: "10px",
+        margin: "10px 0",
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+        borderColor: "black",
+        borderWidth: "2px",
+        borderStyle: "solid",
+      }}>
+        <Typography variant="h6">{player.username}</Typography>
+        {player.currentAnswers.map((answer, index) => (
+          <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0"}}>
+            <Typography>{answer.category}</Typography>
+            <Typography>{answer.answer}</Typography>
+            <Typography>{answer.isDoubted ? "Doubted" : ""}</Typography>
+            <Typography>{answer.isUnique ? "Unique" : "Not Unique"}</Typography>
+            <Typography>{answer.isCorrect ? "Correct" : "Not Correct"}</Typography>
+            <Typography>{answer.isJoker ? "Joker" : ""}</Typography>
+      </Box>
+        ))}
+      </Box>
+    );
+  };
 
   return (
     <BackgroundImageLobby>
@@ -50,9 +75,15 @@ const VotingResults = () => {
           fontFamily: "Londrina Solid",
           textAlign: "center",
         }}>
-          Voting Results!
+          Voting Results
         </Typography>
         <Countdown duration={gameSettings.scoreboardDuration}/>
+        {/* Iterate over all players to render their answers */}
+        {gameState.players.map((player) => (
+          <React.Fragment key={player.id}>
+            {renderPlayerAnswers(player)}
+          </React.Fragment>
+        ))}
       </Box>
     </BackgroundImageLobby>
   );
