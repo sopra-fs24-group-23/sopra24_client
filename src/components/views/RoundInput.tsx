@@ -65,19 +65,28 @@ const RoundInput = () => {
   };
 
   const handleJokerClick = (category) => {
-    // Reset the isJoker property of the previous jokerCategory to false
-    if (jokerCategory) {
-      inputRefs.current[jokerCategory] = {
-        ...inputRefs.current[jokerCategory],
+    // If the clicked category is already the jokerCategory, unset it
+    if (jokerCategory === category) {
+      inputRefs.current[category] = {
+        ...inputRefs.current[category],
         isJoker: false
       };
+      setJokerCategory("");
+    } else {
+      // Reset the isJoker property of the previous jokerCategory to false
+      if (jokerCategory) {
+        inputRefs.current[jokerCategory] = {
+          ...inputRefs.current[jokerCategory],
+          isJoker: false
+        };
+      }
+      // Set the new jokerCategory and update the isJoker property of the corresponding category in inputRefs.current
+      setJokerCategory(category);
+      inputRefs.current[category] = {
+        ...inputRefs.current[category],
+        isJoker: true
+      };
     }
-    // Set the new jokerCategory and update the isJoker property of the corresponding category in inputRefs.current
-    setJokerCategory(category);
-    inputRefs.current[category] = {
-      ...inputRefs.current[category],
-      isJoker: true
-    };
   };
 
   const formatAndSendAnswers = (answers) => {
