@@ -15,6 +15,7 @@ const RoundVoting = () => {
   const navigate = useNavigate();
   const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
   const [doubts, setDoubts] = useState([]);
+  const [doubtedAnswers, setDoubtedAnswers] = useState([]);
 
 
   /* Context variables */
@@ -55,10 +56,26 @@ const RoundVoting = () => {
       username: playerId,
       category: category,
     };
-    setDoubts(doubts => [...doubts, newDoubt]);
+
+    // Check if the answer is already doubted
+    const isAlreadyDoubted = doubtedAnswers.some(
+      (doubt) => doubt.username === newDoubt.username && doubt.category === newDoubt.category
+    );
+
+    if (isAlreadyDoubted) {
+      // If the answer is already doubted, remove it from the state
+      setDoubtedAnswers(doubtedAnswers.filter(
+        (doubt) => !(doubt.username === newDoubt.username && doubt.category === newDoubt.category)
+      ));
+      setDoubts(doubts.filter(
+        (doubt) => !(doubt.username === newDoubt.username && doubt.category === newDoubt.category)
+      ));
+    } else {
+      // If the answer is not doubted, add it to the state
+      setDoubtedAnswers([...doubtedAnswers, newDoubt]);
+      setDoubts([...doubts, newDoubt]);
+    }
   };
-
-
 
   // Render the players and their answers
   const renderPlayerAnswers = (player) => {
@@ -78,13 +95,16 @@ const RoundVoting = () => {
         {/* Iterate over the player's currentAnswers */}
         {player.currentAnswers.map((answer, index) => {
           const isCurrentUser = user.username === player.username;
+          const isDoubted = doubtedAnswers.some(
+            (doubt) => doubt.username === player.username && doubt.category === answer.category
+          );
 
           return (
             <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
               <Typography>{answer.category}</Typography>
               <Typography sx={{ flex: isCurrentUser ? "1" : "none", textAlign: "center" }}>{answer ? answer.answer : "-"}</Typography>
               {!isCurrentUser && (
-              <IconButton onClick={() => handleDoubt(player.username, answer.category)}>
+              <IconButton onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "red" : "grey" }}>
                 <CancelOutlinedIcon />
               </IconButton>
               )}
