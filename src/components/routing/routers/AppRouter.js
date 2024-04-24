@@ -43,7 +43,7 @@ const AppRouter = () => {
           <Route path="/lobbies/:lobbyId/scoreboard" element={<RoundScoreboard/>} />
           <Route path="/lobbies/:lobbyId/input" element={<RoundInput />} />
           <Route path="/lobbies/:lobbyId/voting" element={<RoundVoting />} />
-          <Route path="/lobbies/:lobbyId/round-voting" element={<VotingResults />} />
+          <Route path="/lobbies/:lobbyId/voting-results" element={<VotingResults />} />
           <Route path="/lobbies/:lobbyId/winners" element={<FinalScoreboard />} />
         </Route>
 

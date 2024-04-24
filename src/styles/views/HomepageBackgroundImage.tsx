@@ -13,6 +13,10 @@ const HomepageBackgroundImage = ( {children}) => {
         width: "100vw", // 100% of the viewport width
         height: "100vh", // 100% of the viewport height
         position: "relative", // Changed to relative for stacking content
+        display: "flex", // Ensure the children are flex items
+        flexDirection: "column", // Stack children vertically
+        justifyContent: "flex-start",
+        overflow: "auto", // Allow the children to scroll
       }}
     >
       {children}

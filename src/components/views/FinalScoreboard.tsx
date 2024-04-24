@@ -6,16 +6,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import CustomButton from "../ui/CustomButton";
+import Confetti from "react-confetti"
 interface Player {
   username: string;
   currentScore: number;
 }
-const RoundScoreboard = () => {
+const FinalScoreboard = () => {
   const { lobbyId } = useParams();
   const navigate = useNavigate();
   const [players, setPlayers] = useState<Player[]>([]);
   const gameContinuing = useRef(false)
   let sortedPlayers = [];
+  const [showConfetti, setShowConfetti] = useState(true);
 
   /* In case there are several player with the same highest score */
   const highestScore = players[0]?.currentScore;
@@ -61,12 +63,21 @@ const RoundScoreboard = () => {
     }
   }, [])
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowConfetti(false);
+    }, 5000); // Change confettig display after 5 seconds
+
+    return () => clearTimeout(timer); // Clean-up timer on unmount
+  }, []);
+
   const handleLeaveGame = () => {
     navigate("/homepage");
   }
 
   return (
     <BackgroundImageLobby>
+      {showConfetti && <Confetti />}
       <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
@@ -98,4 +109,4 @@ const RoundScoreboard = () => {
   );
 };
 
-export default RoundScoreboard;
+export default FinalScoreboard;

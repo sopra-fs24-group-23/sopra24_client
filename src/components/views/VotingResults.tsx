@@ -21,10 +21,10 @@ const VotingResults = () => {
     if (gameState.gamePhase === "SCOREBOARD") {
       navigate(`/lobbies/${lobbyId}/scoreboard`);
     }
-    if (gameState.gamePhase === "ENDED") {
+    else if (gameState.gamePhase === "ENDED") {
       navigate(`/lobbies/${lobbyId}/winners`);
     }
-  }, []);
+  }, [gameState.gamePhase]);
 
 
 
