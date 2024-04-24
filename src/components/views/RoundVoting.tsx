@@ -2,69 +2,90 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Typography, List, ListItem, Box } from "@mui/material";
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
-import WebSocketContext from "../../contexts/WebSocketContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
-import { Message } from "@stomp/stompjs";
 import GameStateContext from "../../contexts/GameStateContext";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import IconButton from "@mui/material/IconButton";
+import WebSocketContext from "../../contexts/WebSocketContext";
+import UserContext from "../../contexts/UserContext";
 
 const RoundVoting = () => {
   const { lobbyId } = useParams();
   const navigate = useNavigate();
-  const [playersAnswers, setPlayersAnswers] = useState([]);
-  const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
+  const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
+  const [doubts, setDoubts] = useState([]);
+
+
+  /* Context variables */
   const { setGameSettingsVariable, gameSettings } = useContext(GameSettingsContext);
   const { gameState, setGameStateVariable } = useContext(GameStateContext);
+  const { send } = useContext(WebSocketContext);
+  const { user } = useContext(UserContext);
+
 
   useEffect(() => {
-    console.log(lobbyId);
-    //connect(lobbyId).then(() => {
     console.log("Test");
     // Log the categories
     console.log("Categories: ", gameSettings.categories);
 
-    // Subscribe to the game states updates
-    subscribeClient(
-      `/topic/games/${lobbyId}/state`,
-      (message: Message) => {
-        console.log(`Received GameState update: ${message.body}`);
-        const receivedGameState = JSON.parse(message.body);
-        setPlayersAnswers(receivedGameState.players.map((player: any) => player.currentAnswers));
+    // Access the current answers of all players
+    const answers = gameState.players.map(player => player.currentAnswers);
+    setAllPlayersAnswers(answers);
 
-
-        // Check if the new game phase is VOTING_RESULTS and navigate to the page
-        if (receivedGameState.gamePhase === "VOTING_RESULTS") {
-          navigate(`/lobbies/${lobbyId}/voting-results`);
-        }
-      }
-    );
-    //});
-
-    return () => {
-      disconnect();
-    };
+    if (gameState.gamePhase === "VOTING_RESULTS") {
+      navigate(`/lobbies/${lobbyId}/voting-results`);
+    }
   }, []);
+  useEffect(() => {
+    if (gameState.gamePhase === "AWAITING_VOTES" && doubts.length > 0) {
+      console.log("Sending doubts to backend:", JSON.stringify(doubts));
+
+      send(`/app/games/${lobbyId}/doubt/${user.username}`, JSON.stringify(doubts));
+      setDoubts([]); // Clear doubts after sending
+    }
+  }, [gameState.gamePhase, doubts, lobbyId, send]);
+
+  // Function to handle the doubt of a player's answer
+
+
+  const handleDoubt = (playerId, category) => {
+    const newDoubt = {
+      username: playerId,
+      category: category,
+    };
+    setDoubts(doubts => [...doubts, newDoubt]);
+  };
+
+
 
   // Render the players and their answers
   const renderPlayerAnswers = (player) => {
+
     return (
-      <Box key={player.username} sx={{
-        backgroundColor: "#e0e0e0",
+      <Box key={player.id} sx={{
+        backgroundColor: "white",
         borderRadius: "10px",
         padding: "10px",
         margin: "10px 0",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)"
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+        borderColor: "black",
+        borderWidth: "2px",
+        borderStyle: "solid",
       }}>
         <Typography variant="h6">{player.username}</Typography>
-        {/* Iterate over the game settings (categories) */}
-        {gameSettings.categories.map((category, index) => {
-          {/* Find the corresponding answer from the player's answers */
-          }
-          const answer = player.answers.find((answer) => answer.category === category);
-          
+        {/* Iterate over the player's currentAnswers */}
+        {player.currentAnswers.map((answer, index) => {
+          const isCurrentUser = user.username === player.username;
+
           return (
             <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
-              <Typography>{category}</Typography>
-              <Typography>{answer ? answer.value : "-"}</Typography>
+              <Typography>{answer.category}</Typography>
+              <Typography sx={{ flex: isCurrentUser ? "1" : "none", textAlign: "center" }}>{answer ? answer.answer : "-"}</Typography>
+              {!isCurrentUser && (
+              <IconButton onClick={() => handleDoubt(player.username, answer.category)}>
+                <CancelOutlinedIcon />
+              </IconButton>
+              )}
             </Box>
           );
         })}
@@ -80,7 +101,7 @@ const RoundVoting = () => {
         borderWidth: "2px",
         borderStyle: "solid",
         width: "60%",
-        height: "60%",
+        height: "auto",
         margin: "auto",
         padding: "20px",
         borderRadius: "10px",
@@ -92,14 +113,14 @@ const RoundVoting = () => {
           fontFamily: "Londrina Solid",
           textAlign: "center",
         }}>
-          Vote for wrong answers!
+          Did somebody use a joker here ?!
         </Typography>
-        {/* Render the categories */}
-        {gameSettings && gameSettings.categories && gameSettings.categories.map((category, index) => (
-          <Typography key={index}>{category}</Typography>
-        ))}
         {/* Iterate over all players to render their answers */}
-        {playersAnswers.map((player) => renderPlayerAnswers(player))}
+        {gameState.players.map((player) => (
+          <React.Fragment key={player.id}>
+            {renderPlayerAnswers(player)}
+          </React.Fragment>
+        ))}
       </Box>
     </BackgroundImageLobby>
   );

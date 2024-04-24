@@ -5,6 +5,7 @@ import WebSocketContext from "../../contexts/WebSocketContext";
 import { useNavigate, useParams } from "react-router-dom";
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
+import CustomButton from "../ui/CustomButton";
 interface Player {
   username: string;
   currentScore: number;
@@ -13,10 +14,12 @@ const RoundScoreboard = () => {
   const { lobbyId } = useParams();
   const navigate = useNavigate();
   const [players, setPlayers] = useState<Player[]>([]);
-  const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
-  const [maxRoundNumber, setMaxRoundNumber] = useState(0);
   const gameContinuing = useRef(false)
   let sortedPlayers = [];
+
+  /* In case there are several player with the same highest score */
+  const highestScore = players[0]?.currentScore;
+  const winners = players.filter(player => player.currentScore === highestScore);
 
   /* Context Variables */
   const { gameState } = useContext(GameStateContext);
@@ -29,18 +32,13 @@ const RoundScoreboard = () => {
       fontFamily: "Londrina Solid",
       textAlign: "center",
     }}>
-      Scoreboard
+      {/* Check if there is a tie, else display the individual winner */}
+      {winners.length > 1 ? "There is a tie!" : `${winners[0]?.username} has won!`}
     </Typography>
   )
 
   useEffect(() => {
     if (gameState) {
-      if (gameState.gamePhase) {
-        if (gameState.gamePhase === "INPUT") {
-          gameContinuing.current = true;
-          navigate(`/lobbies/${lobbyId}/input`)
-        }
-      }
       if (gameState.players) {
         const players = gameState.players.map((player: any) => ({
           username: player.username,
@@ -62,6 +60,10 @@ const RoundScoreboard = () => {
       }
     }
   }, [])
+
+  const handleLeaveGame = () => {
+    navigate("/homepage");
+  }
 
   return (
     <BackgroundImageLobby>
@@ -90,6 +92,7 @@ const RoundScoreboard = () => {
             </ListItem>
           ))}
         </List>
+        <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
       </Box>
     </BackgroundImageLobby>
   );

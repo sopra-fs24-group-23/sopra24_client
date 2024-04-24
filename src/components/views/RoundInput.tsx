@@ -1,105 +1,111 @@
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
-import React, { useContext, useEffect, useState } from "react";
-import { List, ListItem, Typography, Box, } from "@mui/material";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";
-import { Message } from "@stomp/stompjs";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomButton from "components/ui/CustomButton";
 import TextField from "@mui/material/TextField";
-import  Answer from "models/Answer.js"
 import GameStateContext from "../../contexts/GameStateContext";
-
+import GameSettingsContext from "../../contexts/GameSettingsContext";
+import UserContext from "../../contexts/UserContext";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import IconButton from "@mui/material/IconButton";
 const RoundInput = () => {
+  /* Context Variables */
+  const { gameSettings } = useContext(GameSettingsContext);
+  const { unsubscribeAll, disconnect, send } = useContext(WebSocketContext);
+  const { gameState } = useContext(GameStateContext);
+  const { user } = useContext(UserContext);
+
   const { lobbyId } = useParams();
   const navigate = useNavigate();
-  const [hasReceivedInitialState, setHasReceivedInitialState] = useState(false);
-  const [userAnswers, setUserAnswers] = useState({}); // Adjust to hold answers for each category
-  const [inputPhaseClosed, setInputPhaseClosed] = useState(false);
-  const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
-  const { setGameStateVariable, setGamePhase } = useContext(GameStateContext);
+  //const inputRefs = useRef(false);
+  const inputRefs = useRef<InputRefType>({});
+  const gameContinuing = useRef(false);
+  const [jokerCategory, setJokerCategory] = useState("");
 
-
-
-  useEffect(() => {
-    connect(lobbyId).then(() => {
-      const subscription = subscribeClient(`/topic/games/${lobbyId}/state`, (message) => {
-        const gameState = JSON.parse(message.body);
-        setGameStateVariable(gameState)
-        if (gameState.gamePhase === "AWAITING_ANSWERS") {
-
-          submitAllAnswers();
-          console.log("submitted all answers")
-          setInputPhaseClosed(true); // Set input phase as closed based on server message
-        }
-        if (gameState.gamePhase === "VOTING") {
-          navigate(`/lobbies/${lobbyId}/voting`);
-        }
-        if (gameState.players) {
-          // Update local state based on the latest game state
-          const updatedAnswers = {};
-          gameState.players.forEach(player => {
-            updatedAnswers[player.id] = player.currentAnswers;
-          });
-          setUserAnswers(updatedAnswers); // This might need adjustments based on your data structure
-        }
-      });
-
-      // The cleanup function needs to be inside the then() to ensure it has access to the subscription
-      return () => {
-        unsubscribeClient(subscription);
-      };
-    });
-
-    // It's important to include an empty return statement here to handle cases where the component unmounts before the connection is established
-    return () => {};
-
-  }, [lobbyId, navigate, subscribeClient, unsubscribeClient, setInputPhaseClosed]);
-
-  const handleInputChange = (category, value) => {
-    const updatedAnswers = {...userAnswers, [category]: value};
-    setUserAnswers(updatedAnswers);
-    localStorage.setItem('userAnswers', JSON.stringify(updatedAnswers)); // Sync with local storage
+  type InputRefType = {
+    [key: string]: {
+      answer: string;
+      isJoker: boolean;
+    };
   };
 
   useEffect(() => {
-    // Load from local storage on component mount
-    const savedAnswers = JSON.parse(localStorage.getItem('userAnswers'));
-    if (savedAnswers) {
-      setUserAnswers(savedAnswers);
+    if (gameSettings.categories) {
+      console.log("DEBUG refs were initialized")
+      inputRefs.current = gameSettings.categories.reduce((acc, category) => ({ ...acc, [category]: { answer: "", isJoker: false} }), {})
     }
-  }, []);
+  }, [gameSettings]);
+
+  useEffect(() => {
+    if (gameState.gamePhase === "AWAITING_ANSWERS") {
+      gameContinuing.current = true;
+      handleAwaitingAnswers()
+      navigate(`/lobbies/${lobbyId}/voting`)
+    }
+  }, [gameState]);
+
+  useEffect(() => {
+    return () => {
+      if (!gameContinuing.current) {
+        const token = localStorage.getItem("token");
+        send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
+        unsubscribeAll()
+        disconnect()
+      }
+    }
+  }, [])
+
+  const handleInputChange = (pCategory, value) => {
+    inputRefs.current[pCategory] = {
+      answer: value,
+      isJoker: pCategory === jokerCategory
+    };
+  };
+
+  const handleJokerClick = (category) => {
+    // Reset the isJoker property of the previous jokerCategory to false
+    if (jokerCategory) {
+      inputRefs.current[jokerCategory] = {
+        ...inputRefs.current[jokerCategory],
+        isJoker: false
+      };
+    }
+    // Set the new jokerCategory and update the isJoker property of the corresponding category in inputRefs.current
+    setJokerCategory(category);
+    inputRefs.current[category] = {
+      ...inputRefs.current[category],
+      isJoker: true
+    };
+  };
 
   const formatAndSendAnswers = (answers) => {
-    const answersList = Object.entries(answers).map(([category, answer]) => ({
-      category: category,
-      answer: answer,
-      isDoubted: false,
-      isJoker: false,
-      isUnique: true,
-      isCorrect: null
-    }));
+    //const answersList = Object.entries(answers).map(([category, { answer, isJoker }]) => ({
+    const answersList = Object.entries(answers).map(([category, value]) => {
+      const { answer, isJoker } = value as { answer: string; isJoker: boolean; };
+      return {
+        category: category,
+        answer: answer,
+        isDoubted: false,
+        isJoker: isJoker,
+        isUnique: false,
+        isCorrect: false
+      }
+    });
 
-    const payload = { answers: answersList };
-    console.log("Payload being sent:", JSON.stringify(payload));
-    send(`/app/games/${lobbyId}/setAnswers`, JSON.stringify(payload));
+    console.log("Payload being sent:", JSON.stringify(answersList));
+    send(`/app/games/${lobbyId}/answers/${user.username}`, JSON.stringify(answersList));
   };
 
-  const handleDoneClick = async () => {
-    console.log("Manually sending userAnswers:", userAnswers);
-    formatAndSendAnswers(userAnswers);
-  };
+  const handleDone = () => {
+    send(`/app/games/${lobbyId}/close-inputs`)
+  }
 
-  const submitAllAnswers = async () => {
-    console.log("Automatically sending all userAnswers from storage:", userAnswers);
-    const storedAnswers = JSON.parse(localStorage.getItem('userAnswers')) || {};
-    formatAndSendAnswers(storedAnswers);
-  };
-
-
-
-
-
-
+  const handleAwaitingAnswers = () => {
+    console.log("DEBUG Sending answers to BE")
+    formatAndSendAnswers(inputRefs.current);
+  }
 
   return (
     <BackgroundImageLobby>
@@ -125,22 +131,35 @@ const RoundInput = () => {
           fontFamily: "Londrina Solid",
           textAlign: "center",
         }}>
-          Write words that start with A
+          Answers must start with {gameState.currentLetter}
         </Typography>
-        <TextField label="Country" onChange={(e) => handleInputChange('country', e.target.value)} />
-        <TextField label="City" onChange={(e) => handleInputChange('city', e.target.value)} />
-        <TextField label="Movie" onChange={(e) => handleInputChange('movie', e.target.value)} />
-        <TextField label="Animal" onChange={(e) => handleInputChange('animal', e.target.value)} />
-        <TextField label="Celebrity" onChange={(e) => handleInputChange('celebrity', e.target.value)} />
-        <CustomButton onClick={handleDoneClick}>
+        <Box sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          flexWrap: "wrap",
+          width: "90%"
+        }}>
+        {gameSettings && gameSettings.categories && gameSettings.categories.map((category) => (
+          <Box key={category} sx={{ margin: "10px 0" }}>
+          <TextField
+              label={category}
+              key={category}
+              onChange={(e) => handleInputChange(category, e.target.value)}
+            />
+            <IconButton onClick={() => handleJokerClick(category)}>
+              <AutoAwesomeIcon style={{ color: jokerCategory === category ? "green" : "grey" }} />
+            </IconButton>
+            </Box>
+            ))}
+        </Box>
+        <CustomButton onClick={handleDone}>
             Done
-        </CustomButton>
-        <CustomButton onClick={() => navigate(`/lobbies/${lobbyId}/voting`)}>
-            Voting
         </CustomButton>
       </Box>
     </BackgroundImageLobby>
-  );
+  )
 }
 
 export default RoundInput;

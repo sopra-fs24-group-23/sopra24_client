@@ -53,7 +53,7 @@ const Lobby = () => {
   const [isHost, setIsHost] = useState(false);
   const { lobbyId } = useParams();
   const [settings, setSettings] = useState<GameSettings>({
-    categories: ["Country", "City", "Movie"],
+    categories: ["Country", "City", "Movie/Series"],
     maxRounds: 5,
     votingDuration: 30,
     inputDuration: 60,
@@ -67,7 +67,7 @@ const Lobby = () => {
 
   /* Context Variables*/
   const { user } = useContext(UserContext);
-  const { setGameStateVariable, setGamePhase } = useContext(GameStateContext);
+  const { setGameStateVariable } = useContext(GameStateContext);
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
   const { setGameSettingsVariable } = useContext(GameSettingsContext);
 
@@ -107,7 +107,7 @@ const Lobby = () => {
           () => {
             lobbyClosing.current = true
             // host doesn't need to be notified
-            if (!isHost) alert("Sorry, the host has left the lobby! Returning you to the homepage.")
+            if (!isHost) alert("Sorry, the host has left the game! Returning you to the homepage.")
             navigate("/homepage")
           }
         )
@@ -229,7 +229,7 @@ const Lobby = () => {
       let newCategories = event.target.value as string[];
       // If new category is empty, set it to the default categories
       if (newCategories.length === 0) {
-        newCategories = ["Country", "City", "Movie"];
+        newCategories = ["Country", "City", "Movie/Series"];
       }
       setTempCategories(newCategories);
     };
@@ -284,8 +284,9 @@ const Lobby = () => {
                 >
                   <MenuItem value={"City"}>City</MenuItem>
                   <MenuItem value={"Country"}>Country</MenuItem>
-                  <MenuItem value={"Movie"}>Movie</MenuItem>
-
+                  <MenuItem value={"Movie/Series"}>Movie/Series</MenuItem>
+                  <MenuItem value={"Animal"}>Animal</MenuItem>
+                  <MenuItem value={"Celebrity"}>Celebrity</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -300,7 +301,7 @@ const Lobby = () => {
             </Grid>
             <Grid item xs={6}>
               <TextField
-                label="Voting Duration (seconds)"
+                label="Time-limit for voting (seconds)"
                 value={tempSettings.votingDuration}
                 onChange={(e) => handleInputChange(e, "votingDuration")}
                 error={errors.votingDuration}
@@ -309,7 +310,7 @@ const Lobby = () => {
             </Grid>
             <Grid item xs={6}>
               <TextField
-                label="Duration of a round (seconds)"
+                label="Time-limit for answering (seconds)"
                 value={tempSettings.inputDuration}
                 onChange={(e) => handleInputChange(e, "inputDuration")}
                 error={errors.inputDuration}
@@ -343,10 +344,10 @@ const Lobby = () => {
             {/* Render read-only info for other players*/}
             <Typography>Categories: {settings.categories.join(", ")}</Typography>
             <Typography>Max Rounds: {settings.maxRounds}</Typography>
-            <Typography>Voting Duration (seconds): {settings.votingDuration}</Typography>
-            <Typography>Duration of a round (seconds): {settings.inputDuration}</Typography>
+            <Typography>Time-limit to vote (seconds): {settings.votingDuration}</Typography>
+            <Typography>Time-limit to answer (seconds): {settings.inputDuration}</Typography>
             <Typography>Duration to view scoreboard (seconds): {settings.scoreboardDuration}</Typography>
-            <Typography>Max number of players (seconds): {settings.maxPlayers}</Typography>
+            <Typography>Max number of players: {settings.maxPlayers}</Typography>
           </>
         )}
         <CustomButton onClick={handleCloseSettings}>Close</CustomButton>
@@ -362,10 +363,6 @@ const Lobby = () => {
         alignItems: "center",
         //height: "50vh", // Use viewport height to fill the screen
         padding: "20px",
-        //display: "flex",
-        //flexDirection: "column",
-        //alignItems: "center",
-        //justifyContent: "space-between",
         backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
         borderColor: "black",
         borderWidth: "2px",
@@ -373,12 +370,9 @@ const Lobby = () => {
         borderRadius: "27px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         width: "90%",
-        //maxWidth: "800px",
         height: "5%",
         margin: "auto",
         position: "relative",
-        //paddingTop: "20px",
-        //paddingBottom: "10px",
         top: 30,
         marginBottom: "30px",
       }}>
