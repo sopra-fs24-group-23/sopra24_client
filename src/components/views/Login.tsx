@@ -8,6 +8,7 @@ import CustomButton from "components/ui/CustomButton";
 import Box from "@mui/material/Box";
 import UserContext from "../../contexts/UserContext";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
+import CredentialInputs from "../ui/CredentialInputs";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -70,18 +71,7 @@ const Login = () => {
         <div className="login form">
           <img src="/Images/logo.png" alt="Logo" style={{ maxWidth: "400px" }} />
           <div style={{ display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
-            <GameFormField
-              label="Username"
-              value={username}
-              onChange={(un: string) => setUsername(un)}
-            />
-            <div style={{ margin: "10px 0" }}></div>
-            <GameFormField
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(n) => setPassword(n)}
-            />
+            <CredentialInputs setUsername={setUsername} setPassword={setPassword} username={username} password={password}/>
             <div style={{ margin: "10px 0" }}></div>
             <div className="login button-container">
               <CustomButton
