@@ -6,7 +6,7 @@ const HomepageBackgroundImage = ( {children} ) => {
   return (
     <Box
       sx={{
-        backgroundImage: "url('/images/homepage_background.png')",
+        backgroundImage: "url('/Images/homepage_background.png')",
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
