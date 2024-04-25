@@ -160,7 +160,7 @@ const RoundInput = () => {
               onChange={(e) => handleInputChange(category, e.target.value)}
             />
             <IconButton onClick={() => handleJokerClick(category)}>
-              <AutoAwesomeIcon style={{ color: jokerCategory === category ? "green" : "grey" }} />
+              <AutoAwesomeIcon style={{ color: jokerCategory === category ? "yellow" : "grey" }} />
             </IconButton>
             </Box>
             ))}

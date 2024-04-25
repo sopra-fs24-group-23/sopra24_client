@@ -5,6 +5,12 @@ import GameStateContext from "../../contexts/GameStateContext";
 import { useNavigate, useParams } from "react-router-dom";
 import Countdown from "../ui/Countdown";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
+/* Icons import */
+import CircleIcon from "@mui/icons-material/Circle";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import LooksOneOutlinedIcon from "@mui/icons-material/LooksOneOutlined";
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 
 const VotingResults = () => {
   const { lobbyId } = useParams();
@@ -28,6 +34,18 @@ const VotingResults = () => {
     }
   }, [gameState.gamePhase]);
 
+  /* Render Icons */
+  const renderStatusIcons = (answer) => (
+    <Box sx={{ display: "flex", gap: "5px" }}>
+      {answer.isCorrect && <CircleIcon sx={{color: "green"}} />}
+      {answer.joker && <AutoAwesomeIcon sx={{color: "yellow"}} />}
+      {answer.isDoubted && <CancelOutlinedIcon sx={{color: "blue"}} />}
+      {answer.isUnique && <LooksOneOutlinedIcon sx={{color: "purple"}} />}
+      {!answer.isCorrect && <CircleIcon sx={{color: "red"}} />}
+      {!answer.isUnique && <ContentCopyOutlinedIcon sx={{color: "purple"}} />}
+    </Box>
+  );
+
   const renderPlayerAnswers = (player) => {
     return (
       <Box key={player.id} sx={{
@@ -45,10 +63,7 @@ const VotingResults = () => {
           <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0"}}>
             <Typography>{answer.category}</Typography>
             <Typography>{answer.answer}</Typography>
-            <Typography>{answer.isDoubted ? "Doubted" : ""}</Typography>
-            <Typography>{answer.isUnique ? "Unique" : "Not Unique"}</Typography>
-            <Typography>{answer.isCorrect ? "Correct" : "Not Correct"}</Typography>
-            <Typography>{answer.isJoker ? "Joker" : ""}</Typography>
+            {renderStatusIcons(answer)}
       </Box>
         ))}
       </Box>
