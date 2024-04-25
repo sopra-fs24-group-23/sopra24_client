@@ -35,7 +35,7 @@ const RoundInput = () => {
   useEffect(() => {
     if (gameSettings.categories) {
       console.log("DEBUG refs were initialized")
-      inputRefs.current = gameSettings.categories.reduce((acc, category) => ({ ...acc, [category]: { answer: "", isJoker: false} }), {})
+      inputRefs.current = gameSettings.categories.reduce((acc, category) => ({ ...acc, [category]: { answer: "", isJoker: false } }), {})
     }
   }, [gameSettings]);
 
@@ -94,6 +94,7 @@ const RoundInput = () => {
     //const answersList = Object.entries(answers).map(([category, { answer, isJoker }]) => ({
     const answersList = Object.entries(answers).map(([category, value]) => {
       const { answer, isJoker } = value as { answer: string; isJoker: boolean; };
+
       return {
         category: category,
         answer: answer,
@@ -143,7 +144,7 @@ const RoundInput = () => {
         }}>
           Answers must start with {gameState.currentLetter}
         </Typography>
-        <Countdown duration={gameSettings.inputDuration}/>
+        <Countdown duration={gameSettings.inputDuration} />
         <Box sx={{
           display: "flex",
           flexDirection: "column",
@@ -152,21 +153,21 @@ const RoundInput = () => {
           flexWrap: "wrap",
           width: "90%"
         }}>
-        {gameSettings && gameSettings.categories && gameSettings.categories.map((category) => (
-          <Box key={category} sx={{ margin: "10px 0" }}>
-          <TextField
-              label={category}
-              key={category}
-              onChange={(e) => handleInputChange(category, e.target.value)}
-            />
-            <IconButton onClick={() => handleJokerClick(category)}>
-              <AutoAwesomeIcon style={{ color: jokerCategory === category ? "yellow" : "grey" }} />
-            </IconButton>
+          {gameSettings && gameSettings.categories && gameSettings.categories.map((category) => (
+            <Box key={category} sx={{ margin: "10px 0" }}>
+              <TextField
+                label={category}
+                key={category}
+                onChange={(e) => handleInputChange(category, e.target.value)}
+              />
+              <IconButton onClick={() => handleJokerClick(category)}>
+                <AutoAwesomeIcon style={{ color: jokerCategory === category ? "yellow" : "grey" }} />
+              </IconButton>
             </Box>
-            ))}
+          ))}
         </Box>
         <CustomButton onClick={handleDone}>
-            Done
+          Done
         </CustomButton>
       </Box>
     </BackgroundImageLobby>
