@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Typography, List, ListItem, Box } from "@mui/material";
-import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
+import BackgroundImageLobby from "components/ui/BackgroundImageLobby";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import GameStateContext from "../../contexts/GameStateContext";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";

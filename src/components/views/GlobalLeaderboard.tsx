@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "styles/views/Game.scss";
 //import { User } from "types";
 import CustomButton from "components/ui/CustomButton";
-import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
+import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
 import { Box, Typography, List, ListItem } from "@mui/material";
 
 
