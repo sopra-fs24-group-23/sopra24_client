@@ -1,11 +1,14 @@
 import React from "react";
-import BaseContainer from "components/ui/BaseContainer";
 import { useNavigate } from "react-router-dom";
-//import { Button } from "components/ui/Button";
-import Button from "@mui/material/Button";
 import CustomButton from "components/ui/CustomButton";
 import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
 import { Box, Typography, List, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+/* Icons import */
+import CircleIcon from "@mui/icons-material/Circle";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import LooksOneOutlinedIcon from "@mui/icons-material/LooksOneOutlined";
+import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 
 const Instructions = () => {
   const navigate = useNavigate();
@@ -39,6 +42,8 @@ const Instructions = () => {
         borderRadius: "27px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         width: "90%",
+        //minHeight: "100px",
+        //maxHeight: "100px",
         //maxWidth: "800px",
         height: "5%",
         margin: "auto",

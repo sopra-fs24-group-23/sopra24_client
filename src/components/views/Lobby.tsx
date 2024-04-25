@@ -1,5 +1,5 @@
 import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../helpers/api"
@@ -7,8 +7,6 @@ import {
   Box,
   TextField,
   Typography,
-  List,
-  ListItem,
   Dialog,
   DialogActions,
   DialogContent,
@@ -29,7 +27,8 @@ import { Message } from "@stomp/stompjs";
 import UserContext from "../../contexts/UserContext";
 import User from "../../models/User";
 import PlayerList from "../ui/PlayerList";
-import GamePhaseContext from "../../contexts/GamePhaseContext";
+import GameStateContext from "../../contexts/GameStateContext";
+import GameSettingsContext from "../../contexts/GameSettingsContext";
 
 interface GameSettings {
   categories: string[];
@@ -46,7 +45,6 @@ interface GameSettingsProps {
 }
 const Lobby = () => {
   const [players, setPlayers] = useState([]);
-  const [lobbyDetails, setLobbyDetails] = useState(null);
   const navigate = useNavigate();
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
   const [openGameSettings, setOpenGameSettings] = useState(false);
@@ -54,18 +52,25 @@ const Lobby = () => {
   const handleCloseGameSettings = () => setOpenGameSettings(false);
   const [isHost, setIsHost] = useState(false);
   const { lobbyId } = useParams();
-  const { user } = useContext(UserContext);
   const [settings, setSettings] = useState<GameSettings>({
-    categories: ["Country", "City", "Movie"],
+    categories: ["Country", "City", "Movie/Series"],
     maxRounds: 5,
     votingDuration: 30,
     inputDuration: 60,
     scoreboardDuration: 30,
     maxPlayers: 4,
   });
-  /** Consuming Websocket Context
-   * Context provides functions: connect, disconnect, subscribeClient, unsubscribeClient **/
+
+  /* Variables used to determine correct clean-up action */
+  const gameStarting = useRef(false);
+  const lobbyClosing = useRef(false);
+
+  /* Context Variables*/
+  const { user } = useContext(UserContext);
+  const { setGameStateVariable } = useContext(GameStateContext);
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
+  const { setGameSettingsVariable } = useContext(GameSettingsContext);
+
   /** On component Mount/Unmount**/
   useEffect(() => {
     if (lobbyId) {
@@ -76,6 +81,7 @@ const Lobby = () => {
             console.log("Received settings update:", message.body);
             const receivedSettings = JSON.parse(message.body);
             setSettings(receivedSettings);
+            setGameSettingsVariable(receivedSettings)
           },
         );
         subscribeClient(
@@ -99,7 +105,9 @@ const Lobby = () => {
         subscribeClient(
           `/topic/lobbies/${lobbyId}/close`,
           () => {
-            alert("Sorry, the host has left the lobby! Returning you to the homepage.")
+            lobbyClosing.current = true
+            // host doesn't need to be notified
+            if (!isHost) alert("Sorry, the host has left the game! Returning you to the homepage.")
             navigate("/homepage")
           }
         )
@@ -108,8 +116,13 @@ const Lobby = () => {
           (message: Message) => {
             console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
+
+            // Update the gamePhase in the context
+            setGameStateVariable(receivedGameState)
             if (receivedGameState.gamePhase === "SCOREBOARD") {
+              //localStorage.setItem("gameState", JSON.stringify(receivedGameState));
               // Redirect to RoundScoreboard page/component
+              gameStarting.current = true;
               navigate(`/lobbies/${lobbyId}/scoreboard`);
             }
           }
@@ -143,11 +156,14 @@ const Lobby = () => {
     }
   }, [user]);
 
+  /* Cleanup useEffect */
   useEffect(() => {
     return () => {
-      if (lobbyId) {
+      // only unsub & dc if player is leaving the lobby
+      if (!gameStarting.current) {
         const token = localStorage.getItem("token");
-        send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
+        // only send leave-message if lobby isn't closing
+        if (!lobbyClosing.current) send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
         unsubscribeClient(`/topic/lobbies/${lobbyId}/settings`);
         unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
         unsubscribeClient(`/topic/games/${lobbyId}/state`);
@@ -155,9 +171,7 @@ const Lobby = () => {
       }
     }
   }, []);
-  const onSettingsChange = (newSettings) => {
-    setSettings(newSettings);
-  };
+
   const handleOpenDialog = () => {
     setOpenLeaveDialog(true);
   };
@@ -166,6 +180,7 @@ const Lobby = () => {
   };
   const handleStartGame = async () => {
     try {
+      gameStarting.current = true;
       send(`/app/games/${lobbyId}/start`, {});
     } catch (error) {
       console.error("Failed to start the game:", error);
@@ -214,7 +229,7 @@ const Lobby = () => {
       let newCategories = event.target.value as string[];
       // If new category is empty, set it to the default categories
       if (newCategories.length === 0) {
-        newCategories = ["Country", "City", "Movie"];
+        newCategories = ["Country", "City", "Movie/Series"];
       }
       setTempCategories(newCategories);
     };
@@ -269,7 +284,9 @@ const Lobby = () => {
                 >
                   <MenuItem value={"City"}>City</MenuItem>
                   <MenuItem value={"Country"}>Country</MenuItem>
-                  <MenuItem value={"Movie"}>Movie</MenuItem>
+                  <MenuItem value={"Movie/Series"}>Movie/Series</MenuItem>
+                  <MenuItem value={"Animal"}>Animal</MenuItem>
+                  <MenuItem value={"Celebrity"}>Celebrity</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -284,7 +301,7 @@ const Lobby = () => {
             </Grid>
             <Grid item xs={6}>
               <TextField
-                label="Voting Duration (seconds)"
+                label="Time-limit for voting (seconds)"
                 value={tempSettings.votingDuration}
                 onChange={(e) => handleInputChange(e, "votingDuration")}
                 error={errors.votingDuration}
@@ -293,7 +310,7 @@ const Lobby = () => {
             </Grid>
             <Grid item xs={6}>
               <TextField
-                label="Duration of a round (seconds)"
+                label="Time-limit for answering (seconds)"
                 value={tempSettings.inputDuration}
                 onChange={(e) => handleInputChange(e, "inputDuration")}
                 error={errors.inputDuration}
@@ -327,10 +344,10 @@ const Lobby = () => {
             {/* Render read-only info for other players*/}
             <Typography>Categories: {settings.categories.join(", ")}</Typography>
             <Typography>Max Rounds: {settings.maxRounds}</Typography>
-            <Typography>Voting Duration (seconds): {settings.votingDuration}</Typography>
-            <Typography>Duration of a round (seconds): {settings.inputDuration}</Typography>
+            <Typography>Time-limit to vote (seconds): {settings.votingDuration}</Typography>
+            <Typography>Time-limit to answer (seconds): {settings.inputDuration}</Typography>
             <Typography>Duration to view scoreboard (seconds): {settings.scoreboardDuration}</Typography>
-            <Typography>Max number of players (seconds): {settings.maxPlayers}</Typography>
+            <Typography>Max number of players: {settings.maxPlayers}</Typography>
           </>
         )}
         <CustomButton onClick={handleCloseSettings}>Close</CustomButton>
@@ -346,10 +363,6 @@ const Lobby = () => {
         alignItems: "center",
         //height: "50vh", // Use viewport height to fill the screen
         padding: "20px",
-        //display: "flex",
-        //flexDirection: "column",
-        //alignItems: "center",
-        //justifyContent: "space-between",
         backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
         borderColor: "black",
         borderWidth: "2px",
@@ -357,12 +370,9 @@ const Lobby = () => {
         borderRadius: "27px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         width: "90%",
-        //maxWidth: "800px",
         height: "5%",
         margin: "auto",
         position: "relative",
-        //paddingTop: "20px",
-        //paddingBottom: "10px",
         top: 30,
         marginBottom: "30px",
       }}>

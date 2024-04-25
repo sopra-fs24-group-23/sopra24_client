@@ -11,6 +11,8 @@ import GlobalLeaderboard from "../../views/GlobalLeaderboard";
 import RoundScoreboard from "../../views/RoundScoreboard";
 import RoundInput from "../../views/RoundInput";
 import RoundVoting from "../../views/RoundVoting";
+import VotingResults from "../../views/VotingResults";
+import FinalScoreboard from "../../views/FinalScoreboard";
 
 /**
  * Main router of your application.
@@ -41,6 +43,8 @@ const AppRouter = () => {
           <Route path="/lobbies/:lobbyId/scoreboard" element={<RoundScoreboard/>} />
           <Route path="/lobbies/:lobbyId/input" element={<RoundInput />} />
           <Route path="/lobbies/:lobbyId/voting" element={<RoundVoting />} />
+          <Route path="/lobbies/:lobbyId/voting-results" element={<VotingResults />} />
+          <Route path="/lobbies/:lobbyId/winners" element={<FinalScoreboard />} />
         </Route>
 
         {/* Requesting the Base-URL redirects to login page. */}

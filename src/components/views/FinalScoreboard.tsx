@@ -5,20 +5,23 @@ import WebSocketContext from "../../contexts/WebSocketContext";
 import { useNavigate, useParams } from "react-router-dom";
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
-import Countdown from "../ui/Countdown";
-
+import CustomButton from "../ui/CustomButton";
+import Confetti from "react-confetti"
 interface Player {
   username: string;
   currentScore: number;
 }
-const RoundScoreboard = () => {
+const FinalScoreboard = () => {
   const { lobbyId } = useParams();
   const navigate = useNavigate();
   const [players, setPlayers] = useState<Player[]>([]);
-  const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
-  const [maxRoundNumber, setMaxRoundNumber] = useState(0);
   const gameContinuing = useRef(false)
   let sortedPlayers = [];
+  const [showConfetti, setShowConfetti] = useState(true);
+
+  /* In case there are several player with the same highest score */
+  const highestScore = players[0]?.currentScore;
+  const winners = players.filter(player => player.currentScore === highestScore);
 
   /* Context Variables */
   const { gameState } = useContext(GameStateContext);
@@ -31,18 +34,13 @@ const RoundScoreboard = () => {
       fontFamily: "Londrina Solid",
       textAlign: "center",
     }}>
-      Scoreboard
+      {/* Check if there is a tie, else display the individual winner */}
+      {winners.length > 1 ? "There is a tie!" : `${winners[0]?.username} has won!`}
     </Typography>
   )
 
   useEffect(() => {
     if (gameState) {
-      if (gameState.gamePhase) {
-        if (gameState.gamePhase === "INPUT") {
-          gameContinuing.current = true;
-          navigate(`/lobbies/${lobbyId}/input`)
-        }
-      }
       if (gameState.players) {
         const players = gameState.players.map((player: any) => ({
           username: player.username,
@@ -65,8 +63,21 @@ const RoundScoreboard = () => {
     }
   }, [])
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowConfetti(false);
+    }, 5000); // Change confettig display after 5 seconds
+
+    return () => clearTimeout(timer); // Clean-up timer on unmount
+  }, []);
+
+  const handleLeaveGame = () => {
+    navigate("/homepage");
+  }
+
   return (
     <BackgroundImageLobby>
+      {showConfetti && <Confetti />}
       <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
@@ -82,7 +93,6 @@ const RoundScoreboard = () => {
         top: "10px",
       }}>
         {header}
-        <Countdown duration={parseInt(gameSettings.scoreboardDuration)}/>
         <List sx={{ width: "100%" }}>
           {players.map((player, index) => (
             <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -93,9 +103,10 @@ const RoundScoreboard = () => {
             </ListItem>
           ))}
         </List>
+        <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
       </Box>
     </BackgroundImageLobby>
   );
 };
 
-export default RoundScoreboard;
+export default FinalScoreboard;

@@ -61,6 +61,7 @@ const WebSocketProvider = ({ children }) => {
    * NOTICE: this method DOES NOT CALL JSON.stringify() on the body -> do it in client code!**/
   function send(destination: string, body: any) {
     if (stompClient.current && stompClient.current.active) {
+      console.log("Sending message to", destination, "with body:", body);
       stompClient.current.publish({
         destination: destination,
         body: body,
@@ -103,8 +104,16 @@ const WebSocketProvider = ({ children }) => {
     }
   }
 
+  function unsubscribeAll() {
+    if (stompClient.current && stompClient.current.active) {
+      subscriptionRequests.current.forEach((destination, request) => {
+        request.subscription.unsubscribe();
+      })
+    }
+  }
+
   return (
-    <WebSocketContext.Provider value={{ connect, disconnect, send, subscribeClient, unsubscribeClient }}>
+    <WebSocketContext.Provider value={{ connect, disconnect, send, subscribeClient, unsubscribeClient, unsubscribeAll }}>
       {children}
     </WebSocketContext.Provider>
   );
