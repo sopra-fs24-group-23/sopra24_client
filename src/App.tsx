@@ -12,10 +12,10 @@ const App = () => {
       <UserProvider>
         <GameStateProvider>
           <GameSettingsProvider>
-          <div>
-            <AppRouter />
-          </div>
-            </GameSettingsProvider>
+            <div>
+              <AppRouter />
+            </div>
+          </GameSettingsProvider>
         </GameStateProvider>
       </UserProvider>
     </WebSocketProvider>
