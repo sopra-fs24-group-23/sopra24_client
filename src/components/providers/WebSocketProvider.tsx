@@ -29,11 +29,9 @@ const WebSocketProvider = ({ children }) => {
           beforeConnect: isProduction() ? () => {} : () => console.log("Connecting websocket..."),
           onStompError: (frame) => {
             `Encountered a StompError: ${frame}`;
-            alert("Sorry! We've encountered a Stomp-Error, redirecting to homepage.")
           },
-          onWebSocketError: (frame) => {
+          onWebSocketError: () => {
             "Encountered a WebSocketError."
-            alert("Sorry! We've encountered a Websocket-Error, redirecting to homepage.")
           }
         })
         stompClient.current.onConnect = () => {
@@ -99,10 +97,8 @@ const WebSocketProvider = ({ children }) => {
     if (stompClient.current && stompClient.current.active) {
       // retrieve request from requestList
       const request = subscriptionRequests.current.get(destination);
-      if (request.subscription) {
-        // unsubscribe
-        request.subscription.unsubscribe();
-      }
+      // unsubscribe
+      request.subscription.unsubscribe();
       // delete from  requestList
       subscriptionRequests.current.delete(destination);
     }
@@ -111,9 +107,7 @@ const WebSocketProvider = ({ children }) => {
   function unsubscribeAll() {
     if (stompClient.current && stompClient.current.active) {
       subscriptionRequests.current.forEach((destination, request) => {
-        if (request.subscription) {
-          request.subscription.unsubscribe();
-        }
+        request.subscription.unsubscribe();
       })
     }
   }

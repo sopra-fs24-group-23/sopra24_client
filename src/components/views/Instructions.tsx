@@ -1,7 +1,10 @@
 import React from "react";
+import BaseContainer from "components/ui/BaseContainer";
 import { useNavigate } from "react-router-dom";
+//import { Button } from "components/ui/Button";
+import Button from "@mui/material/Button";
 import CustomButton from "components/ui/CustomButton";
-import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
+import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
 import { Box, Typography, List, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 /* Icons import */
 import CircleIcon from "@mui/icons-material/Circle";
@@ -9,7 +12,6 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import LooksOneOutlinedIcon from "@mui/icons-material/LooksOneOutlined";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
-
 
 const Instructions = () => {
   const navigate = useNavigate();
@@ -42,6 +44,8 @@ const Instructions = () => {
         height: "5%",
         margin: "auto",
         position: "relative",
+        //paddingTop: "20px",
+        //paddingBottom: "10px",
         top: 30,
         marginBottom: "30px",
       }}>
@@ -91,22 +95,19 @@ const Instructions = () => {
           With our automatic answer-checking feature, you can focus on the gameplay and not the tedious tasks of
           checking answers.<br />
           <br />
-
           Create a lobby, customize the game settings and send the lobby code to your friends so they can join.<br />
 
           Once a game is started, a cycle of several rounds begins.<br />
           During each round, a random letter is chosen and your goal is to think of words
           belonging to each categories, all starting with the imposed letter.<br />
           If you are unsure of a word, you can use the Joker button to sneak wrong answers (these won&apos;t be checked
-          unless somebody,
-          doubts your answer) but you will only be able to
-          do this once per round.<br />
-          After a round, everyone sees each others answers and can press X to doubt answers, which will
-          trigger an automatic answer-check
+          unless somebody, doubts your answer) but you will only be able to do this once per round.<br />
+          After a round, everyone sees each others answers and can press X to doubt answers, which will trigger an
+          automatic answer-check
           for the doubted answer.<br />
+
           You will then be directed to to an overview screen to see which answer was a joker, doubted, wrong, correct,
-          unique
-          or a duplicate. <br />
+          unique or a duplicate. <br />
           <br />
 
           Here is an overview of the icons used: <br />

@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
 
-const HomepageBackgroundImage = ( {children} ) => {
+const HomepageBackgroundImage = ( {children}) => {
   return (
     <Box
       sx={{

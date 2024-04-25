@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "styles/views/Game.scss";
 //import { User } from "types";
 import CustomButton from "components/ui/CustomButton";
-import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
+import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
 import { Box, Typography, List, ListItem } from "@mui/material";
 
 
@@ -26,7 +26,7 @@ const GlobalLeaderboard = () => {
   useEffect(() => {
     fetchLeaderboardData();
     const interval = setInterval(fetchLeaderboardData, 5000); // Fetch every 5 seconds
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -129,7 +129,7 @@ const GlobalLeaderboard = () => {
               Player Username
             </Typography>
             <List>
-              {leaderboardData.map((player, index) => (
+              {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
                 <ListItem key={index}>
                   <Typography>
                     {player.username}
@@ -159,7 +159,7 @@ const GlobalLeaderboard = () => {
               Games Won
             </Typography>
             <List>
-              {leaderboardData.map((player, index) => (
+              {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
                 <ListItem key={index}>
                   <Typography>
                     {player.gamesWon}
@@ -189,10 +189,10 @@ const GlobalLeaderboard = () => {
               Average Score
             </Typography>
             <List>
-              {leaderboardData.map((player, index) => (
+              {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
                 <ListItem key={index}>
                   <Typography>
-                    {player.totalScore / player.gamesPlayed}
+                    {player.gamesPlayed === 0 ? "No games played" : player.totalScore / player.gamesPlayed}
                   </Typography>
                 </ListItem>
               ))}
@@ -219,10 +219,10 @@ const GlobalLeaderboard = () => {
               Win/loss Ratio
             </Typography>
             <List>
-              {leaderboardData.map((player, index) => (
+              {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
                 <ListItem key={index}>
                   <Typography>
-                    {player.gamesWon / (player.gamesPlayed - player.gamesWon)}
+                    {player.gamesPlayed - player.gamesWon === 0 ? "No losses" : player.gamesWon / (player.gamesPlayed - player.gamesWon)}
                   </Typography>
                 </ListItem>
               ))}

@@ -1,4 +1,4 @@
-import BackgroundImageLobby from "components/ui/BackgroundImageLobby";
+import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { List, ListItem, Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";

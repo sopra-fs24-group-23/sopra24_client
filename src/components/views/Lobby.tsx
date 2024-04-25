@@ -1,4 +1,4 @@
-import BackgroundImageLobby from "components/ui/BackgroundImageLobby";
+import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
 import React, { useState, useEffect, useContext, useRef } from "react";
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
