@@ -26,7 +26,7 @@ const GlobalLeaderboard = () => {
   useEffect(() => {
     fetchLeaderboardData();
     const interval = setInterval(fetchLeaderboardData, 5000); // Fetch every 5 seconds
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -108,126 +108,126 @@ const GlobalLeaderboard = () => {
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center"
+        }}>
+          <Box sx={{
+            backgroundColor: "#e0e0e0",
+            borderColor: "black",
+            borderWidth: "2px",
+            borderStyle: "solid",
+            height: "90%",
+            margin: "auto",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+            position: "relative",
           }}>
-        <Box sx={{
-          backgroundColor: "#e0e0e0",
-          borderColor: "black",
-          borderWidth: "2px",
-          borderStyle: "solid",
-          height: "90%",
-          margin: "auto",
-          padding: "20px",
-          borderRadius: "10px",
-          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-          position: "relative",
-        }}>
-          <Typography variant="h5" gutterBottom
-            sx={{
-              fontFamily: "Londrina Solid",
-              textAlign: "center",
-            }}>
-            Player Username
-          </Typography>
-          <List>
-            {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
-              <ListItem key={index}>
-                <Typography>
-                  {player.username}
-                </Typography>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-        <Box sx={{
-          backgroundColor: "#e0e0e0",
-          borderColor: "black",
-          borderWidth: "2px",
-          borderStyle: "solid",
-          height: "90%",
-          margin: "auto",
-          padding: "20px",
-          marginLeft: "10px",
-          borderRadius: "10px",
-          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-          position: "relative",
-        }}>
-          <Typography variant="h5" gutterBottom
-            sx={{
-              fontFamily: "Londrina Solid",
-              textAlign: "center",
-            }}>
-            Games Won
-          </Typography>
-          <List>
-            {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
-              <ListItem key={index}>
-                <Typography>
-                  {player.gamesWon}
-                </Typography>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-        <Box sx={{
-          backgroundColor: "#e0e0e0",
-          borderColor: "black",
-          borderWidth: "2px",
-          borderStyle: "solid",
-          height: "90%",
-          margin: "auto",
-          marginLeft: "10px",
-          padding: "20px",
-          borderRadius: "10px",
-          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-          position: "relative",
-        }}>
-          <Typography variant="h5" gutterBottom
-            sx={{
-              fontFamily: "Londrina Solid",
-              textAlign: "center",
-            }}>
-            Average Score
-          </Typography>
-          <List>
-            {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
-              <ListItem key={index}>
-                <Typography>
-                  {player.gamesPlayed === 0 ? "No games played" : player.totalScore/player.gamesPlayed}
-                </Typography>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-        <Box sx={{
-          backgroundColor: "#e0e0e0",
-          borderColor: "black",
-          borderWidth: "2px",
-          borderStyle: "solid",
-          height: "90%",
-          margin: "auto",
-          marginLeft: "10px",
-          padding: "20px",
-          borderRadius: "10px",
-          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-          position: "relative",
-        }}>
-          <Typography variant="h5" gutterBottom
-            sx={{
-              fontFamily: "Londrina Solid",
-              textAlign: "center",
-            }}>
-            Win/loss Ratio
-          </Typography>
-          <List>
-            {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
-              <ListItem key={index}>
-                <Typography>
-                  {player.gamesPlayed - player.gamesWon === 0 ? "No losses" : player.gamesWon / (player.gamesPlayed - player.gamesWon)}
-                </Typography>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+            <Typography variant="h5" gutterBottom
+              sx={{
+                fontFamily: "Londrina Solid",
+                textAlign: "center",
+              }}>
+              Player Username
+            </Typography>
+            <List>
+              {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
+                <ListItem key={index}>
+                  <Typography>
+                    {player.username}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+          <Box sx={{
+            backgroundColor: "#e0e0e0",
+            borderColor: "black",
+            borderWidth: "2px",
+            borderStyle: "solid",
+            height: "90%",
+            margin: "auto",
+            padding: "20px",
+            marginLeft: "10px",
+            borderRadius: "10px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+            position: "relative",
+          }}>
+            <Typography variant="h5" gutterBottom
+              sx={{
+                fontFamily: "Londrina Solid",
+                textAlign: "center",
+              }}>
+              Games Won
+            </Typography>
+            <List>
+              {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
+                <ListItem key={index}>
+                  <Typography>
+                    {player.gamesWon}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+          <Box sx={{
+            backgroundColor: "#e0e0e0",
+            borderColor: "black",
+            borderWidth: "2px",
+            borderStyle: "solid",
+            height: "90%",
+            margin: "auto",
+            marginLeft: "10px",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+            position: "relative",
+          }}>
+            <Typography variant="h5" gutterBottom
+              sx={{
+                fontFamily: "Londrina Solid",
+                textAlign: "center",
+              }}>
+              Average Score
+            </Typography>
+            <List>
+              {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
+                <ListItem key={index}>
+                  <Typography>
+                    {player.gamesPlayed === 0 ? "No games played" : player.totalScore / player.gamesPlayed}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+          <Box sx={{
+            backgroundColor: "#e0e0e0",
+            borderColor: "black",
+            borderWidth: "2px",
+            borderStyle: "solid",
+            height: "90%",
+            margin: "auto",
+            marginLeft: "10px",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+            position: "relative",
+          }}>
+            <Typography variant="h5" gutterBottom
+              sx={{
+                fontFamily: "Londrina Solid",
+                textAlign: "center",
+              }}>
+              Win/loss Ratio
+            </Typography>
+            <List>
+              {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
+                <ListItem key={index}>
+                  <Typography>
+                    {player.gamesPlayed - player.gamesWon === 0 ? "No losses" : player.gamesWon / (player.gamesPlayed - player.gamesWon)}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
         </div>
       </Box>
     </HomepageBackgroundImage>

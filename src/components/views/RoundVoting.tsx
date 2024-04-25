@@ -104,9 +104,9 @@ const RoundVoting = () => {
               <Typography>{answer.category}</Typography>
               <Typography sx={{ flex: isCurrentUser ? "1" : "none", textAlign: "center" }}>{answer ? answer.answer : "-"}</Typography>
               {!isCurrentUser && (
-              <IconButton onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "blue" : "grey" }}>
-                <CancelOutlinedIcon />
-              </IconButton>
+                <IconButton onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "blue" : "grey" }}>
+                  <CancelOutlinedIcon />
+                </IconButton>
               )}
             </Box>
           );
@@ -137,7 +137,7 @@ const RoundVoting = () => {
         }}>
           Did somebody use a joker here ?!
         </Typography>
-        <Countdown duration={gameSettings.votingDuration}/>
+        <Countdown duration={gameSettings.votingDuration} />
         {/* Iterate over all players to render their answers */}
         {gameState.players.map((player) => (
           <React.Fragment key={player.id}>
