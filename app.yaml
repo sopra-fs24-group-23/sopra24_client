@@ -17,6 +17,9 @@ handlers:
   - url: /
     static_files: build/index.html
     upload: build/index.html
+  - url: /Images/(.*)
+    static_files: build/Images/\1
+    upload: build/Images/(.*)
   - url: /.*
     static_files: build/index.html
     upload: build/index.html
