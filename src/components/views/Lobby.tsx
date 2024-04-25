@@ -376,7 +376,7 @@ const Lobby = () => {
         top: 30,
         marginBottom: "30px",
       }}>
-        <img src="/images/logo.png" alt="Descriptive Text"
+        <img src="/Images/logo.png" alt="Descriptive Text"
           style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton
           onClick={handleOpenDialog}
