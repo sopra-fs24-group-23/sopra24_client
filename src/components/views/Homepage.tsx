@@ -280,7 +280,7 @@ const Homepage = () => {
                     fontFamily: "Londrina Solid",
                     textAlign: "center",
                   }}>
-                  {profile.pointsScored}</Typography>
+                  {profile.totalScore}</Typography>
               </Box>
               {/* Individual box for "Games Won" */}
               <Box sx={statBoxStyle}>
