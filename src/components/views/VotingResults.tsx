@@ -41,8 +41,8 @@ const VotingResults = () => {
       {answer.joker && <AutoAwesomeIcon sx={{ color: "yellow" }} />}
       {answer.isDoubted && <CancelOutlinedIcon sx={{ color: "blue" }} />}
       {answer.isUnique && <LooksOneOutlinedIcon sx={{ color: "purple" }} />}
-      {!answer.isCorrect && <CircleIcon sx={{ color: "red" }} />}
-      {!answer.isUnique && <ContentCopyOutlinedIcon sx={{ color: "purple" }} />}
+      {answer.answer && !answer.isCorrect && <CircleIcon sx={{ color: "red" }} />}
+      {answer.answer && !answer.isUnique && <ContentCopyOutlinedIcon sx={{ color: "purple" }} />}
     </Box>
   );
 
@@ -62,7 +62,7 @@ const VotingResults = () => {
         {player.currentAnswers.map((answer, index) => (
           <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
             <Typography>{answer.category}</Typography>
-            <Typography>{answer.answer}</Typography>
+            <Typography>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
             {renderStatusIcons(answer)}
           </Box>
         ))}
