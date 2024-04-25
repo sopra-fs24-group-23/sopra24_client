@@ -98,7 +98,9 @@ const WebSocketProvider = ({ children }) => {
       // retrieve request from requestList
       const request = subscriptionRequests.current.get(destination);
       // unsubscribe
-      request.subscription.unsubscribe();
+      if (request.subscription) {
+        request.subscription.unsubscribe();
+      }
       // delete from  requestList
       subscriptionRequests.current.delete(destination);
     }
@@ -107,7 +109,9 @@ const WebSocketProvider = ({ children }) => {
   function unsubscribeAll() {
     if (stompClient.current && stompClient.current.active) {
       subscriptionRequests.current.forEach((destination, request) => {
-        request.subscription.unsubscribe();
+        if (request.subscription) {
+          request.subscription.unsubscribe();
+        }
       })
     }
   }
