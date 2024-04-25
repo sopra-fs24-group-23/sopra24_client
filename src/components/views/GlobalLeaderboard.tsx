@@ -6,27 +6,28 @@ import { useNavigate, useParams } from "react-router-dom";
 import "styles/views/Game.scss";
 //import { User } from "types";
 import CustomButton from "components/ui/CustomButton";
-import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
+import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
 import { Box, Typography, List, ListItem } from "@mui/material";
 
 
 const GlobalLeaderboard = () => {
   const navigate = useNavigate();
-  const [leaderboardData, setLeaderboardData] = useState([{username: '', totalScore: 0, gamesPlayed: 0, gamesWon: 0}]);
+  const [leaderboardData, setLeaderboardData] = useState([{ username: "", totalScore: 0, gamesPlayed: 0, gamesWon: 0 }]);
 
   const fetchLeaderboardData = async () => {
-      try {
-          const response = await api.get("/leaderboards/total-score");
-          setLeaderboardData(response.data);
-      } catch (error) {
-          console.error("Failed to fetch leaderboard data:", error);
-      }
+    try {
+      const response = await api.get("/leaderboards/total-score");
+      setLeaderboardData(response.data);
+    } catch (error) {
+      console.error("Failed to fetch leaderboard data:", error);
+    }
   };
 
   useEffect(() => {
-      fetchLeaderboardData();
-      const interval = setInterval(fetchLeaderboardData, 5000); // Fetch every 5 seconds
-      return () => clearInterval(interval);
+    fetchLeaderboardData();
+    const interval = setInterval(fetchLeaderboardData, 5000); // Fetch every 5 seconds
+    
+    return () => clearInterval(interval);
   }, []);
 
   const handleBack = () => {
@@ -67,7 +68,7 @@ const GlobalLeaderboard = () => {
         top: 30,
         marginBottom: "30px",
       }}>
-        <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px"}} />
+        <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton onClick={handleBack}>
           Back
         </CustomButton>
@@ -102,10 +103,12 @@ const GlobalLeaderboard = () => {
           }}>
           Leaderboards
         </Typography>
-        <div style={{display: "flex",
+        <div style={{
+          display: "flex",
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center"
+<<<<<<< HEAD
           }}>
         <Box sx={{
           backgroundColor: "#e0e0e0",
@@ -226,6 +229,128 @@ const GlobalLeaderboard = () => {
             ))}
           </List>
         </Box>
+=======
+        }}>
+          <Box sx={{
+            backgroundColor: "#e0e0e0",
+            borderColor: "black",
+            borderWidth: "2px",
+            borderStyle: "solid",
+            height: "90%",
+            margin: "auto",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+            position: "relative",
+          }}>
+            <Typography variant="h5" gutterBottom
+              sx={{
+                fontFamily: "Londrina Solid",
+                textAlign: "center",
+              }}>
+              Player Username
+            </Typography>
+            <List>
+              {leaderboardData.map((player, index) => (
+                <ListItem key={index}>
+                  <Typography>
+                    {player.username}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+          <Box sx={{
+            backgroundColor: "#e0e0e0",
+            borderColor: "black",
+            borderWidth: "2px",
+            borderStyle: "solid",
+            height: "90%",
+            margin: "auto",
+            padding: "20px",
+            marginLeft: "10px",
+            borderRadius: "10px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+            position: "relative",
+          }}>
+            <Typography variant="h5" gutterBottom
+              sx={{
+                fontFamily: "Londrina Solid",
+                textAlign: "center",
+              }}>
+              Games Won
+            </Typography>
+            <List>
+              {leaderboardData.map((player, index) => (
+                <ListItem key={index}>
+                  <Typography>
+                    {player.gamesWon}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+          <Box sx={{
+            backgroundColor: "#e0e0e0",
+            borderColor: "black",
+            borderWidth: "2px",
+            borderStyle: "solid",
+            height: "90%",
+            margin: "auto",
+            marginLeft: "10px",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+            position: "relative",
+          }}>
+            <Typography variant="h5" gutterBottom
+              sx={{
+                fontFamily: "Londrina Solid",
+                textAlign: "center",
+              }}>
+              Average Score
+            </Typography>
+            <List>
+              {leaderboardData.map((player, index) => (
+                <ListItem key={index}>
+                  <Typography>
+                    {player.totalScore / player.gamesPlayed}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+          <Box sx={{
+            backgroundColor: "#e0e0e0",
+            borderColor: "black",
+            borderWidth: "2px",
+            borderStyle: "solid",
+            height: "90%",
+            margin: "auto",
+            marginLeft: "10px",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+            position: "relative",
+          }}>
+            <Typography variant="h5" gutterBottom
+              sx={{
+                fontFamily: "Londrina Solid",
+                textAlign: "center",
+              }}>
+              Win/loss Ratio
+            </Typography>
+            <List>
+              {leaderboardData.map((player, index) => (
+                <ListItem key={index}>
+                  <Typography>
+                    {player.gamesWon / (player.gamesPlayed - player.gamesWon)}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+>>>>>>> 4292926a6ca27c8a916d640e694bafab37fd6463
         </div>
       </Box>
     </HomepageBackgroundImage>
