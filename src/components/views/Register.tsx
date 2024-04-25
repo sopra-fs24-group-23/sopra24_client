@@ -1,9 +1,8 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import GameFormField from "components/ui/GameFormField";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
-import BackgroundImageLayout from "styles/views/BackgroundImageLayout";
+import BackgroundImageLayout from "components/ui/BackgroundImageLayout";
 import CustomButton from "components/ui/CustomButton";
 import Box from "@mui/material/Box";
 import UserContext from "../../contexts/UserContext";
@@ -65,7 +64,7 @@ const Register = () => {
         height: "100vh",
       }}>
         <div className="login form">
-          <img src="/Images/logo.png" alt="Logo" style={{ maxWidth: "400px" }} />
+          <img src="/images/logo.png" alt="Logo" style={{ maxWidth: "400px" }} />
           <div style={{ display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
             <CredentialInputs setUsername={setUsername} setPassword={setPassword} username={username} password={password}/>
             <div style={{ margin: "10px 0" }}></div>

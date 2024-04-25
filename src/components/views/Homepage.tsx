@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 //import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/Game.scss";
 //import { User } from "types";
-import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
+import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
 import CustomButton from "components/ui/CustomButton";
 import { Box, TextField, IconButton, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";

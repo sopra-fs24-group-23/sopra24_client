@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
-import BackgroundImageLayout from "styles/views/BackgroundImageLayout";
+import BackgroundImageLayout from "components/ui/BackgroundImageLayout";
 import GameFormField from "components/ui/GameFormField";
 import CustomButton from "components/ui/CustomButton";
 import Box from "@mui/material/Box";

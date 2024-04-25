@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "components/ui/CustomButton";
-import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
+import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
 import { Box, Typography, List, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 /* Icons import */
 import CircleIcon from "@mui/icons-material/Circle";
