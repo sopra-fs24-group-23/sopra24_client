@@ -19,6 +19,7 @@ const Homepage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { user } = useContext(UserContext);
   const [inputLobbyId, setInputLobbyId] = useState("");
+  const [openJoinLobbyErrorDialog, setOpenJoinLobbyErrorDialog] = useState(false);
 
   /* Dialogs */
   const [openJoinLobbyDialog, setOpenJoinLobbyDialog] = useState(false);
@@ -123,7 +124,8 @@ const Homepage = () => {
 
     } catch (error) {
       console.error(`Joining lobby failed: ${error}`);
-      alert("Failed to join lobby. Please check the lobby ID and try again.");
+      //alert("Failed to join lobby. Please check the lobby ID and try again.");
+      setOpenJoinLobbyErrorDialog(true);
     }
   };
 
@@ -352,6 +354,20 @@ const Homepage = () => {
         </DialogContent>
         <DialogActions>
           <CustomButton onClick={() => setIsFailedCreateGameDialogOpen(false)}>Close</CustomButton>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openJoinLobbyErrorDialog}
+        onClose={() => setOpenJoinLobbyErrorDialog(false)}
+      >
+        <DialogTitle>{"Error"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Failed to join lobby. Please check the lobby ID and try again.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <CustomButton onClick={() => setOpenJoinLobbyErrorDialog(false)}>Close</CustomButton>
         </DialogActions>
       </Dialog>
     </HomepageBackgroundImage>
