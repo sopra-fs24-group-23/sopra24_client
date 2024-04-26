@@ -83,10 +83,10 @@ const Instructions = () => {
           Instructions
         </Typography>
         <Typography variant="h6" gutterBottom
-          sx={{
-            fontFamily: "Londrina Solid",
-            textAlign: "left",
-          }}>
+                    sx={{
+                      fontFamily: "Londrina Solid",
+                      textAlign: "left",
+                    }}>
           GlobalGuess is the online version of the all-time favorite game Categories.<br />
           Over with debates about whether countries, animals or rivers exist or not!
           With our automatic answer-checking feature, you can focus on the gameplay and not the tedious tasks of
@@ -97,13 +97,24 @@ const Instructions = () => {
           Once a game is started, a cycle of several rounds begins.<br />
           During each round, a random letter is chosen and your goal is to think of words
           belonging to each categories, all starting with the imposed letter.<br />
-          If you are unsure of a word, you can use the Joker button to sneak wrong answers (these won&apos;t be checked
-          unless somebody, doubts your answer) but you will only be able to do this once per round.<br />
-          After a round, everyone sees each others answers and can press X to doubt answers, which will trigger an
-          automatic answer-check
-          for the doubted answer.<br />
+          Start typing your answers! (Answers are evaluated in English.)<br />
+          If you are done before the others and before time runs out, press DONE!<br />
+          <br />
 
-          You will then be directed to to an overview screen to see which answer was a joker, doubted, wrong, correct,
+          A correct answer awards you 5 points, if no-one else came up with the same answer, you will get 10 points.
+          This is standard categories.<br />
+          In GlobalGuess, you can use a joker to try and sneak a wrong answer or if you&apos;re not confident in your
+          knowledge.<br />
+          When you use a joker, the answer will automatically be treated as correct, i.e. it will give you 5 or 10
+          points depending on whether it is unique.<br />
+          But be careful, other players can doubt answers they are suspicious of. If your joker answer is doubted,
+          it no longer gets a free pass, it will be checked with all the others.<br />
+          &quot;So then I&apos;ll just doubt everything!&quot; you might think... but not so fast. If you doubt an
+          answer that was not
+          a joker, the author will receive 5 extra points on that answer, no matter whether it is correct or not!<br />
+
+          After each round you will then be directed to to an overview screen to see which answer was a joker, doubted,
+          wrong, correct,
           unique or a duplicate. <br />
           <br />
 
