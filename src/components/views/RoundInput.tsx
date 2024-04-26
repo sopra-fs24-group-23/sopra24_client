@@ -24,6 +24,7 @@ const RoundInput = () => {
   const inputRefs = useRef<InputRefType>({});
   const gameContinuing = useRef(false);
   const [jokerCategory, setJokerCategory] = useState("");
+  const [allFieldsFilled, setAllFieldsFilled] = useState(false);
 
   type InputRefType = {
     [key: string]: {
@@ -63,6 +64,11 @@ const RoundInput = () => {
       answer: value,
       isJoker: pCategory === jokerCategory
     };
+
+    const allFieldsFilled = Object.values(inputRefs.current).every(
+      (field) => field.answer.trim() !== ""
+    );
+    setAllFieldsFilled(allFieldsFilled);
   };
 
   const handleJokerClick = (category) => {
@@ -125,7 +131,8 @@ const RoundInput = () => {
         borderWidth: "2px",
         borderStyle: "solid",
         width: "60%",
-        height: "60%",
+        height: "auto",
+        minHeight: "60%",
         margin: "auto",
         padding: "20px",
         borderRadius: "10px",
@@ -165,7 +172,7 @@ const RoundInput = () => {
             </Box>
           ))}
         </Box>
-        <CustomButton onClick={handleDone}>
+        <CustomButton onClick={handleDone} disabled={!allFieldsFilled}>
           Done
         </CustomButton>
       </Box>
