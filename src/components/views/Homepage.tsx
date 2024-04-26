@@ -22,22 +22,6 @@ const Homepage = () => {
   const [openJoinLobbyDialog, setOpenJoinLobbyDialog] = useState(false);
   const [inputLobbyId, setInputLobbyId] = useState("");
 
-  // Currently not used because starts flickering when entering something in textfield
-  const CustomDialog = styled(Dialog)(({ theme }) => ({
-    "& .MuiDialogTitle-root": {
-      fontFamily: "Londrina Solid",
-    },
-    /*"& .MuiDialogContent-root": {
-      fontFamily: "Londrina Solid",
-    },
-    "& .MuiDialogContentText-root": {
-      fontFamily: "Londrina Solid",
-    },
-    ".MuiDialog-root": {
-      position: "fixed !important",
-    },*/
-  }));
-
   const logout = async () => {
     if (isProduction()) {
       const token = localStorage.getItem("token");
@@ -107,14 +91,6 @@ const Homepage = () => {
     }
   };
 
-  const handleJoinLobbyOpenDialog = () => {
-    setOpenJoinLobbyDialog(true);
-  }
-
-  const handleJoinLobbyCloseDialog = () => {
-    setOpenJoinLobbyDialog(false);
-  }
-
   const joinLobby = async () => {
     try {
       if (!inputLobbyId) {
@@ -124,8 +100,21 @@ const Homepage = () => {
       }
 
       // check that the lobby-id is valid, then navigate to lobby
-      await api.get(`/lobbies/${inputLobbyId}`).then(() => {
-        navigate(`/lobbies/${inputLobbyId}`)
+      await api.get(`/lobbies/${inputLobbyId}`).then(async () => {
+        try {
+          const token = localStorage.getItem("token")
+          const requestBody = JSON.stringify({ token })
+          await api.post(`/lobbies/${inputLobbyId}/join`, requestBody)
+          navigate(`/lobbies/${inputLobbyId}`)
+        }
+        catch (e) {
+          if(e.response.data.status) {
+            alert(`${e.response.data.message}`)
+          }
+          else {
+            handleError(e)
+          }
+        }
       })
 
     } catch (error) {

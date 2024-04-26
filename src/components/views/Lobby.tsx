@@ -127,8 +127,7 @@ const Lobby = () => {
             }
           }
         )
-        const token = localStorage.getItem("token");
-        send(`/app/lobbies/${lobbyId}/join`, JSON.stringify({ token }));
+        send(`/app/lobbies/${lobbyId}/update`)
       });
     }
 
