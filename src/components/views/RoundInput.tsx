@@ -91,7 +91,6 @@ const RoundInput = () => {
   };
 
   const formatAndSendAnswers = (answers) => {
-    //const answersList = Object.entries(answers).map(([category, { answer, isJoker }]) => ({
     const answersList = Object.entries(answers).map(([category, value]) => {
       const { answer, isJoker } = value as { answer: string; isJoker: boolean; };
 
