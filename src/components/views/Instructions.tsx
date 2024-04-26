@@ -19,7 +19,7 @@ const Instructions = () => {
     if (userId) {
       navigate(`/homepage/${userId}`);
     } else {
-      if(!isProduction) console.error("User ID not found.");
+      if (!isProduction) console.error("User ID not found.");
       navigate("/login");
     }
   }
@@ -84,10 +84,10 @@ const Instructions = () => {
           Instructions
         </Typography>
         <Typography variant="h6" gutterBottom
-                    sx={{
-                      fontFamily: "Londrina Solid",
-                      textAlign: "left",
-                    }}>
+          sx={{
+            fontFamily: "Londrina Solid",
+            textAlign: "left",
+          }}>
           GlobalGuess is the online version of the all-time favorite game Categories.<br />
           Over with debates about whether countries, animals or rivers exist or not!
           With our automatic answer-checking feature, you can focus on the gameplay and not the tedious tasks of
