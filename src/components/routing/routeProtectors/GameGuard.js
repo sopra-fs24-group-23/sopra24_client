@@ -36,7 +36,7 @@ export const GameGuard = () => {
           setOpen(true);
         }
       }
-        fetchUser();
+      fetchUser();
     }
   }, [token, id]);
 
