@@ -1,11 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
-//import { Button } from "components/ui/Button";
-import { useNavigate, useParams } from "react-router-dom";
-//import BaseContainer from "components/ui/BaseContainer";
+import { useNavigate } from "react-router-dom";
 import "styles/views/Game.scss";
-//import { User } from "types";
-import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
+import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
 import CustomButton from "components/ui/CustomButton";
 import { Box, TextField, IconButton, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -19,7 +16,6 @@ const Homepage = () => {
   const [profile, setProfile] = useState(null);
   const [username, setUsername] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [isHost, setIsHost] = useState(false);
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { user } = useContext(UserContext)

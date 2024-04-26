@@ -1,4 +1,4 @@
-import BackgroundImageLobby from "../../styles/views/BackgroundImageLobby";
+import BackgroundImageLobby from "../ui/BackgroundImageLobby";
 import { Box, Typography } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import GameStateContext from "../../contexts/GameStateContext";

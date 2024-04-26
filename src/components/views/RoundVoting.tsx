@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Typography, List, ListItem, Box } from "@mui/material";
-import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
+import { Typography, Box } from "@mui/material";
+import BackgroundImageLobby from "components/ui/BackgroundImageLobby";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import GameStateContext from "../../contexts/GameStateContext";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
@@ -13,14 +13,12 @@ import Countdown from "../ui/Countdown";
 const RoundVoting = () => {
   const { lobbyId } = useParams();
   const navigate = useNavigate();
-  const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
   const [doubts, setDoubts] = useState([]);
   const [doubtedAnswers, setDoubtedAnswers] = useState([]);
 
 
   /* Context variables */
-  const { setGameSettingsVariable, gameSettings } = useContext(GameSettingsContext);
-  const { gameState, setGameStateVariable } = useContext(GameStateContext);
+  const { gameState } = useContext(GameStateContext);
   const { send } = useContext(WebSocketContext);
   const { user } = useContext(UserContext);
 

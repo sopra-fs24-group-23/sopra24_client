@@ -6,7 +6,7 @@ import StompSubscriptionRequest from "../../interfaces/StompSubscriptionRequest"
 import WebSocketContext from "../../contexts/WebSocketContext";
 import PropTypes from "prop-types";
 
-const WebSocketProvider = ({ children }) => {
+const WebSocketProvider = ( { children } ) => {
   const stompClient = useRef(null);
   const sessionId = useRef("");
   const subscriptionRequests = useRef(new Map());

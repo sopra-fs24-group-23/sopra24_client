@@ -1,11 +1,8 @@
 import React from "react";
-import BaseContainer from "components/ui/BaseContainer";
 import { useNavigate } from "react-router-dom";
-//import { Button } from "components/ui/Button";
-import Button from "@mui/material/Button";
 import CustomButton from "components/ui/CustomButton";
-import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
-import { Box, Typography, List, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
+import { Box, Typography } from "@mui/material";
 /* Icons import */
 import CircleIcon from "@mui/icons-material/Circle";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";

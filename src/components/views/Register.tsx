@@ -1,15 +1,13 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import GameFormField from "components/ui/GameFormField";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
-import BaseContainer from "components/ui/BaseContainer";
-//import { Button } from "components/ui/Button";
-import BackgroundImageLayout from "styles/views/BackgroundImageLayout";
+import BackgroundImageLayout from "components/ui/BackgroundImageLayout";
 import CustomButton from "components/ui/CustomButton";
 import Box from "@mui/material/Box";
 import UserContext from "../../contexts/UserContext";
 import { DialogContentText, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import CredentialInputs from "../ui/CredentialInputs";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -68,18 +66,7 @@ const Register = () => {
         <div className="login form">
           <img src="/Images/logo.png" alt="Logo" style={{ maxWidth: "400px" }} />
           <div style={{ display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
-            <GameFormField
-              label="Username"
-              value={username}
-              onChange={(un: string) => setUsername(un)}
-            />
-            <div style={{ margin: "10px 0" }}></div>
-            <GameFormField
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(n) => setPassword(n)}
-            />
+            <CredentialInputs setUsername={setUsername} setPassword={setPassword} username={username} password={password}/>
             <div style={{ margin: "10px 0" }}></div>
             <div className="login button-container">
               <CustomButton
