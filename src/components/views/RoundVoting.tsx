@@ -13,6 +13,7 @@ import Countdown from "../ui/Countdown";
 const RoundVoting = () => {
   const { lobbyId } = useParams();
   const navigate = useNavigate();
+  const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
   const [doubts, setDoubts] = useState([]);
   const [doubtedAnswers, setDoubtedAnswers] = useState([]);
 
