@@ -87,7 +87,7 @@ const Lobby = () => {
         subscribeClient(
           `/topic/lobbies/${lobbyId}/players`,
           (message: Message) => {
-            console.log(`Received Playerlist update: ${message.body}`)
+            console.log(`Received PlayerList update: ${message.body}`)
             const receivedPlayers = JSON.parse(message.body);
             setPlayers(receivedPlayers);
           },

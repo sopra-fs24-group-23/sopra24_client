@@ -8,7 +8,6 @@ import { Box, TextField, IconButton, Typography, Dialog, DialogActions, DialogCo
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import UserContext from "../../contexts/UserContext";
-import { styled } from "@mui/system";
 import { isProduction } from "../../helpers/isProduction";
 
 const Homepage = () => {
@@ -44,7 +43,7 @@ const Homepage = () => {
   };
   const saveUpdate = async () => {
     try {
-      const response = await api.put("/users/" + user.id, { username: username });
+      await api.put("/users/" + user.id, { username: username });
       setProfile({ ...profile, username: username }); // Update local profile state
       alert("Username updated successfully!");
     } catch (error) {
