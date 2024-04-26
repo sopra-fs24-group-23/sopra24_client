@@ -15,16 +15,17 @@ const Homepage = () => {
   const [profile, setProfile] = useState(null);
   const [username, setUsername] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { user } = useContext(UserContext);
   const [inputLobbyId, setInputLobbyId] = useState("");
-  const [openJoinLobbyErrorDialog, setOpenJoinLobbyErrorDialog] = useState(false);
 
   /* Dialogs */
   const [openJoinLobbyDialog, setOpenJoinLobbyDialog] = useState(false);
   const [isUsernameUpdateDialogOpen, setIsUsernameUpdateDialogOpen] = useState(false);
   const [isFailedCreateGameDialogOpen, setIsFailedCreateGameDialogOpen] = useState(false);
+  const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
+  const [openJoinLobbyErrorDialog, setOpenJoinLobbyErrorDialog] = useState(false);
+  const [openAlertDialog, setOpenAlertDialog] = useState(false);
 
   const logout = async () => {
     if (isProduction()) {
@@ -139,7 +140,8 @@ const Homepage = () => {
       } catch (error) {
         console.error(`Something went wrong while fetching the user: \n${handleError(error)}`);
         console.error("Details:", error);
-        alert("Something went wrong while fetching the user! See the console for details.");
+        //alert("Something went wrong while fetching the user! See the console for details.");
+        setOpenAlertDialog(true);
       }
     }
     fetchData()
@@ -368,6 +370,20 @@ const Homepage = () => {
         </DialogContent>
         <DialogActions>
           <CustomButton onClick={() => setOpenJoinLobbyErrorDialog(false)}>Close</CustomButton>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openAlertDialog}
+        onClose={() => setOpenAlertDialog(false)}
+      >
+        <DialogTitle>{"Error"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            There was an error fetching the user, you might need to log-in or register again.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <CustomButton onClick={() => setOpenAlertDialog(false)}>Close</CustomButton>
         </DialogActions>
       </Dialog>
     </HomepageBackgroundImage>
