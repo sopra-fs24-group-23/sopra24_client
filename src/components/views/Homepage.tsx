@@ -150,21 +150,18 @@ const Homepage = () => {
         justifyContent: "flex-end",
         alignItems: "center",
         padding: "20px",
-        backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
+        backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
         borderWidth: "2px",
         borderStyle: "solid",
         borderRadius: "27px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        width: "90%",
-        //minHeight: "100px",
-        //maxHeight: "100px",
-        //maxWidth: "800px",
-        height: "5%",
-        margin: "auto",
-        position: "relative",
-        top: 7,
-        marginBottom: "30px",
+        height: "50px",
+        position: "fixed",
+        top: 40,
+        left: 40,
+        right: 40,
+        zIndex: 1000,
       }}>
         <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton sx={{ marginLeft: "auto" }} onClick={() => navigate("/instructions")}>Instructions</CustomButton>
