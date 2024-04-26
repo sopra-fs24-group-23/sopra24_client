@@ -42,7 +42,7 @@ const VotingResults = () => {
       {answer.isDoubted && <CancelOutlinedIcon sx={{ color: "blue" }} />}
       {answer.isUnique && <LooksOneOutlinedIcon sx={{ color: "purple" }} />}
       {answer.answer && !answer.isCorrect && <CircleIcon sx={{ color: "red" }} />}
-      {answer.answer && !answer.isUnique && <ContentCopyOutlinedIcon sx={{ color: "purple" }} />}
+      {!answer.isUnique && <ContentCopyOutlinedIcon sx={{ color: "purple" }} />}
     </Box>
   );
 
