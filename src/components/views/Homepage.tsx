@@ -17,12 +17,13 @@ const Homepage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const { user } = useContext(UserContext)
+  const { user } = useContext(UserContext);
+  const [inputLobbyId, setInputLobbyId] = useState("");
 
   /* Dialogs */
   const [openJoinLobbyDialog, setOpenJoinLobbyDialog] = useState(false);
-  const [inputLobbyId, setInputLobbyId] = useState("");
   const [isUsernameUpdateDialogOpen, setIsUsernameUpdateDialogOpen] = useState(false);
+  const [isFailedCreateGameDialogOpen, setIsFailedCreateGameDialogOpen] = useState(false);
 
   const logout = async () => {
     if (isProduction()) {
@@ -81,15 +82,16 @@ const Homepage = () => {
       const requestBody = JSON.stringify({ token });
       const response = await api.post("/lobbies", requestBody);
       const lobbyId = await response.data.id;
-      console.log(lobbyId);
-      localStorage.setItem("isHost", "true");
+      //console.log(lobbyId);
+      //localStorage.setItem("isHost", "true");
       localStorage.setItem("lobbyCode", lobbyId);
 
       // Navigate to the game room using the game ID from the response
       navigate(`/lobbies/${response.data.id}`);
     } catch (error) {
       console.error(`Creating game failed: ${error}`);
-      alert("Failed to create game. Please try again.");
+      //alert("Failed to create game. Please try again.");
+      setIsFailedCreateGameDialogOpen(true);
     }
   };
 
@@ -241,7 +243,6 @@ const Homepage = () => {
             }}>
               <CustomButton onClick={goToLeaderboards}>Leaderboards</CustomButton>
             </Box>
-
             <Box sx={{
               display: "flex",
               justifyContent: "center",
@@ -341,6 +342,19 @@ const Homepage = () => {
         <DialogActions>
           <CustomButton onClick={() => setOpenJoinLobbyDialog(false)}>Cancel</CustomButton>
           <CustomButton onClick={joinLobby}>Join</CustomButton>
+        </DialogActions>
+      </Dialog>
+      {/* Dialog for 'Failed to create Game' */}
+      <Dialog
+        open={isFailedCreateGameDialogOpen}
+        onClose={() => setIsFailedCreateGameDialogOpen(false)}
+      >
+        <DialogTitle>{"Failed to Create Game"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Game creation failed. Please try again.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <CustomButton onClick={() => setIsFailedCreateGameDialogOpen(false)}>Close</CustomButton>
         </DialogActions>
       </Dialog>
     </HomepageBackgroundImage>
