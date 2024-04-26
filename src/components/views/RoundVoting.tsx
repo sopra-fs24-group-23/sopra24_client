@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Typography, List, ListItem, Box } from "@mui/material";
-import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
+import { Typography, Box } from "@mui/material";
+import BackgroundImageLobby from "components/ui/BackgroundImageLobby";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import GameStateContext from "../../contexts/GameStateContext";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import UserContext from "../../contexts/UserContext";
 import Countdown from "../ui/Countdown";
+import { isProduction } from "../../helpers/isProduction";
 
 const RoundVoting = () => {
   const { lobbyId } = useParams();
@@ -19,16 +20,16 @@ const RoundVoting = () => {
 
 
   /* Context variables */
-  const { setGameSettingsVariable, gameSettings } = useContext(GameSettingsContext);
-  const { gameState, setGameStateVariable } = useContext(GameStateContext);
+  const { gameSettings } = useContext(GameSettingsContext);
+  const { gameState } = useContext(GameStateContext);
   const { send } = useContext(WebSocketContext);
   const { user } = useContext(UserContext);
 
 
   useEffect(() => {
-    console.log("Test");
+    if(!isProduction) console.log("Test");
     // Log the categories
-    console.log("Categories: ", gameSettings.categories);
+    if(!isProduction) console.log("Categories: ", gameSettings.categories);
 
     // Access the current answers of all players
     const answers = gameState.players.map(player => player.currentAnswers);
@@ -41,7 +42,7 @@ const RoundVoting = () => {
 
   useEffect(() => {
     if (gameState.gamePhase === "AWAITING_VOTES") {
-      console.log("Sending doubts to backend:", JSON.stringify(doubts));
+      if(!isProduction) console.log("Sending doubts to backend:", JSON.stringify(doubts));
 
       send(`/app/games/${lobbyId}/doubt/${user.username}`, JSON.stringify(doubts));
       setDoubts([]); // Clear doubts after sending
@@ -102,7 +103,7 @@ const RoundVoting = () => {
           return (
             <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
               <Typography>{answer.category}</Typography>
-              <Typography sx={{ flex: isCurrentUser ? "1" : "none", textAlign: "center" }}>{answer ? answer.answer : "-"}</Typography>
+              <Typography sx={{ flex: isCurrentUser ? "1" : "none", textAlign: "center" }}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
               {!isCurrentUser && (
                 <IconButton onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "blue" : "grey" }}>
                   <CancelOutlinedIcon />

@@ -1,4 +1,4 @@
-import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
+import BackgroundImageLobby from "components/ui/BackgroundImageLobby";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";
@@ -11,6 +11,7 @@ import UserContext from "../../contexts/UserContext";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import IconButton from "@mui/material/IconButton";
 import Countdown from "../ui/Countdown";
+import { isProduction } from "../../helpers/isProduction";
 const RoundInput = () => {
   /* Context Variables */
   const { gameSettings } = useContext(GameSettingsContext);
@@ -24,6 +25,7 @@ const RoundInput = () => {
   const inputRefs = useRef<InputRefType>({});
   const gameContinuing = useRef(false);
   const [jokerCategory, setJokerCategory] = useState("");
+  const [allFieldsFilled, setAllFieldsFilled] = useState(false);
 
   type InputRefType = {
     [key: string]: {
@@ -34,7 +36,7 @@ const RoundInput = () => {
 
   useEffect(() => {
     if (gameSettings.categories) {
-      console.log("DEBUG refs were initialized")
+      if(!isProduction) console.log("DEBUG refs were initialized")
       inputRefs.current = gameSettings.categories.reduce((acc, category) => ({ ...acc, [category]: { answer: "", isJoker: false } }), {})
     }
   }, [gameSettings]);
@@ -63,6 +65,11 @@ const RoundInput = () => {
       answer: value,
       isJoker: pCategory === jokerCategory
     };
+
+    const allFieldsFilled = Object.values(inputRefs.current).every(
+      (field) => field.answer.trim() !== ""
+    );
+    setAllFieldsFilled(allFieldsFilled);
   };
 
   const handleJokerClick = (category) => {
@@ -91,7 +98,6 @@ const RoundInput = () => {
   };
 
   const formatAndSendAnswers = (answers) => {
-    //const answersList = Object.entries(answers).map(([category, { answer, isJoker }]) => ({
     const answersList = Object.entries(answers).map(([category, value]) => {
       const { answer, isJoker } = value as { answer: string; isJoker: boolean; };
 
@@ -105,7 +111,7 @@ const RoundInput = () => {
       }
     });
 
-    console.log("Payload being sent:", JSON.stringify(answersList));
+    if(!isProduction) console.log("Payload being sent:", JSON.stringify(answersList));
     send(`/app/games/${lobbyId}/answers/${user.username}`, JSON.stringify(answersList));
   };
 
@@ -114,7 +120,7 @@ const RoundInput = () => {
   }
 
   const handleAwaitingAnswers = () => {
-    console.log("DEBUG Sending answers to BE")
+    if(!isProduction) console.log("DEBUG Sending answers to BE")
     formatAndSendAnswers(inputRefs.current);
   }
 
@@ -126,7 +132,8 @@ const RoundInput = () => {
         borderWidth: "2px",
         borderStyle: "solid",
         width: "60%",
-        height: "60%",
+        height: "auto",
+        minHeight: "60%",
         margin: "auto",
         padding: "20px",
         borderRadius: "10px",
@@ -166,7 +173,7 @@ const RoundInput = () => {
             </Box>
           ))}
         </Box>
-        <CustomButton onClick={handleDone}>
+        <CustomButton onClick={handleDone} disabled={!allFieldsFilled}>
           Done
         </CustomButton>
       </Box>

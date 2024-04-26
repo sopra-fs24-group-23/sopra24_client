@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { api, handleError } from "helpers/api";
-//import { Button } from "components/ui/Button";
-import { useNavigate, useParams } from "react-router-dom";
-//import BaseContainer from "components/ui/BaseContainer";
+import { api } from "helpers/api";
+import { useNavigate } from "react-router-dom";
 import "styles/views/Game.scss";
-//import { User } from "types";
 import CustomButton from "components/ui/CustomButton";
-import HomepageBackgroundImage from "styles/views/HomepageBackgroundImage";
+import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
 import { Box, Typography, List, ListItem } from "@mui/material";
+import { isProduction } from "../../helpers/isProduction";
 
 
 const GlobalLeaderboard = () => {
@@ -19,7 +17,7 @@ const GlobalLeaderboard = () => {
       const response = await api.get("/leaderboards/total-score");
       setLeaderboardData(response.data);
     } catch (error) {
-      console.error("Failed to fetch leaderboard data:", error);
+      if(!isProduction) console.error("Failed to fetch leaderboard data:", error);
     }
   };
 
@@ -35,7 +33,7 @@ const GlobalLeaderboard = () => {
     if (userId) {
       navigate(`/homepage/${userId}`);
     } else {
-      console.error("User ID not found.");
+      if(!isProduction) console.error("User ID not found.");
       navigate("/login");
     }
   }

@@ -1,4 +1,4 @@
-import BackgroundImageLobby from "styles/views/BackgroundImageLobby";
+import BackgroundImageLobby from "components/ui/BackgroundImageLobby";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { List, ListItem, Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";
@@ -17,27 +17,16 @@ const FinalScoreboard = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const gameContinuing = useRef(false)
   let sortedPlayers = [];
-  const [showConfetti, setShowConfetti] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [header, setHeader] = useState(<></>);
 
   /* In case there are several player with the same highest score */
-  const highestScore = players[0]?.currentScore;
-  const winners = players.filter(player => player.currentScore === highestScore);
+  //const highestScore = players[0]?.currentScore;
+  //const winners = players.filter(player => player.currentScore === highestScore);
 
   /* Context Variables */
   const { gameState } = useContext(GameStateContext);
-  const { gameSettings } = useContext(GameSettingsContext);
   const { disconnect, send, unsubscribeAll } = useContext(WebSocketContext);
-
-  /* JSX Variables*/
-  let header = (
-    <Typography variant="h4" gutterBottom sx={{
-      fontFamily: "Londrina Solid",
-      textAlign: "center",
-    }}>
-      {/* Check if there is a tie, else display the individual winner */}
-      {winners.length > 1 ? "There is a tie!" : `${winners[0]?.username} has won!`}
-    </Typography>
-  )
 
   useEffect(() => {
     if (gameState) {
@@ -64,12 +53,39 @@ const FinalScoreboard = () => {
   }, [])
 
   useEffect(() => {
+    const highestScore = players[0]?.currentScore;
+    const winners = players.filter(player => player.currentScore === highestScore);
+    const isSingleWinner = winners.length === 1;
+    setShowConfetti(isSingleWinner);
+
+    let header = (
+      <Typography variant="h4" gutterBottom sx={{
+        fontFamily: "Londrina Solid",
+        textAlign: "center",
+      }}>
+        {/* Check if there is a tie, else display the individual winner */}
+        {isSingleWinner ? `${winners[0]?.username} has won!` : "There is a tie!"}
+      </Typography>
+    )
+    setHeader(header);
+
+    if (isSingleWinner) {
+      const timer = setTimeout(() => {
+        setShowConfetti(false);
+      }, 5000); // Change confetti display after 5 seconds
+
+      return () => clearTimeout(timer); // Clean-up timer on unmount
+    }
+  }, [players]);
+
+
+  /*useEffect(() => {
     const timer = setTimeout(() => {
       setShowConfetti(false);
-    }, 5000); // Change confettig display after 5 seconds
+    }, 5000); // Change confetti display after 5 seconds
 
     return () => clearTimeout(timer); // Clean-up timer on unmount
-  }, []);
+  }, [showConfetti]); */
 
   const handleLeaveGame = () => {
     navigate("/homepage");

@@ -5,10 +5,9 @@ class User {
   constructor(data = {}) {
     this.id = null;
     this.username = null;
-    this.token = null;
-    this.status = null;
-    this.score = null;
-    this.answers = null;
+    this.totalScore = null;
+    this.gamesPlayed = null;
+    this.gamesWon = null;
     Object.assign(this, data);
   }
 }
