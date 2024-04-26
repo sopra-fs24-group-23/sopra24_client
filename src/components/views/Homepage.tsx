@@ -18,8 +18,11 @@ const Homepage = () => {
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { user } = useContext(UserContext)
+
+  /* Dialogs */
   const [openJoinLobbyDialog, setOpenJoinLobbyDialog] = useState(false);
   const [inputLobbyId, setInputLobbyId] = useState("");
+  const [isUsernameUpdateDialogOpen, setIsUsernameUpdateDialogOpen] = useState(false);
 
   const logout = async () => {
     if (isProduction()) {
@@ -45,7 +48,7 @@ const Homepage = () => {
     try {
       await api.put("/users/" + user.id, { username: username });
       setProfile({ ...profile, username: username }); // Update local profile state
-      alert("Username updated successfully!");
+      setIsUsernameUpdateDialogOpen(true);
     } catch (error) {
       console.error(`Failed to update username: ${error}`);
       // Default error message
@@ -196,6 +199,18 @@ const Homepage = () => {
               fontSize: "3rem", // Increase font size
               marginTop: "1rem", // Add margin at the top
             }}>
+            <Dialog
+              open={isUsernameUpdateDialogOpen}
+              onClose={() => setIsUsernameUpdateDialogOpen(false)}
+            >
+              <DialogTitle>{"Username Update"}</DialogTitle>
+              <DialogContent>
+                <DialogContentText>Username updated successfully!</DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <CustomButton onClick={() => setIsUsernameUpdateDialogOpen(false)}>Close</CustomButton>
+              </DialogActions>
+            </Dialog>
             {isEditing ? (
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <TextField
@@ -223,9 +238,6 @@ const Homepage = () => {
               justifyContent: "right",
               width: "100%",
               my: 2,
-              //position: "absolute",
-              //top: "15%",
-              //left: "85%",
             }}>
               <CustomButton onClick={goToLeaderboards}>Leaderboards</CustomButton>
             </Box>
