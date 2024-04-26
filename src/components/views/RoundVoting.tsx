@@ -18,6 +18,7 @@ const RoundVoting = () => {
 
 
   /* Context variables */
+  const { gameSettings } = useContext(GameSettingsContext);
   const { gameState } = useContext(GameStateContext);
   const { send } = useContext(WebSocketContext);
   const { user } = useContext(UserContext);
