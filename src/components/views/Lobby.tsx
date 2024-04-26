@@ -29,6 +29,7 @@ import User from "../../models/User";
 import PlayerList from "../ui/PlayerList";
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
+import { isProduction } from "../../helpers/isProduction";
 
 interface GameSettings {
   categories: string[];
@@ -78,7 +79,7 @@ const Lobby = () => {
         subscribeClient(
           `/topic/lobbies/${lobbyId}/settings`,
           (message: Message) => {
-            console.log("Received settings update:", message.body);
+            if(!isProduction) console.log("Received settings update:", message.body);
             const receivedSettings = JSON.parse(message.body);
             setSettings(receivedSettings);
             setGameSettingsVariable(receivedSettings)
@@ -87,7 +88,7 @@ const Lobby = () => {
         subscribeClient(
           `/topic/lobbies/${lobbyId}/players`,
           (message: Message) => {
-            console.log(`Received PlayerList update: ${message.body}`)
+            if(!isProduction) console.log(`Received PlayerList update: ${message.body}`)
             const receivedPlayers = JSON.parse(message.body);
             setPlayers(receivedPlayers);
           },
@@ -96,7 +97,7 @@ const Lobby = () => {
           subscribeClient(
             `/queue/lobbies/${lobbyId}/kick/${user.username}`,
             (message: Message) => {
-              console.log(`Received kick message: ${message.body}`)
+              if(!isProduction) console.log(`Received kick message: ${message.body}`)
               alert("You were kicked from the lobby.")
               navigate("/homepage")
             },
@@ -114,7 +115,7 @@ const Lobby = () => {
         subscribeClient(
           `/topic/games/${lobbyId}/state`,
           (message: Message) => {
-            console.log(`Received GameState update: ${message.body}`);
+            if(!isProduction) console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
 
             // Update the gamePhase in the context
@@ -136,13 +137,13 @@ const Lobby = () => {
         try {
           const response = await api.get(`/lobbies/${lobbyId}/host`);
           const host = new User(response.data);
-          console.log(`MYDEBUG ${user.username} equals ${host.username}?`)
+          if(!isProduction) console.log(`MYDEBUG ${user.username} equals ${host.username}?`)
           if (user.username === host.username) {
-            console.log("MYDEBUG SETTING ISHOST TRUE")
+            if(!isProduction) console.log("MYDEBUG SETTING ISHOST TRUE")
             setIsHost(true)
           }
           else {
-            console.log("MYDEBUG SETTING ISHOST FALSE")
+            if(!isProduction) console.log("MYDEBUG SETTING ISHOST FALSE")
             setIsHost(false)
           }
         }
@@ -182,7 +183,7 @@ const Lobby = () => {
       gameStarting.current = true;
       send(`/app/games/${lobbyId}/start`, {});
     } catch (error) {
-      console.error("Failed to start the game:", error);
+      if(!isProduction) console.error("Failed to start the game:", error);
     }
   };
   const handleLeaveGame = () => {
@@ -194,10 +195,10 @@ const Lobby = () => {
   const handleCopyLobbyCode = () => {
     navigator.clipboard.writeText(localStorage.getItem("lobbyCode"))
       .then(() => {
-        console.log("Lobby code copied to clipboard");
+        if(!isProduction) console.log("Lobby code copied to clipboard");
       })
       .catch((error) => {
-        console.error("Failed to copy lobby code to clipboard:", error);
+        if(!isProduction) console.error("Failed to copy lobby code to clipboard:", error);
       });
   };
   const kickPlayer = (usernameToKick: String) => {
@@ -256,7 +257,7 @@ const Lobby = () => {
           handleCloseGameSettings();
         }
       } catch (error) {
-        console.error("Failed to update game settings:", error);
+        if(!isProduction) console.error("Failed to update game settings:", error);
       }
     };
     const handleCloseSettings = () => {

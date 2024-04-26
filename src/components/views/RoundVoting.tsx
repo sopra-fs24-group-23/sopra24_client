@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import UserContext from "../../contexts/UserContext";
 import Countdown from "../ui/Countdown";
+import { isProduction } from "../../helpers/isProduction";
 
 const RoundVoting = () => {
   const { lobbyId } = useParams();
@@ -26,9 +27,9 @@ const RoundVoting = () => {
 
 
   useEffect(() => {
-    console.log("Test");
+    if(!isProduction) console.log("Test");
     // Log the categories
-    console.log("Categories: ", gameSettings.categories);
+    if(!isProduction) console.log("Categories: ", gameSettings.categories);
 
     // Access the current answers of all players
     const answers = gameState.players.map(player => player.currentAnswers);
@@ -41,7 +42,7 @@ const RoundVoting = () => {
 
   useEffect(() => {
     if (gameState.gamePhase === "AWAITING_VOTES") {
-      console.log("Sending doubts to backend:", JSON.stringify(doubts));
+      if(!isProduction) console.log("Sending doubts to backend:", JSON.stringify(doubts));
 
       send(`/app/games/${lobbyId}/doubt/${user.username}`, JSON.stringify(doubts));
       setDoubts([]); // Clear doubts after sending

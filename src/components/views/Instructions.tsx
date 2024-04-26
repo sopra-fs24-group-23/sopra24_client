@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CustomButton from "components/ui/CustomButton";
 import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
 import { Box, Typography } from "@mui/material";
+import { isProduction } from "../../helpers/isProduction";
 /* Icons import */
 import CircleIcon from "@mui/icons-material/Circle";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
@@ -18,7 +19,7 @@ const Instructions = () => {
     if (userId) {
       navigate(`/homepage/${userId}`);
     } else {
-      console.error("User ID not found.");
+      if(!isProduction) console.error("User ID not found.");
       navigate("/login");
     }
   }

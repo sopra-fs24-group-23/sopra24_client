@@ -5,6 +5,7 @@ import "styles/views/Game.scss";
 import CustomButton from "components/ui/CustomButton";
 import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
 import { Box, Typography, List, ListItem } from "@mui/material";
+import { isProduction } from "../../helpers/isProduction";
 
 
 const GlobalLeaderboard = () => {
@@ -16,7 +17,7 @@ const GlobalLeaderboard = () => {
       const response = await api.get("/leaderboards/total-score");
       setLeaderboardData(response.data);
     } catch (error) {
-      console.error("Failed to fetch leaderboard data:", error);
+      if(!isProduction) console.error("Failed to fetch leaderboard data:", error);
     }
   };
 
@@ -32,7 +33,7 @@ const GlobalLeaderboard = () => {
     if (userId) {
       navigate(`/homepage/${userId}`);
     } else {
-      console.error("User ID not found.");
+      if(!isProduction) console.error("User ID not found.");
       navigate("/login");
     }
   }

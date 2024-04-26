@@ -30,12 +30,12 @@ const Homepage = () => {
   const logout = async () => {
     if (isProduction()) {
       const token = localStorage.getItem("token");
-      console.log(token);
+      //console.log(token);
       await api.post("/logout", { token: token });
 
       localStorage.removeItem("token");
       navigate("/login");
-      console.log(localStorage.getItem("token"));
+      //console.log(localStorage.getItem("token"));
     }
     else {
       localStorage.removeItem("token")
@@ -53,7 +53,7 @@ const Homepage = () => {
       setProfile({ ...profile, username: username }); // Update local profile state
       setIsUsernameUpdateDialogOpen(true);
     } catch (error) {
-      console.error(`Failed to update username: ${error}`);
+      if(!isProduction) console.error(`Failed to update username: ${error}`);
       // Default error message
       let message = "An unexpected error occured. Please try again.";
 
@@ -91,7 +91,7 @@ const Homepage = () => {
       // Navigate to the game room using the game ID from the response
       navigate(`/lobbies/${response.data.id}`);
     } catch (error) {
-      console.error(`Creating game failed: ${error}`);
+      if(!isProduction) console.error(`Creating game failed: ${error}`);
       //alert("Failed to create game. Please try again.");
       setIsFailedCreateGameDialogOpen(true);
     }
@@ -124,7 +124,7 @@ const Homepage = () => {
       })
 
     } catch (error) {
-      console.error(`Joining lobby failed: ${error}`);
+      if(!isProduction) console.error(`Joining lobby failed: ${error}`);
       //alert("Failed to join lobby. Please check the lobby ID and try again.");
       setOpenJoinLobbyErrorDialog(true);
     }
@@ -134,12 +134,12 @@ const Homepage = () => {
     async function fetchData() {
       try {
         let id = localStorage.getItem("id");
-        console.log("THE ID IS")
+        if(!isProduction) console.log("THE ID IS");
         const response = await api.get("/users/" + id);
         setProfile(response.data);
       } catch (error) {
-        console.error(`Something went wrong while fetching the user: \n${handleError(error)}`);
-        console.error("Details:", error);
+        if(!isProduction) console.error(`Something went wrong while fetching the user: \n${handleError(error)}`);
+        if(!isProduction) console.error("Details:", error);
         //alert("Something went wrong while fetching the user! See the console for details.");
         setOpenAlertDialog(true);
       }

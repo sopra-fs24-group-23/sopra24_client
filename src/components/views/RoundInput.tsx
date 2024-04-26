@@ -11,6 +11,7 @@ import UserContext from "../../contexts/UserContext";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import IconButton from "@mui/material/IconButton";
 import Countdown from "../ui/Countdown";
+import { isProduction } from "../../helpers/isProduction";
 const RoundInput = () => {
   /* Context Variables */
   const { gameSettings } = useContext(GameSettingsContext);
@@ -35,7 +36,7 @@ const RoundInput = () => {
 
   useEffect(() => {
     if (gameSettings.categories) {
-      console.log("DEBUG refs were initialized")
+      if(!isProduction) console.log("DEBUG refs were initialized")
       inputRefs.current = gameSettings.categories.reduce((acc, category) => ({ ...acc, [category]: { answer: "", isJoker: false } }), {})
     }
   }, [gameSettings]);
@@ -110,7 +111,7 @@ const RoundInput = () => {
       }
     });
 
-    console.log("Payload being sent:", JSON.stringify(answersList));
+    if(!isProduction) console.log("Payload being sent:", JSON.stringify(answersList));
     send(`/app/games/${lobbyId}/answers/${user.username}`, JSON.stringify(answersList));
   };
 
@@ -119,7 +120,7 @@ const RoundInput = () => {
   }
 
   const handleAwaitingAnswers = () => {
-    console.log("DEBUG Sending answers to BE")
+    if(!isProduction) console.log("DEBUG Sending answers to BE")
     formatAndSendAnswers(inputRefs.current);
   }
 
