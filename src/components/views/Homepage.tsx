@@ -58,9 +58,16 @@ const Homepage = () => {
       // Default error message
       let message = "An unexpected error occured. Please try again.";
 
-      // If the Backend sends a specific error message, use it
-      if (error.response && error.response.data.message) {
-        message = error.response.data.message;
+      // If the Backend sends a specific error message, use it --> DOESN'T WORK IN PRD!!!!!!!
+      //if (error.response && error.response.data.message) {
+      //  message = error.response.data.message;
+      //}
+      // If status code 400, username can't be empty
+      if(error.response && error.response.status === 400) {
+        message = "The username cannot be empty. Please try again.";
+      }
+      else if (error.response && error.response.status === 409) {
+        message = "This username is already taken. Please choose a different username.";
       }
       setErrorMessage(message);
       setIsErrorDialogOpen(true);
