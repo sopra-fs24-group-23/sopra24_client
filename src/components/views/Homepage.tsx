@@ -59,7 +59,7 @@ const Homepage = () => {
       let message = "An unexpected error occured. Please try again.";
 
       // If the Backend sends a specific error message, use it
-      if (error.response && error.response.data && error.response.data.message) {
+      if (error.response && error.response.data.message) {
         message = error.response.data.message;
       }
       setErrorMessage(message);
@@ -73,6 +73,7 @@ const Homepage = () => {
     setIsEditing(false); // set editing to false to switch back to display mode
   };
 
+  // Let the user cancel the edit process if they don't wish to save the changes
   const handleCancelClick = () => {
     setUsername(profile.username);
     setIsEditing(false);
