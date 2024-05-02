@@ -7,6 +7,7 @@ import CustomButton from "components/ui/CustomButton";
 import { Box, TextField, IconButton, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
+import CloseIcon from "@mui/icons-material/Close";
 import UserContext from "../../contexts/UserContext";
 import { isProduction } from "../../helpers/isProduction";
 
@@ -70,6 +71,11 @@ const Homepage = () => {
   const handleSaveClick = () => {
     saveUpdate();
     setIsEditing(false); // set editing to false to switch back to display mode
+  };
+
+  const handleCancelClick = () => {
+    setUsername(profile.username);
+    setIsEditing(false);
   };
 
   const goToLeaderboards = () => {
@@ -223,6 +229,9 @@ const Homepage = () => {
                 />
                 <IconButton onClick={handleSaveClick}>
                   <SaveIcon />
+                </IconButton>
+                <IconButton onClick={handleCancelClick}>
+                  <CloseIcon />
                 </IconButton>
               </Box>
             ) : (
