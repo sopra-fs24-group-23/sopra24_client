@@ -61,8 +61,10 @@ const VotingResults = () => {
         <Typography variant="h6">{player.username}</Typography>
         {player.currentAnswers.map((answer, index) => (
           <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
-            <Typography>{answer.category}</Typography>
-            <Typography>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
+            {/* Set a fixed width for the category label */}
+            <Typography sx={{ width: "150px", flexShrink: 0 }}>{answer.category}</Typography>
+            {/* Have answer aligned properly */}
+            <Typography sx={{ textAlign: "left", flexGrow: 1}}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
             {renderStatusIcons(answer)}
           </Box>
         ))}

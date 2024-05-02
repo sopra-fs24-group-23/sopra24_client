@@ -102,8 +102,9 @@ const RoundVoting = () => {
 
           return (
             <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
-              <Typography>{answer.category}</Typography>
-              <Typography sx={{ flex: isCurrentUser ? "1" : "none", textAlign: "center" }}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
+              {/* Set a fixed width for the category label */}
+              <Typography sx={{ width: "150px", flexShrink: 0 }}>{answer.category}</Typography>
+              <Typography sx={{ textAlign: "left", flexGrow: 1}}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
               {!isCurrentUser && (
                 <IconButton onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "blue" : "grey" }}>
                   <CancelOutlinedIcon />
