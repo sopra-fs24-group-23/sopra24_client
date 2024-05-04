@@ -18,7 +18,7 @@ Our application uses React's [context API](https://react.dev/reference/react/hoo
 All websocket related functionality is provided by the [WebSocketProvider](/src/components/WebSocketProvider.tsx). It allows connecting to and disconnecting from the backend via websockets without requiring client code to store any references to a client. The context also provides functions to un-/subscribe to STOMP topics and queues as well as functions to send STOMP messages to app-destinations in the backend. Again, the component abstracts away the need for clients to store e.g. references to websocket connections, allowing for seamless transitions between views.
 
 ### Styling
-For styling our components we use [MUI component library](https://mui.com/).
+For styling our components we use [MUI component library](https://mui.com/material-ui/).
 
 ## Launch & Deployment
 ### Running the Project Locally
