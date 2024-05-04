@@ -9,10 +9,10 @@ All code not pertaining to project building/deployment is located in the /src di
 
 ### State Management
 Our application uses React's [context API](https://react.dev/reference/react/hooks#context-hooks) to create four specific contexts, each with it's corresponding providers:
-**1. Websocket Context:** This context is responsible for managing WebSocket connections, including connecting, disconnecting, and sending messages to the backend.
-**2. GameSettings Context:** This context manages the game settings. It provides a way for child components to access and update the game settings without having to pass the settings and the update function down through props.
-**3. User Context:** This context is used to maintain the user's information across different components, ensuring that user-specific data and functionality are correctly displayed and executed.
-**4. GamePhase Context:** This context is responsible for managing the state of the game and retrieving the current state in different components.
+1. **Websocket Context:** This context is responsible for managing WebSocket connections, including connecting, disconnecting, and sending messages to the backend.
+2. **GameSettings Context:** This context manages the game settings. It provides a way for child components to access and update the game settings without having to pass the settings and the update function down through props.
+3. **User Context:** This context is used to maintain the user's information across different components, ensuring that user-specific data and functionality are correctly displayed and executed.
+4. **GamePhase Context:** This context is responsible for managing the state of the game and retrieving the current state in different components.
 
 ### Websocket Connection
 All websocket related functionality is provided by the [WebSocketProvider](/src/components/WebSocketProvider.tsx). It allows connecting to and disconnecting from the backend via websockets without requiring client code to store any references to a client. The context also provides functions to un-/subscribe to STOMP topics and queues as well as functions to send STOMP messages to app-destinations in the backend. Again, the component abstracts away the need for clients to store e.g. references to websocket connections, allowing for seamless transitions between views.
