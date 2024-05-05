@@ -10,6 +10,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import UserContext from "../../contexts/UserContext";
 import { isProduction } from "../../helpers/isProduction";
+import ProgressBarContainer from "../ui/ProgressBarContainer";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -89,6 +90,14 @@ const Homepage = () => {
   const goToLeaderboards = () => {
     navigate("/leaderboards");
   };
+
+  // Updating the progress bar
+  function updateProgressBar(currentPoints, totalPointsNeeded) {
+    const progressBar = document.getElementById("progressBar");
+    const width = (currentPoints / totalPointsNeeded) * 100;
+    progressBar.style.width = width + "%";
+  }
+
 
   const createLobby = async () => {
     try {
@@ -249,6 +258,20 @@ const Homepage = () => {
               </Box>
             )}
           </Typography>
+        )}
+        {/* Progress bar*/}
+        {profile && (
+          <>
+        <Typography variant="h6" gutterBottom
+                    sx={{
+                      fontFamily: "Londrina Solid",
+                      textAlign: "left",
+                      marginTop: "1rem", // Add margin at the top
+                    }}>
+          Unlock the next level!
+        </Typography>
+        <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={200} />
+        </>
         )}
         {/* User statistics */}
         {profile && (
