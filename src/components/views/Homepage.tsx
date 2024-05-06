@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
+import { isProduction } from "../../helpers/isProduction";
+import { getNextScore } from "../../helpers/getNextScore";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Game.scss";
 import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
@@ -9,7 +11,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import UserContext from "../../contexts/UserContext";
-import { isProduction } from "../../helpers/isProduction";
 import ProgressBarContainer from "../ui/ProgressBarContainer";
 
 const Homepage = () => {
@@ -49,6 +50,7 @@ const Homepage = () => {
   const handleEditClick = () => {
     setIsEditing(true);
   };
+
   const saveUpdate = async () => {
     try {
       await api.put("/users/" + user.id, { username: username });
@@ -261,16 +263,16 @@ const Homepage = () => {
         )}
         {/* Progress bar*/}
         {profile && (
-          <>
-        <Typography variant="h6" gutterBottom
-                    sx={{
-                      fontFamily: "Londrina Solid",
-                      textAlign: "left",
-                      marginTop: "1rem", // Add margin at the top
-                    }}>
-          Unlock the next level!
-        </Typography>
-        <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={200} />
+        <>
+          <Typography variant="h6" gutterBottom
+                      sx={{
+                        fontFamily: "Londrina Solid",
+                        textAlign: "left",
+                        marginTop: "1rem", // Add margin at the top
+                      }}>
+            {profile && `Unlock the next color at ${getNextScore(profile.totalScore)} points!`}
+          </Typography>
+          <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={getNextScore(profile.totalScore)} />
         </>
         )}
         {/* User statistics */}
