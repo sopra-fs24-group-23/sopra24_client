@@ -1,11 +1,13 @@
 import BackgroundImageLobby from "components/ui/BackgroundImageLobby";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { List, ListItem, Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { useNavigate, useParams } from "react-router-dom";
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import Countdown from "../ui/Countdown";
+import UserContext from "../../contexts/UserContext";
+import CustomButton from "../ui/CustomButton";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, List, ListItem, Typography, Box } from "@mui/material";
 
 interface Player {
   username: string;
@@ -24,6 +26,8 @@ const RoundScoreboard = () => {
   const { gameState } = useContext(GameStateContext);
   const { gameSettings } = useContext(GameSettingsContext);
   const { disconnect, send, unsubscribeAll } = useContext(WebSocketContext);
+  const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
+  const { user } = useContext(UserContext);
 
   /* JSX Variables*/
   let header = (
@@ -34,6 +38,19 @@ const RoundScoreboard = () => {
       Scoreboard
     </Typography>
   )
+
+  const handleOpenDialog = () => {
+    setOpenLeaveDialog(true);
+  };
+  const handleCloseDialog = () => {
+    setOpenLeaveDialog(false);
+  };
+  const handleLeaveGame = () => {
+    send(`/app/games/${lobbyId}/leave`, JSON.stringify({ token: user.token }));
+    unsubscribeAll()
+    disconnect()
+    navigate("/homepage")
+  }
 
   useEffect(() => {
     if (gameState) {
@@ -67,6 +84,52 @@ const RoundScoreboard = () => {
 
   return (
     <BackgroundImageLobby>
+      <Box sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        //height: "50vh", // Use viewport height to fill the screen
+        padding: "20px",
+        backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
+        borderColor: "black",
+        borderWidth: "2px",
+        borderStyle: "solid",
+        borderRadius: "27px",
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+        width: "90%",
+        height: "5%",
+        margin: "auto",
+        position: "relative",
+        top: 30,
+        marginBottom: "30px",
+      }}>
+        <img src="/Images/logo.png" alt="Descriptive Text"
+          style={{ width: "auto", height: "200px", marginTop: "100px" }} />
+        <CustomButton
+          onClick={handleOpenDialog}
+          sx={{
+            backgroundColor: "#e0e0e0",
+            "&:hover": {
+              backgroundColor: "red",
+            },
+          }}
+        >
+          Leave Game
+        </CustomButton>
+        <Dialog open={openLeaveDialog} onClose={handleCloseDialog}>
+          <DialogTitle>Leave the game?</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to leave the game?
+              You will be returned to your profile page and all your progress in the current game will be lost.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
+            <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
+          </DialogActions>
+        </Dialog>
+      </Box>
       <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",

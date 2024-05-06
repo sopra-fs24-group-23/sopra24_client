@@ -11,7 +11,7 @@ import GlobalLeaderboard from "../../views/GlobalLeaderboard";
 import RoundScoreboard from "../../views/RoundScoreboard";
 import RoundInput from "../../views/RoundInput";
 import RoundVoting from "../../views/RoundVoting";
-import VotingResults from "../../views/VotingResults";
+import VotingResults from "../../views/RoundVotingResults";
 import FinalScoreboard from "../../views/FinalScoreboard";
 
 /**
