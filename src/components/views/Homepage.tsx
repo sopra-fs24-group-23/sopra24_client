@@ -12,6 +12,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import UserContext from "../../contexts/UserContext";
 import ProgressBarContainer from "../ui/ProgressBarContainer";
+import ColorPicker from "../ui/ColorPicker";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const Homepage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { user } = useContext(UserContext);
   const [inputLobbyId, setInputLobbyId] = useState("");
+  const [color, setColor] = useState("#000000");
 
   /* Dialogs */
   const [openJoinLobbyDialog, setOpenJoinLobbyDialog] = useState(false);
@@ -53,8 +55,8 @@ const Homepage = () => {
 
   const saveUpdate = async () => {
     try {
-      await api.put("/users/" + user.id, { username: username });
-      setProfile({ ...profile, username: username }); // Update local profile state
+      await api.put("/users/" + user.id, { username: username, color: color });
+      setProfile({ ...profile, username: username, color: color }); // Update local profile state
       setIsUsernameUpdateDialogOpen(true);
     } catch (error) {
       if(!isProduction) console.error(`Failed to update username: ${error}`);
@@ -226,6 +228,7 @@ const Homepage = () => {
               textAlign: "center",
               fontSize: "3rem", // Increase font size
               marginTop: "1rem", // Add margin at the top
+              color: color,
             }}>
             <Dialog
               open={isUsernameUpdateDialogOpen}
@@ -246,6 +249,7 @@ const Homepage = () => {
                   onChange={(e) => setUsername(e.target.value)}
                   style={{ fontSize: "2rem", marginRight: "10px" }} // Ensure the input font size is large as well
                 />
+                <ColorPicker score={profile.totalScore} color={color} setColor={setColor} />
                 <IconButton onClick={handleSaveClick}>
                   <SaveIcon />
                 </IconButton>
