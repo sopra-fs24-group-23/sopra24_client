@@ -30,7 +30,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({ children, disabled, sx, onC
       transform: "translateY(-1px)", // Moves the button up by 3 pixels
       boxShadow: "0px 5px 5px rgba(0,0,0,0.2)"
     },
-    ...sx, // Override the default styles with the ones passed as props
+    ...sx,
   };
   
   return (
