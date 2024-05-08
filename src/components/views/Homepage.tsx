@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
+import { isProduction } from "../../helpers/isProduction";
+import { getNextScore } from "../../helpers/getNextScore";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Game.scss";
 import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
@@ -7,8 +9,10 @@ import CustomButton from "components/ui/CustomButton";
 import { Box, TextField, IconButton, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
+import CloseIcon from "@mui/icons-material/Close";
 import UserContext from "../../contexts/UserContext";
-import { isProduction } from "../../helpers/isProduction";
+import ProgressBarContainer from "../ui/ProgressBarContainer";
+import ColorPicker from "../ui/ColorPicker";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -18,6 +22,7 @@ const Homepage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { user } = useContext(UserContext);
   const [inputLobbyId, setInputLobbyId] = useState("");
+  const [color, setColor] = useState("#000000");
 
   /* Dialogs */
   const [openJoinLobbyDialog, setOpenJoinLobbyDialog] = useState(false);
@@ -47,19 +52,27 @@ const Homepage = () => {
   const handleEditClick = () => {
     setIsEditing(true);
   };
+
   const saveUpdate = async () => {
     try {
-      await api.put("/users/" + user.id, { username: username });
-      setProfile({ ...profile, username: username }); // Update local profile state
+      await api.put("/users/" + user.id, { username: username, color: color });
+      setProfile({ ...profile, username: username, color: color }); // Update local profile state
       setIsUsernameUpdateDialogOpen(true);
     } catch (error) {
       if(!isProduction) console.error(`Failed to update username: ${error}`);
       // Default error message
       let message = "An unexpected error occured. Please try again.";
 
-      // If the Backend sends a specific error message, use it
-      if (error.response && error.response.data && error.response.data.message) {
-        message = error.response.data.message;
+      // If the Backend sends a specific error message, use it --> DOESN'T WORK IN PRD!!!!!!!
+      //if (error.response && error.response.data.message) {
+      //  message = error.response.data.message;
+      //}
+      // If status code 400, username can't be empty
+      if(error.response && error.response.status === 400) {
+        message = "The username cannot be empty. Please try again.";
+      }
+      else if (error.response && error.response.status === 409) {
+        message = "This username is already taken. Please choose a different username.";
       }
       setErrorMessage(message);
       setIsErrorDialogOpen(true);
@@ -72,9 +85,23 @@ const Homepage = () => {
     setIsEditing(false); // set editing to false to switch back to display mode
   };
 
+  // Let the user cancel the edit process if they don't wish to save the changes
+  const handleCancelClick = () => {
+    setUsername(profile.username);
+    setIsEditing(false);
+  };
+
   const goToLeaderboards = () => {
     navigate("/leaderboards");
   };
+
+  // Updating the progress bar
+  function updateProgressBar(currentPoints, totalPointsNeeded) {
+    const progressBar = document.getElementById("progressBar");
+    const width = (currentPoints / totalPointsNeeded) * 100;
+    progressBar.style.width = width + "%";
+  }
+
 
   const createLobby = async () => {
     try {
@@ -201,6 +228,7 @@ const Homepage = () => {
               textAlign: "center",
               fontSize: "3rem", // Increase font size
               marginTop: "1rem", // Add margin at the top
+              color: color,
             }}>
             <Dialog
               open={isUsernameUpdateDialogOpen}
@@ -221,8 +249,12 @@ const Homepage = () => {
                   onChange={(e) => setUsername(e.target.value)}
                   style={{ fontSize: "2rem", marginRight: "10px" }} // Ensure the input font size is large as well
                 />
+                <ColorPicker score={profile.totalScore} color={color} setColor={setColor} />
                 <IconButton onClick={handleSaveClick}>
                   <SaveIcon />
+                </IconButton>
+                <IconButton onClick={handleCancelClick}>
+                  <CloseIcon />
                 </IconButton>
               </Box>
             ) : (
@@ -232,6 +264,20 @@ const Homepage = () => {
               </Box>
             )}
           </Typography>
+        )}
+        {/* Progress bar*/}
+        {profile && (
+        <>
+          <Typography variant="h6" gutterBottom
+                      sx={{
+                        fontFamily: "Londrina Solid",
+                        textAlign: "left",
+                        marginTop: "1rem", // Add margin at the top
+                      }}>
+            {profile && `Unlock the next color at ${getNextScore(profile.totalScore)} points!`}
+          </Typography>
+          <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={getNextScore(profile.totalScore)} />
+        </>
         )}
         {/* User statistics */}
         {profile && (

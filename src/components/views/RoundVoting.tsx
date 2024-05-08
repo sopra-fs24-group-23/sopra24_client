@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Typography, Box } from "@mui/material";
 import BackgroundImageLobby from "components/ui/BackgroundImageLobby";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import GameStateContext from "../../contexts/GameStateContext";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-import IconButton from "@mui/material/IconButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import UserContext from "../../contexts/UserContext";
 import Countdown from "../ui/Countdown";
 import { isProduction } from "../../helpers/isProduction";
+import CustomButton from "../ui/CustomButton";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Typography, Box, IconButton} from "@mui/material";
 
 const RoundVoting = () => {
   const { lobbyId } = useParams();
@@ -17,13 +17,13 @@ const RoundVoting = () => {
   const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
   const [doubts, setDoubts] = useState([]);
   const [doubtedAnswers, setDoubtedAnswers] = useState([]);
-
+  const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
 
   /* Context variables */
   const { gameSettings } = useContext(GameSettingsContext);
   const { gameState } = useContext(GameStateContext);
-  const { send } = useContext(WebSocketContext);
   const { user } = useContext(UserContext);
+  const { disconnect, send, unsubscribeAll } = useContext(WebSocketContext);
 
 
   useEffect(() => {
@@ -102,8 +102,9 @@ const RoundVoting = () => {
 
           return (
             <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
-              <Typography>{answer.category}</Typography>
-              <Typography sx={{ flex: isCurrentUser ? "1" : "none", textAlign: "center" }}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
+              {/* Set a fixed width for the category label */}
+              <Typography sx={{ width: "150px", flexShrink: 0 }}>{answer.category}</Typography>
+              <Typography sx={{ textAlign: "left", flexGrow: 1}}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
               {!isCurrentUser && (
                 <IconButton onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "blue" : "grey" }}>
                   <CancelOutlinedIcon />
@@ -116,8 +117,67 @@ const RoundVoting = () => {
     );
   };
 
+  const handleOpenDialog = () => {
+    setOpenLeaveDialog(true);
+  };
+  const handleCloseDialog = () => {
+    setOpenLeaveDialog(false);
+  };
+  const handleLeaveGame = () => {
+    send(`/app/games/${lobbyId}/leave`, JSON.stringify({ token: user.token }));
+    unsubscribeAll()
+    disconnect()
+    navigate("/homepage")
+  }
+
   return (
     <BackgroundImageLobby>
+      <Box sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        //height: "50vh", // Use viewport height to fill the screen
+        padding: "20px",
+        backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
+        borderColor: "black",
+        borderWidth: "2px",
+        borderStyle: "solid",
+        borderRadius: "27px",
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+        width: "90%",
+        height: "5%",
+        margin: "auto",
+        position: "relative",
+        top: 30,
+        marginBottom: "30px",
+      }}>
+        <img src="/Images/logo.png" alt="Descriptive Text"
+          style={{ width: "auto", height: "200px", marginTop: "100px" }} />
+        <CustomButton
+          onClick={handleOpenDialog}
+          sx={{
+            backgroundColor: "#e0e0e0",
+            "&:hover": {
+              backgroundColor: "red",
+            },
+          }}
+        >
+          Leave Game
+        </CustomButton>
+        <Dialog open={openLeaveDialog} onClose={handleCloseDialog}>
+          <DialogTitle>Leave the game?</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to leave the game?
+              You will be returned to your profile page and all your progress in the current game will be lost.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
+            <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
+          </DialogActions>
+        </Dialog>
+      </Box>
       <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",

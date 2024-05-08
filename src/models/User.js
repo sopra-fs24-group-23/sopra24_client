@@ -5,6 +5,7 @@ class User {
   constructor(data = {}) {
     this.id = null;
     this.username = null;
+    this.color = null;
     this.totalScore = null;
     this.gamesPlayed = null;
     this.gamesWon = null;
