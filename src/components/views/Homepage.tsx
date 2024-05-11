@@ -21,6 +21,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import UserContext from "../../contexts/UserContext";
 import ProgressBarContainer from "../ui/ProgressBarContainer";
 import ColorPicker from "../ui/ColorPicker";
@@ -68,6 +69,7 @@ const Homepage = () => {
     try {
       await api.put("/users/" + user.id, { username: username, color: color });
       setProfile({ ...profile, username: username, color: color }); // Update local profile state
+      setColor(color);
       setIsUsernameUpdateDialogOpen(true);
     } catch (error) {
       if (!isProduction) console.error(`Failed to update username: ${error}`);
@@ -172,6 +174,7 @@ const Homepage = () => {
         if (!isProduction) console.log("THE ID IS");
         const response = await api.get("/users/" + id);
         setProfile(response.data);
+        setColor(response.data.color);
       } catch (error) {
         if (!isProduction) console.error(`Something went wrong while fetching the user: \n${handleError(error)}`);
         if (!isProduction) console.error("Details:", error);
@@ -291,6 +294,9 @@ const Homepage = () => {
                 marginTop: "1rem", // Add margin at the top
               }}>
               {profile && `Unlock the next color at ${getNextScore(profile.totalScore)} points!`}
+              <Tooltip title="By entering the next level you receive a new color to display your username!">
+                <InfoOutlinedIcon sx={{ marginLeft: "10px" }}/>
+              </Tooltip>
             </Typography>
             <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={getNextScore(profile.totalScore)} />
           </>

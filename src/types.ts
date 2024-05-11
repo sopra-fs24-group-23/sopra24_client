@@ -13,6 +13,7 @@ export type User = {
   totalScore: number;
   gamesPlayed: number;
   gamesWon: number;
+  color: string;
 };
 
 export type GameSettings = {
