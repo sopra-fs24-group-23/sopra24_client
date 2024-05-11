@@ -6,7 +6,18 @@ import { useNavigate } from "react-router-dom";
 import "styles/views/Game.scss";
 import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
 import CustomButton from "components/ui/CustomButton";
-import { Box, TextField, IconButton, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+  Box,
+  TextField,
+  IconButton,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Tooltip,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
@@ -41,15 +52,15 @@ const Homepage = () => {
       localStorage.removeItem("token");
       navigate("/login");
       //console.log(localStorage.getItem("token"));
-    }
-    else {
-      localStorage.removeItem("token")
-      localStorage.removeItem("id")
-      navigate("/login")
+    } else {
+      localStorage.removeItem("token");
+      localStorage.removeItem("id");
+      navigate("/login");
     }
   };
 
   const handleEditClick = () => {
+    setUsername(profile.username); // The current username is displayed in the textfield
     setIsEditing(true);
   };
 
@@ -59,7 +70,7 @@ const Homepage = () => {
       setProfile({ ...profile, username: username, color: color }); // Update local profile state
       setIsUsernameUpdateDialogOpen(true);
     } catch (error) {
-      if(!isProduction) console.error(`Failed to update username: ${error}`);
+      if (!isProduction) console.error(`Failed to update username: ${error}`);
       // Default error message
       let message = "An unexpected error occured. Please try again.";
 
@@ -68,10 +79,9 @@ const Homepage = () => {
       //  message = error.response.data.message;
       //}
       // If status code 400, username can't be empty
-      if(error.response && error.response.status === 400) {
+      if (error.response && error.response.status === 400) {
         message = "The username cannot be empty. Please try again.";
-      }
-      else if (error.response && error.response.status === 409) {
+      } else if (error.response && error.response.status === 409) {
         message = "This username is already taken. Please choose a different username.";
       }
       setErrorMessage(message);
@@ -82,7 +92,7 @@ const Homepage = () => {
   // Handle save after editing
   const handleSaveClick = () => {
     saveUpdate();
-    setIsEditing(false); // set editing to false to switch back to display mode
+    setIsEditing(false);
   };
 
   // Let the user cancel the edit process if they don't wish to save the changes
@@ -118,7 +128,7 @@ const Homepage = () => {
       // Navigate to the game room using the game ID from the response
       navigate(`/lobbies/${response.data.id}`);
     } catch (error) {
-      if(!isProduction) console.error(`Creating game failed: ${error}`);
+      if (!isProduction) console.error(`Creating game failed: ${error}`);
       //alert("Failed to create game. Please try again.");
       setIsFailedCreateGameDialogOpen(true);
     }
@@ -129,29 +139,27 @@ const Homepage = () => {
       if (!inputLobbyId) {
         alert("Please enter lobby ID.");
 
-        return
+        return;
       }
 
       // check that the lobby-id is valid, then navigate to lobby
       await api.get(`/lobbies/${inputLobbyId}`).then(async () => {
         try {
-          const token = localStorage.getItem("token")
-          const requestBody = JSON.stringify({ token })
-          await api.post(`/lobbies/${inputLobbyId}/join`, requestBody)
-          navigate(`/lobbies/${inputLobbyId}`)
-        }
-        catch (e) {
-          if(e.response.data.status) {
-            alert(`${e.response.data.message}`)
-          }
-          else {
-            handleError(e)
+          const token = localStorage.getItem("token");
+          const requestBody = JSON.stringify({ token });
+          await api.post(`/lobbies/${inputLobbyId}/join`, requestBody);
+          navigate(`/lobbies/${inputLobbyId}`);
+        } catch (e) {
+          if (e.response.data.status) {
+            alert(`${e.response.data.message}`);
+          } else {
+            handleError(e);
           }
         }
-      })
+      });
 
     } catch (error) {
-      if(!isProduction) console.error(`Joining lobby failed: ${error}`);
+      if (!isProduction) console.error(`Joining lobby failed: ${error}`);
       //alert("Failed to join lobby. Please check the lobby ID and try again.");
       setOpenJoinLobbyErrorDialog(true);
     }
@@ -161,17 +169,18 @@ const Homepage = () => {
     async function fetchData() {
       try {
         let id = localStorage.getItem("id");
-        if(!isProduction) console.log("THE ID IS");
+        if (!isProduction) console.log("THE ID IS");
         const response = await api.get("/users/" + id);
         setProfile(response.data);
       } catch (error) {
-        if(!isProduction) console.error(`Something went wrong while fetching the user: \n${handleError(error)}`);
-        if(!isProduction) console.error("Details:", error);
+        if (!isProduction) console.error(`Something went wrong while fetching the user: \n${handleError(error)}`);
+        if (!isProduction) console.error("Details:", error);
         //alert("Something went wrong while fetching the user! See the console for details.");
         setOpenAlertDialog(true);
       }
     }
-    fetchData()
+
+    fetchData();
   }, [user]);
 
   return (
@@ -194,7 +203,8 @@ const Homepage = () => {
         right: 40,
         zIndex: 1000,
       }}>
-        <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px" }} />
+        <img src="/Images/logo.png" alt="Descriptive Text"
+          style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton sx={{ marginLeft: "auto" }} onClick={() => navigate("/instructions")}>Instructions</CustomButton>
         <CustomButton sx={{ marginLeft: "15px" }} onClick={logout}>Logout</CustomButton>
       </Box>
@@ -234,9 +244,9 @@ const Homepage = () => {
               open={isUsernameUpdateDialogOpen}
               onClose={() => setIsUsernameUpdateDialogOpen(false)}
             >
-              <DialogTitle>{"Username Update"}</DialogTitle>
+              <DialogTitle>{"Profile Update"}</DialogTitle>
               <DialogContent>
-                <DialogContentText>Username updated successfully!</DialogContentText>
+                <DialogContentText>Changes successfully saved!</DialogContentText>
               </DialogContent>
               <DialogActions>
                 <CustomButton onClick={() => setIsUsernameUpdateDialogOpen(false)}>Close</CustomButton>
@@ -250,34 +260,40 @@ const Homepage = () => {
                   style={{ fontSize: "2rem", marginRight: "10px" }} // Ensure the input font size is large as well
                 />
                 <ColorPicker score={profile.totalScore} color={color} setColor={setColor} />
-                <IconButton onClick={handleSaveClick}>
-                  <SaveIcon />
-                </IconButton>
-                <IconButton onClick={handleCancelClick}>
-                  <CloseIcon />
-                </IconButton>
+                <Tooltip title="Save">
+                  <IconButton onClick={handleSaveClick}>
+                    <SaveIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Exit">
+                  <IconButton onClick={handleCancelClick}>
+                    <CloseIcon />
+                  </IconButton>
+                </Tooltip>
               </Box>
             ) : (
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "left" }}>
                 {profile.username}
-                <EditIcon onClick={handleEditClick} sx={{ marginLeft: "10px", cursor: "pointer" }} />
+                <Tooltip title="Edit">
+                  <EditIcon onClick={handleEditClick} sx={{ marginLeft: "10px", cursor: "pointer" }} />
+                </Tooltip>
               </Box>
             )}
           </Typography>
         )}
         {/* Progress bar*/}
         {profile && (
-        <>
-          <Typography variant="h6" gutterBottom
-                      sx={{
-                        fontFamily: "Londrina Solid",
-                        textAlign: "left",
-                        marginTop: "1rem", // Add margin at the top
-                      }}>
-            {profile && `Unlock the next color at ${getNextScore(profile.totalScore)} points!`}
-          </Typography>
-          <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={getNextScore(profile.totalScore)} />
-        </>
+          <>
+            <Typography variant="h6" gutterBottom
+              sx={{
+                fontFamily: "Londrina Solid",
+                textAlign: "left",
+                marginTop: "1rem", // Add margin at the top
+              }}>
+              {profile && `Unlock the next color at ${getNextScore(profile.totalScore)} points!`}
+            </Typography>
+            <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={getNextScore(profile.totalScore)} />
+          </>
         )}
         {/* User statistics */}
         {profile && (
