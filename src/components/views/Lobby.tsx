@@ -54,7 +54,7 @@ const Lobby = () => {
   const [isHost, setIsHost] = useState(false);
   const { lobbyId } = useParams();
   const [settings, setSettings] = useState<GameSettings>({
-    categories: ["Country", "City", "Movie/Series"],
+    categories: ["Country", "City", "Movie/Series", "Food", "Car"],
     maxRounds: 5,
     votingDuration: 30,
     inputDuration: 60,
@@ -287,6 +287,11 @@ const Lobby = () => {
                   <MenuItem value={"Movie/Series"}>Movie/Series</MenuItem>
                   <MenuItem value={"Animal"}>Animal</MenuItem>
                   <MenuItem value={"Celebrity"}>Celebrity</MenuItem>
+                  <MenuItem value={"Food"}>Food</MenuItem>
+                  <MenuItem value={"Car"}>Car</MenuItem>
+
+
+
                 </Select>
               </FormControl>
             </Grid>
