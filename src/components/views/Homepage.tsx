@@ -140,6 +140,7 @@ const Homepage = () => {
     try {
       if (!inputLobbyId) {
         alert("Please enter lobby ID.");
+
         return;
       }
 
