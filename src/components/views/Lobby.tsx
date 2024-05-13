@@ -289,6 +289,8 @@ const Lobby = () => {
                   <MenuItem value={"Celebrity"}>Celebrity</MenuItem>
                   <MenuItem value={"Food"}>Food</MenuItem>
                   <MenuItem value={"Car"}>Car</MenuItem>
+                  <MenuItem value={"Random"}>Random</MenuItem>
+
 
 
 
