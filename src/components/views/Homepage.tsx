@@ -140,7 +140,6 @@ const Homepage = () => {
     try {
       if (!inputLobbyId) {
         alert("Please enter lobby ID.");
-
         return;
       }
 
@@ -264,7 +263,7 @@ const Homepage = () => {
                 />
                 <ColorPicker score={profile.totalScore} color={color} setColor={setColor} />
                 <Tooltip title="Save">
-                  <IconButton onClick={handleSaveClick}>
+                  <IconButton disabled={!username} onClick={handleSaveClick}>
                     <SaveIcon />
                   </IconButton>
                 </Tooltip>
