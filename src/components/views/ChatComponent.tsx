@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Client } from '@stomp/stompjs';
+import CustomButton from 'components/ui/CustomButton'; // Import the CustomButton
 
 interface ChatMessage {
   sender: string;
@@ -76,22 +77,39 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ lobbyId, username }) => {
   };
 
   return (
-    <div>
-      <div className="chat-window">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div className="chat-window" style={{ flex: 1, maxHeight: '300px', overflowY: 'auto', padding: '5px', borderRadius: '5px',  marginBottom: '10px' }}>
         {messages.map((msg, index) => (
           <div key={index}>
             <strong>{msg.sender}</strong>: {msg.content}
           </div>
         ))}
       </div>
-      <div className="chat-input-container">
+      <div className="chat-input-container" style={{ display: 'flex', alignItems: 'center' }}>
         <input
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           disabled={!isConnected}
+          placeholder="Type a message..."
+          style={{
+            flex: 1,
+            padding: '3px',
+            marginRight: '10px',
+            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            color: 'black',
+            border: '1px solid #ccc',
+            borderRadius: '5px',
+            outline: 'none'
+          }}
         />
-        <button onClick={sendMessage} disabled={!isConnected}>Send</button>
+        <CustomButton
+          onClick={sendMessage}
+          disabled={!isConnected}
+          sx={{ padding: '2px 5px', fontSize: '12px' }} // Smaller button styling
+        >
+          Send
+        </CustomButton>
       </div>
     </div>
   );
