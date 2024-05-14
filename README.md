@@ -1,65 +1,72 @@
-# SoPra FS24 - Client Template with build pack
+# Frontend GlobalGuess
 
-## Getting started
+## Technologies
+This repository relies on the [React](https://react.dev/) framework. We use the [Axios](https://axios-http.com/docs/intro) library to handle HTTP-Requests and the [stompjs](https://stomp-js.github.io/api-docs/latest/index.html) library to handle websocket connection and communication. It does not suppport websocket fallbacks using SockJS, as [websocket-support](https://caniuse.com/?search=websockets) has become ubiquitous.
+Further, we use React's [context API](https://react.dev/reference/react/hooks#context-hooks) to store and retrieve information between views.
 
-Read and go through these Tutorials. It will make your life easier:)
+## High-Level Components
+All code not pertaining to project building/deployment is located in the /src directory.
 
-- Read the React [Docs](https://react.dev/learn)
-- Do this React [Getting Started](https://react.dev/learn/tutorial-tic-tac-toe) Tutorial (it doesn't assume any existing React knowledge)
-- Get an Understanding of [CSS](https://www.w3schools.com/Css/), [SCSS](https://sass-lang.com/documentation/syntax), and [HTML](https://www.w3schools.com/html/html_intro.asp)!
+### State Management
+Our application uses React's [context API](https://react.dev/reference/react/hooks#context-hooks) to create four specific contexts, each with it's corresponding providers:
+1. **Websocket Context:** This context is responsible for managing WebSocket connections, including connecting, disconnecting, and sending messages to the backend.
+2. **GameSettings Context:** This context manages the game settings. It provides a way for child components to access and update the game settings without having to pass the settings and the update function down through props.
+3. **User Context:** This context is used to maintain the user's information across different components, ensuring that user-specific data and functionality are correctly displayed and executed.
+4. **GamePhase Context:** This context is responsible for managing the state of the game and retrieving the current state in different components.
 
-Next, there are two other technologies that you should look at:
+### Websocket Connection
+All websocket related functionality is provided by the [WebSocketProvider](/src/components/WebSocketProvider.tsx). It allows connecting to and disconnecting from the backend via websockets without requiring client code to store any references to a client. The context also provides functions to un-/subscribe to STOMP topics and queues as well as functions to send STOMP messages to app-destinations in the backend. Again, the component abstracts away the need for clients to store e.g. references to websocket connections, allowing for seamless transitions between views.
 
-* [react-router-dom](https://reactrouter.com/en/main/start/concepts) offers declarative routing for React. It is a collection of navigational components that fit nicely with the application. 
-* [react-hooks](https://blog.logrocket.com/using-hooks-react-router/) let you access the router's state and perform navigation from inside your components.
+### Styling
+For styling our components we use [MUI component library](https://mui.com/material-ui/).
 
-## Prerequisites and Installation
-For your local development environment, you will need Node.js.\
-We urge you to install the exact version **v20.11.0** which comes with the npm package manager. You can download it [here](https://nodejs.org/download/release/v20.11.0/).\
-If you are confused about which download to choose, feel free to use these direct links:
+## Launch & Deployment
+### Running the Project Locally
+To run our app locally follow these steps:
+1. Clone both this repository and the [server repository](https://github.com/sopra-fs24-group-23/sopra24_server/).
+2. Open two terminals at the server directory, either manually or by using IDE-integrated terminals.
+3. With your terminals in the server directory, use the command "./gradlew build" in terminal one, and "./gradlew bootRun" in the other.
+4. The server should now be running locally on port 8000, navigate to [https://localhost:8000/](https://localhost:8000/) to verify.
+5. Now open a terminal in the client directory, again, either manually or by using an IDE-integrated terminal.
+6. Use the command "npm install" to install all necessary dependencies.
+7. Once the dependencies have been installed, use the command "npm run dev" to run the client locally on port 3000. This should automatically open a browser window at [https://localhost:3000/](https://localhost:3000/)
+8. You're done 🚀 The project should now be running locally. You should be able to set breakpoints in your IDE, that will halt if you trigger them by interacting with your local frontend.
 
-- **MacOS:** [node-v20.11.0.pkg](https://nodejs.org/download/release/v20.11.0/node-v20.11.0.pkg)
-- **Windows 32-bit:** [node-v20.11.0-x86.msi](https://nodejs.org/download/release/v20.11.0/node-v20.11.0-x86.msi)
-- **Windows 64-bit:** [node-v20.11.0-x64.msi](https://nodejs.org/download/release/v20.11.0/node-v20.11.0-x64.msi)
-- **Linux:** [node-v20.11.0.tar.xz](https://nodejs.org/dist/v20.11.0/node-v20.11.0.tar.xz) (use this [installation guide](https://medium.com/@tgmarinho/how-to-install-node-js-via-binary-archive-on-linux-ab9bbe1dd0c2) if you are new to Linux)
+### Running Tests
+You can run the test suite in the server directory. Either directly from your IDE, or by running "./gradlew build", both should work fine. The latter will provide you with a link in your terminal to a more detailed report on passing/failing tests and thrown exceptions and errors.
 
-If you happen to have a package manager the following commands can be used:
+### Deploying to Google Cloud
+The webapp is automatically deployed to google cloud whenever you push to the **main** branch. This should not require any additional setup on your part.
 
-- **Homebrew:** `brew install node@20.11.0`
-- **Chocolatey:** `choco install nodejs-lts --version=20.11.0`
+## Illustrations
 
-After the installation, update the npm package manager to **10.4.0** by running ```npm install -g npm@10.4.0```\
-You can ensure the correct version of node and npm by running ```node -v``` and ```npm --version```, which should give you **v20.11.0** and **10.4.0** respectively.\
-Before you start your application for the first time, run this command to install all other dependencies, including React:
+## Roadmap
 
-```npm install```
+## Authors and acknowledgement
+- Franziska Geiger, [fr4n715k4](https://github.com/fr4n715k4)
+- Nilaksan Selliah, [nilaksan97](https://github.com/nilaksan97)
+- Nils Hegetschweiler, [nilshgt](https://github.com/nilshgt)
+- Jonas Krumm, [dedphish](https://github.com/Dedphish)
 
-Next, you can start the app with:
+We thank Stefan Schuler ([Steesch](https://github.com/steesch)) for supporting us as our TA throughout the project.
 
-```npm run dev```
+Further, we thank [royru](https://github.com/royru), [isicu](https://github.com/isicu), [marcoleder](https://github.com/marcoleder), [v4lentin1879](https://github.com/v4lentin1879), [luis-tm](https://github.com/luis-tm) and [SvenRingger](https://github.com/SvenRingger) for creating and providing us with a template upon which we built this project. 
 
-Now you can open [http://localhost:3000](http://localhost:3000) to view it in the browser.\
-Notice that the page will reload if you make any edits. You will also see any lint errors in the console (use a Chrome-based browser).\
-The client will send HTTP requests to the server which can be found [here](https://github.com/HASEL-UZH/sopra-fs24-template-server).\
-In order for these requests to work, you need to install and start the server as well.
+## License
+[GNU GPLv3](https://github.com/sopra-fs24-group-23/sopra24_server/blob/main/LICENSE)
 
-### Testing
-Testing is optional, and you can run the tests with `npm run test`\
-This launches the test runner in an interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+GlobalGuess is a game about finding terms with a common starting letter as quickly as possible
+Copyright (C) 2024  Franziska Geiger, Nilaksan Selliah, Nils Hegetschweiler, Jonas Krumm
 
-> For macOS user running into a 'fsevents' error: https://github.com/jest-community/vscode-jest/issues/423
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-### Build
-Finally, `npm run build` builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance:\
-The build is minified, and the filenames include hashes.<br>
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-## Learn More
-
-To learn React, check out the [React documentation](https://react.dev/).
-
-
-> Thanks to Lucas Pelloni Kyrill Hux and Marco Leder for working on the template.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
