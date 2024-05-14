@@ -71,6 +71,7 @@ const VotingResults = () => {
             <Typography sx={{ width: "150px", flexShrink: 0 }}>{answer.category}</Typography>
             {/* Have answer aligned properly */}
             <Typography sx={{ textAlign: "left", flexGrow: 1}}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
+            <Typography sx={{ width: "50px", textAlign: "right" }}>{answer.points} pts </Typography>
             {renderStatusIcons(answer)}
           </Box>
         ))}
