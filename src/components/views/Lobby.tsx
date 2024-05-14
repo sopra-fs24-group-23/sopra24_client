@@ -2,7 +2,7 @@ import BackgroundImageLobby from "components/ui/BackgroundImageLobby";
 import React, { useState, useEffect, useContext, useRef } from "react";
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "../../helpers/api"
+import { api } from "../../helpers/api";
 import {
   Box,
   TextField,
@@ -17,12 +17,13 @@ import {
   SelectChangeEvent,
   FormControl,
   InputLabel,
-  Grid, Tooltip,
+  Grid,
+  Tooltip,
+  IconButton,
+  ToggleButton,
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import IconButton from "@mui/material/IconButton";
-import ToggleButton from "@mui/material/ToggleButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs";
 import UserContext from "../../contexts/UserContext";
@@ -31,6 +32,7 @@ import PlayerList from "../ui/PlayerList";
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import { isProduction } from "../../helpers/isProduction";
+import ChatComponent from './ChatComponent'; // Import the ChatComponent
 
 interface GameSettings {
   categories: string[];
@@ -67,33 +69,30 @@ const Lobby = () => {
     maxPlayers: 4,
   });
 
-  /* Variables used to determine correct clean-up action */
   const gameStarting = useRef(false);
   const lobbyClosing = useRef(false);
 
-  /* Context Variables*/
   const { user } = useContext(UserContext);
   const { setGameStateVariable } = useContext(GameStateContext);
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
   const { setGameSettingsVariable } = useContext(GameSettingsContext);
 
-  /** On component Mount/Unmount**/
   useEffect(() => {
     if (lobbyId) {
       connect(lobbyId).then(() => {
         subscribeClient(
           `/topic/lobbies/${lobbyId}/settings`,
           (message: Message) => {
-            if(!isProduction) console.log("Received settings update:", message.body);
+            if (!isProduction) console.log("Received settings update:", message.body);
             const receivedSettings = JSON.parse(message.body);
             setSettings(receivedSettings);
-            setGameSettingsVariable(receivedSettings)
+            setGameSettingsVariable(receivedSettings);
           },
         );
         subscribeClient(
           `/topic/lobbies/${lobbyId}/players`,
           (message: Message) => {
-            if(!isProduction) console.log(`Received PlayerList update: ${message.body}`)
+            if (!isProduction) console.log(`Received PlayerList update: ${message.body}`);
             const receivedPlayers = JSON.parse(message.body);
             setPlayers(receivedPlayers);
           },
@@ -102,38 +101,33 @@ const Lobby = () => {
           subscribeClient(
             `/queue/lobbies/${lobbyId}/kick/${user.username}`,
             (message: Message) => {
-              if(!isProduction) console.log(`Received kick message: ${message.body}`)
-              alert("You were kicked from the lobby.")
-              navigate("/homepage")
+              if (!isProduction) console.log(`Received kick message: ${message.body}`);
+              alert("You were kicked from the lobby.");
+              navigate("/homepage");
             },
           );
         }
         subscribeClient(
           `/topic/lobbies/${lobbyId}/close`,
           () => {
-            lobbyClosing.current = true
-            // host doesn't need to be notified
-            if (!isHost) alert("Sorry, the host has left the game! Returning you to the homepage.")
-            navigate("/homepage")
-          }
-        )
+            lobbyClosing.current = true;
+            if (!isHost) alert("Sorry, the host has left the game! Returning you to the homepage.");
+            navigate("/homepage");
+          },
+        );
         subscribeClient(
           `/topic/games/${lobbyId}/state`,
           (message: Message) => {
-            if(!isProduction) console.log(`Received GameState update: ${message.body}`);
+            if (!isProduction) console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
-
-            // Update the gamePhase in the context
-            setGameStateVariable(receivedGameState)
+            setGameStateVariable(receivedGameState);
             if (receivedGameState.gamePhase === "SCOREBOARD") {
-              //localStorage.setItem("gameState", JSON.stringify(receivedGameState));
-              // Redirect to RoundScoreboard page/component
               gameStarting.current = true;
               navigate(`/lobbies/${lobbyId}/scoreboard`);
             }
-          }
-        )
-        send(`/app/lobbies/${lobbyId}/update`)
+          },
+        );
+        send(`/app/lobbies/${lobbyId}/update`);
       });
     }
 
@@ -142,39 +136,33 @@ const Lobby = () => {
         try {
           const response = await api.get(`/lobbies/${lobbyId}/host`);
           const host = new User(response.data);
-          if(!isProduction) console.log(`MYDEBUG ${user.username} equals ${host.username}?`)
+          if (!isProduction) console.log(`MYDEBUG ${user.username} equals ${host.username}?`);
           if (user.username === host.username) {
-            if(!isProduction) console.log("MYDEBUG SETTING ISHOST TRUE")
-            setIsHost(true)
+            if (!isProduction) console.log("MYDEBUG SETTING ISHOST TRUE");
+            setIsHost(true);
+          } else {
+            if (!isProduction) console.log("MYDEBUG SETTING ISHOST FALSE");
+            setIsHost(false);
           }
-          else {
-            if(!isProduction) console.log("MYDEBUG SETTING ISHOST FALSE")
-            setIsHost(false)
-          }
+        } catch (e) {
+          alert("Could not fetch lobby-host, returning to homepage.");
+          navigate("/homepage");
         }
-        catch (e) {
-          alert("Could not fetch lobby-host, returning to homepage.")
-          navigate("/homepage")
-        }
-      }
-      fetchHost()
+      };
+      fetchHost();
     }
   }, [user]);
 
-  /* Cleanup useEffect */
   useEffect(() => {
     return () => {
-      // only unsub & dc if player is leaving the lobby
       if (!gameStarting.current) {
         const token = localStorage.getItem("token");
-        // only send leave-message if lobby isn't closing
         if (!lobbyClosing.current) send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
-        // unsubscribeClient(`/topic/lobbies/${lobbyId}/settings`);
         unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
         unsubscribeClient(`/topic/games/${lobbyId}/state`);
         disconnect();
       }
-    }
+    };
   }, []);
 
   const handleOpenDialog = () => {
@@ -188,22 +176,22 @@ const Lobby = () => {
       gameStarting.current = true;
       send(`/app/games/${lobbyId}/start`, {});
     } catch (error) {
-      if(!isProduction) console.error("Failed to start the game:", error);
+      if (!isProduction) console.error("Failed to start the game:", error);
     }
   };
   const handleLeaveGame = () => {
     if (isHost) {
-      send(`/app/lobbies/${lobbyId}/delete`)
+      send(`/app/lobbies/${lobbyId}/delete`);
     }
-    navigate("/homepage")
+    navigate("/homepage");
   };
   const handleCopyLobbyCode = () => {
     navigator.clipboard.writeText(localStorage.getItem("lobbyCode"))
       .then(() => {
-        if(!isProduction) console.log("Lobby code copied to clipboard");
+        if (!isProduction) console.log("Lobby code copied to clipboard");
       })
       .catch((error) => {
-        if(!isProduction) console.error("Failed to copy lobby code to clipboard:", error);
+        if (!isProduction) console.error("Failed to copy lobby code to clipboard:", error);
       });
   };
   const kickPlayer = (usernameToKick: String) => {
@@ -213,7 +201,6 @@ const Lobby = () => {
     }
   };
   const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
-    // Needed to temporarily store changes. So changes are only saved when user clicks 'Save'
     const [tempSettings, setTempSettings] = useState(settings);
     const initialCategories = settings.categories && settings.categories.length > 0 ? settings.categories : ["Country", "City"];
     const [tempCategories, setTempCategories] = useState<string[]>(initialCategories);
@@ -231,11 +218,10 @@ const Lobby = () => {
       }
     };
     const handleToggle = () => {
-      setTempSettings({ ...tempSettings, isRandom: !tempSettings.isRandom})
-    }
+      setTempSettings({ ...tempSettings, isRandom: !tempSettings.isRandom });
+    };
     const handleCategoryChange = (event: SelectChangeEvent<string[]>) => {
       let newCategories = event.target.value as string[];
-      // If new category is empty, set it to the default categories
       if (newCategories.length === 0) {
         newCategories = ["Country", "City", "Movie/Series"];
       }
@@ -243,7 +229,6 @@ const Lobby = () => {
     };
     const handleSaveSettings = async () => {
       try {
-        // Perform validation
         const newErrors = {
           maxRounds: tempSettings.maxRounds.toString() === "" || tempSettings.maxRounds === 0,
           votingDuration: tempSettings.votingDuration.toString() === "" || tempSettings.votingDuration === 0,
@@ -252,24 +237,19 @@ const Lobby = () => {
           maxPlayers: tempSettings.maxPlayers.toString() === "" || tempSettings.maxPlayers === 0,
         };
         setErrors(newErrors);
-        // If there are no errors, save the settings
         if (!Object.values(newErrors).includes(true)) {
-          // Update the local state
           const newSettings = { ...tempSettings, categories: tempCategories };
           onSettingsChange(newSettings);
           setSettings(newSettings);
-          // Send the updated settings to the server
           const requestBody = JSON.stringify(newSettings);
-          // Send a Websocket message to update the gamesettings
           send(`/app/lobbies/${lobbyId}/settings`, requestBody);
           handleCloseGameSettings();
         }
       } catch (error) {
-        if(!isProduction) console.error("Failed to update game settings:", error);
+        if (!isProduction) console.error("Failed to update game settings:", error);
       }
     };
     const handleCloseSettings = () => {
-      // Discard the temporary state
       setTempSettings(settings);
       setTempCategories(settings.categories);
       handleCloseGameSettings();
@@ -280,8 +260,6 @@ const Lobby = () => {
         {isHost ? (
           <Grid container spacing={6}>
             <Grid item xs={6}>
-              {/*Render editable fields for the host*/}
-              {/*Categories Dropdown*/}
               <FormControl sx={{ minWidth: 300 }}>
                 <InputLabel>Categories</InputLabel>
                 <Select
@@ -310,7 +288,7 @@ const Lobby = () => {
                     handleToggle();
                   }}
                 >
-                    Randomize
+                  Randomize
                 </ToggleButton>
               </Tooltip>
             </Grid>
@@ -365,7 +343,6 @@ const Lobby = () => {
           </Grid>
         ) : (
           <>
-            {/* Render read-only info for other players*/}
             <Typography>Categories: {settings.isRandom ? "Randomized" : settings.categories.join(", ")}</Typography>
             <Typography>Max Rounds: {settings.maxRounds}</Typography>
             <Typography>Time-limit to vote (seconds): {settings.votingDuration}</Typography>
@@ -385,9 +362,8 @@ const Lobby = () => {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        //height: "50vh", // Use viewport height to fill the screen
         padding: "20px",
-        backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
+        backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
         borderWidth: "2px",
         borderStyle: "solid",
@@ -401,7 +377,7 @@ const Lobby = () => {
         marginBottom: "30px",
       }}>
         <img src="/Images/logo.png" alt="Descriptive Text"
-          style={{ width: "auto", height: "200px", marginTop: "100px" }} />
+             style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton
           onClick={handleOpenDialog}
           sx={{
@@ -429,13 +405,12 @@ const Lobby = () => {
           </DialogActions>
         </Dialog>
       </Box>
-      {/* Outer box */}
       <Box sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "space-between",
-        backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
+        backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
         borderWidth: "2px",
         borderStyle: "solid",
@@ -460,30 +435,24 @@ const Lobby = () => {
             <SettingsIcon />
           </CustomButton>
           <Dialog open={openGameSettings} onClose={handleCloseGameSettings}
-            PaperProps={{
-              sx: {
-                width: "60%",
-                maxWidth: "none",
-                height: "60%",
-                maxHeight: "none",
-              }
-            }}
+                  PaperProps={{
+                    sx: {
+                      width: "60%",
+                      maxWidth: "none",
+                      height: "60%",
+                      maxHeight: "none",
+                    }
+                  }}
           >
             <DialogTitle>Game Settings</DialogTitle>
             <DialogContent>
-              {/* Conditionally render settings based on user role (host or not) */}
               <GameSettings isHost={isHost} settings={settings} onSettingsChange={setSettings} />
             </DialogContent>
           </Dialog>
         </Box>
-        {/*
-        <CustomButton onClick={() => navigate(`/lobbies/${response.data.id}`)}>
-            Instructions </CustomButton> */}
-        {/* Inner box for player list*/}
 
         <PlayerList players={players} hostView={isHost} kickPlayer={kickPlayer} />
 
-        {/* Inner box for Lobby Code if isHost is true*/}
         {isHost && (
           <Box sx={{
             display: "flex",
@@ -496,21 +465,20 @@ const Lobby = () => {
             borderStyle: "solid",
             width: "60%",
             height: "5%",
-            margin: "10 px auto",
+            margin: "10px auto",
             padding: "20px",
             borderRadius: "40px",
             boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
             position: "relative",
             top: "-5%",
           }}>
-            {/* Lobby Code */}
             <Typography variant="h6" gutterBottom
-              sx={{
-                fontFamily: "Londrina Solid",
-                textAlign: "center",
-                position: "relative",
-                top: "30%",
-              }}>
+                        sx={{
+                          fontFamily: "Londrina Solid",
+                          textAlign: "center",
+                          position: "relative",
+                          top: "30%",
+                        }}>
               INVITE A FRIEND!
             </Typography>
             <Box sx={{
@@ -520,12 +488,12 @@ const Lobby = () => {
               width: "100%",
             }}>
               <Typography variant="body1" gutterBottom
-                sx={{
-                  fontFamily: "Courier New",
-                  textAlign: "center",
-                  position: "relative",
-                  top: "-10%",
-                }}>
+                          sx={{
+                            fontFamily: "Courier New",
+                            textAlign: "center",
+                            position: "relative",
+                            top: "-10%",
+                          }}>
               </Typography>
               <Box sx={{
                 position: "relative",
@@ -545,6 +513,9 @@ const Lobby = () => {
         }}>
           {isHost && <CustomButton onClick={handleStartGame} disabled={players.length < 2}>Start Game</CustomButton>}
         </Box>
+        {/* Add ChatComponent here */}
+        <Box sx={{ marginTop: "20px", width: "100%" }}>
+          <ChatComponent lobbyId={lobbyId} username={user.username} />        </Box>
       </Box>
     </BackgroundImageLobby>
   );
