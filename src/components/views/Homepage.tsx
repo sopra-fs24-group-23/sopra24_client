@@ -17,6 +17,7 @@ import {
   DialogContentText,
   DialogTitle,
   Tooltip,
+  Grid
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
@@ -25,6 +26,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import UserContext from "../../contexts/UserContext";
 import ProgressBarContainer from "../ui/ProgressBarContainer";
 import ColorPicker from "../ui/ColorPicker";
+import GameFormField from "../ui/GameFormField";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -256,13 +258,33 @@ const Homepage = () => {
               </DialogActions>
             </Dialog>
             {isEditing ? (
-              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Grid container alignItems="center" justifyContent="center">
+                <Grid item>
+                  {/*<Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>*/}
                 <TextField
+                  label = "Username"
                   value={username || ""}
                   onChange={(e) => setUsername(e.target.value)}
-                  style={{ fontSize: "2rem", marginRight: "10px" }} // Ensure the input font size is large as well
+                  sx={{
+                    "& label": {
+                      fontFamily: "Londrina Solid, cursive",
+                    },
+                    "& input": {
+                      fontFamily: "Londrina Solid, cursive"
+                    },
+                  }}
                 />
+                </Grid>
+              <Grid item>
+                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "flex-start" }}>
                 <ColorPicker score={profile.totalScore} color={color} setColor={setColor} />
+                <Tooltip title="You can change the color of how your username is displayed
+                on the Leaderboard. Unlock the next color by continuing playing Global Guess!">
+                  <InfoOutlinedIcon sx={{ marginLeft: "10px" }}/>
+                </Tooltip>
+                </Box>
+              </Grid>
+                <Grid item>
                 <Tooltip title="Save">
                   <IconButton disabled={!username} onClick={handleSaveClick}>
                     <SaveIcon />
@@ -273,7 +295,8 @@ const Homepage = () => {
                     <CloseIcon />
                   </IconButton>
                 </Tooltip>
-              </Box>
+                </Grid>
+              </Grid>
             ) : (
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "left" }}>
                 {profile.username}
