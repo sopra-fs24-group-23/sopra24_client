@@ -17,11 +17,12 @@ import {
   SelectChangeEvent,
   FormControl,
   InputLabel,
-  Grid,
+  Grid, Tooltip,
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IconButton from "@mui/material/IconButton";
+import ToggleButton from "@mui/material/ToggleButton";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { Message } from "@stomp/stompjs";
 import UserContext from "../../contexts/UserContext";
@@ -33,17 +34,20 @@ import { isProduction } from "../../helpers/isProduction";
 
 interface GameSettings {
   categories: string[];
+  isRandom: boolean;
   maxRounds: number;
   votingDuration: number;
   inputDuration: number;
   scoreboardDuration: number;
   maxPlayers: number;
 }
+
 interface GameSettingsProps {
   isHost: boolean;
   settings: GameSettings;
   onSettingsChange: (newSettings: GameSettings) => void;
 }
+
 const Lobby = () => {
   const [players, setPlayers] = useState([]);
   const navigate = useNavigate();
@@ -55,6 +59,7 @@ const Lobby = () => {
   const { lobbyId } = useParams();
   const [settings, setSettings] = useState<GameSettings>({
     categories: ["Country", "City", "Movie/Series", "Food", "Car"],
+    isRandom: false,
     maxRounds: 5,
     votingDuration: 30,
     inputDuration: 60,
@@ -164,7 +169,7 @@ const Lobby = () => {
         const token = localStorage.getItem("token");
         // only send leave-message if lobby isn't closing
         if (!lobbyClosing.current) send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
-        unsubscribeClient(`/topic/lobbies/${lobbyId}/settings`);
+        // unsubscribeClient(`/topic/lobbies/${lobbyId}/settings`);
         unsubscribeClient(`/topic/lobbies/${lobbyId}/players`);
         unsubscribeClient(`/topic/games/${lobbyId}/state`);
         disconnect();
@@ -225,6 +230,9 @@ const Lobby = () => {
         setTempSettings({ ...tempSettings, [settingKey]: inputValue === "" ? "" : parseInt(inputValue) });
       }
     };
+    const handleToggle = () => {
+      setTempSettings({ ...tempSettings, isRandom: !tempSettings.isRandom})
+    }
     const handleCategoryChange = (event: SelectChangeEvent<string[]>) => {
       let newCategories = event.target.value as string[];
       // If new category is empty, set it to the default categories
@@ -270,8 +278,8 @@ const Lobby = () => {
     return (
       <>
         {isHost ? (
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
+          <Grid container spacing={6}>
+            <Grid item xs={6}>
               {/*Render editable fields for the host*/}
               {/*Categories Dropdown*/}
               <FormControl sx={{ minWidth: 300 }}>
@@ -280,6 +288,7 @@ const Lobby = () => {
                   multiple
                   value={tempCategories || []}
                   onChange={handleCategoryChange}
+                  disabled={tempSettings.isRandom}
                   renderValue={(selected) => (selected as string[]).join(", ")}
                 >
                   <MenuItem value={"City"}>City</MenuItem>
@@ -289,13 +298,21 @@ const Lobby = () => {
                   <MenuItem value={"Celebrity"}>Celebrity</MenuItem>
                   <MenuItem value={"Food"}>Food</MenuItem>
                   <MenuItem value={"Car"}>Car</MenuItem>
-                  <MenuItem value={"Random"}>Random</MenuItem>
-
-
-
-
                 </Select>
               </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <Tooltip title={"Random categories each round!"}>
+                <ToggleButton
+                  value="randomize"
+                  selected={tempSettings.isRandom}
+                  onChange={() => {
+                    handleToggle();
+                  }}
+                >
+                    Randomize
+                </ToggleButton>
+              </Tooltip>
             </Grid>
             <Grid item xs={6}>
               <TextField
@@ -349,7 +366,7 @@ const Lobby = () => {
         ) : (
           <>
             {/* Render read-only info for other players*/}
-            <Typography>Categories: {settings.categories.join(", ")}</Typography>
+            <Typography>Categories: {settings.isRandom ? "Randomized" : settings.categories.join(", ")}</Typography>
             <Typography>Max Rounds: {settings.maxRounds}</Typography>
             <Typography>Time-limit to vote (seconds): {settings.votingDuration}</Typography>
             <Typography>Time-limit to answer (seconds): {settings.inputDuration}</Typography>
