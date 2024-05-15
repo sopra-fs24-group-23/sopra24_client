@@ -5,7 +5,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import Countdown from "../ui/Countdown";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import WebSocketContext from "../../contexts/WebSocketContext";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Typography, Box, IconButton} from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Typography,
+  Box,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import CustomButton from "../ui/CustomButton";
 /* Icons import */
 import CircleIcon from "@mui/icons-material/Circle";
@@ -43,12 +53,30 @@ const VotingResults = () => {
   /* Render Icons */
   const renderStatusIcons = (answer) => (
     <Box sx={{ display: "flex", gap: "5px" }}>
-      {answer.isCorrect && <CircleIcon sx={{ color: "green" }} />}
-      {answer.joker && <AutoAwesomeIcon sx={{ color: "yellow" }} />}
-      {answer.isDoubted && <CancelOutlinedIcon sx={{ color: "blue" }} />}
-      {answer.isUnique && <LooksOneOutlinedIcon sx={{ color: "purple" }} />}
-      {answer.answer && !answer.isCorrect && <CircleIcon sx={{ color: "red" }} />}
-      {!answer.isUnique && <ContentCopyOutlinedIcon sx={{ color: "purple" }} />}
+      {answer.isCorrect ? (
+        <Tooltip title={"This answer is correct."}>
+          <CircleIcon sx={{ color: "green" }} />
+        </Tooltip>) : null}
+      {answer.joker ? (
+        <Tooltip title={"This answer was a joker."}>
+          <AutoAwesomeIcon sx={{ color: "yellow" }} />
+        </Tooltip>) : null}
+      {answer.isDoubted ? (
+        <Tooltip title={"This answer was doubted."}>
+          <CancelOutlinedIcon sx={{ color: "blue" }} />
+        </Tooltip>) : null}
+      {answer.isUnique ? (
+        <Tooltip title={"This answer is unique."}>
+          <LooksOneOutlinedIcon sx={{ color: "purple" }} />
+        </Tooltip>) : null}
+      {answer.answer ? !answer.isCorrect && (
+        <Tooltip title={"This answer is incorrect."}>
+          <CircleIcon sx={{ color: "red" }} />
+        </Tooltip>) : null}
+      {!answer.isUnique ? (
+        <Tooltip title={"This answer is not unique."}>
+          <ContentCopyOutlinedIcon sx={{ color: "purple" }} />
+        </Tooltip>) : null}
     </Box>
   );
 
