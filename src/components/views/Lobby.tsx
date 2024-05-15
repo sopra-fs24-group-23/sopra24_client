@@ -487,24 +487,21 @@ const Lobby = () => {
               justifyContent: "center",
               width: "100%",
             }}>
-              <Typography variant="body1" gutterBottom
-                          sx={{
-                            fontFamily: "Courier New",
-                            textAlign: "center",
-                            position: "relative",
-                            top: "-10%",
-                          }}>
-              </Typography>
-              <Box sx={{
-                position: "relative",
-                top: "-20%",
-              }}>
+            <Typography variant="body1" gutterBottom
+                        sx={{
+                          fontFamily: "Courier New",
+                          textAlign: "center",
+                         // position: "relative",
+                         // top: "-10%",
+                        }}>
+              {lobbyId}
+            </Typography>
                 <IconButton onClick={handleCopyLobbyCode} size="large">
                   <ContentCopyIcon />
                 </IconButton>
               </Box>
             </Box>
-          </Box>
+          
         )}
         <Box sx={{
           display: "flex",
