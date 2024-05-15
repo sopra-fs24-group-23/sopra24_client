@@ -173,8 +173,13 @@ const Homepage = () => {
     async function fetchData() {
       try {
         let id = localStorage.getItem("id");
-        if (!isProduction) console.log("THE ID IS");
-        const response = await api.get("/users/" + id);
+        let token = localStorage.getItem("token");
+        if (!isProduction) console.log("THE ID IS" + id);
+        const response = await api.get("/users/" + id, {
+          headers: {
+            "token": `${token}`
+          }
+        });
         setProfile(response.data);
         setColor(response.data.color);
       } catch (error) {
