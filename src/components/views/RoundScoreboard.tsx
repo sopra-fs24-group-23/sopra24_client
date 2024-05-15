@@ -28,6 +28,7 @@ const RoundScoreboard = () => {
   const { disconnect, send, unsubscribeAll } = useContext(WebSocketContext);
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
   const { user } = useContext(UserContext);
+  const [isPressed, setIsPressed] = useState(false);
 
   /* JSX Variables*/
   let header = (
@@ -51,6 +52,13 @@ const RoundScoreboard = () => {
     disconnect()
     navigate("/homepage")
   }
+
+  const handleReady = () => {
+    send(`/app/games/${lobbyId}/ready/${user.username}`, JSON.stringify({ ready: true }));
+    if (gameState.players.every(player => player.isReady)) {
+      navigate(`/lobbies/${lobbyId}/input`);
+    }
+  };
 
   useEffect(() => {
     if (gameState) {
@@ -156,6 +164,18 @@ const RoundScoreboard = () => {
             </ListItem>
           ))}
         </List>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <CustomButton 
+              onClick={() => { handleReady(); setIsPressed(true); }}
+              sx={{ 
+                backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
+                "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
+              }}
+              disabled={isPressed}
+            >
+              Ready
+            </CustomButton>
+          </Box>
       </Box>
     </BackgroundImageLobby>
   );

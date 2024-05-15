@@ -30,6 +30,8 @@ const VotingResults = () => {
   const navigate = useNavigate();
   const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+  
 
   /* Context variables */
   const { gameState } = useContext(GameStateContext);
@@ -120,6 +122,13 @@ const VotingResults = () => {
     navigate("/homepage")
   }
 
+  const handleReady = () => {
+    send(`/app/games/${lobbyId}/ready/${user.username}`, JSON.stringify({ ready: true }));
+    if (gameState.players.every(player => player.isReady)) {
+      navigate(`/lobbies/${lobbyId}/scoreboard`);
+    }
+  };
+
   return (
     <BackgroundImageLobby>
       <Box sx={{
@@ -196,6 +205,18 @@ const VotingResults = () => {
             {renderPlayerAnswers(player)}
           </React.Fragment>
         ))}
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <CustomButton 
+              onClick={() => { handleReady(); setIsPressed(true); }}
+              sx={{ 
+                backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
+                "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
+              }}
+              disabled={isPressed}
+            >
+              Ready
+            </CustomButton>
+          </Box>
       </Box>
     </BackgroundImageLobby>
   );
