@@ -26,7 +26,7 @@ const FinalScoreboard = () => {
 
   /* Context Variables */
   const { gameState } = useContext(GameStateContext);
-  const { disconnect, send, unsubscribeAll } = useContext(WebSocketContext);
+  const { disconnect, unsubscribeClient, send, unsubscribeAll } = useContext(WebSocketContext);
 
   useEffect(() => {
     if (gameState) {
@@ -42,6 +42,7 @@ const FinalScoreboard = () => {
   }, [gameState]);
 
   useEffect(() => {
+    unsubscribeClient(`/topic/lobbies/${lobbyId}/close`)
     return () => {
       if (!gameContinuing.current) {
         const token = localStorage.getItem("token");
