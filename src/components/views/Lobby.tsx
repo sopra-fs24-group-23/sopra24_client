@@ -405,6 +405,16 @@ const Lobby = () => {
           </DialogActions>
         </Dialog>
       </Box>
+
+      <Box sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        width: "90%",
+        height: "77%",
+        margin: "auto",
+      }}>
+        {/* Main box */}
       <Box sx={{
         display: "flex",
         flexDirection: "column",
@@ -419,11 +429,12 @@ const Lobby = () => {
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         width: "35%",
         maxWidth: "500px",
-        height: "77%",
-        margin: "auto",
+        height: "90%",
+        //margin: "auto",
         position: "relative",
         paddingTop: "30px",
         paddingBottom: "10px",
+        marginRight: "20px",
       }}>
         <Box sx={{
           display: "flex",
@@ -510,9 +521,25 @@ const Lobby = () => {
         }}>
           {isHost && <CustomButton onClick={handleStartGame} disabled={players.length < 2}>Start Game</CustomButton>}
         </Box>
+      </Box>
         {/* Add ChatComponent here */}
-        <Box sx={{ marginTop: "20px", width: "100%" }}>
-          <ChatComponent lobbyId={lobbyId} username={user.username} />        </Box>
+        <Box sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          backgroundColor: "rgba(224, 224, 224, 0.9)",
+          borderColor: "black",
+          borderWidth: "2px",
+          borderStyle: "solid",
+          borderRadius: "27px",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+          width: "25%",
+          maxHeight: "60%",
+          overflowY: "auto",
+          padding: "20px",
+        }}>
+          <ChatComponent lobbyId={lobbyId} username={user.username} />
+        </Box>
       </Box>
     </BackgroundImageLobby>
   );
