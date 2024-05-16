@@ -33,6 +33,7 @@ import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import { isProduction } from "../../helpers/isProduction";
 import ChatComponent from "./ChatComponent";
+import ChatContext from "../../contexts/ChatContext";
 
 interface GameSettings {
   categories: string[];
@@ -76,10 +77,12 @@ const Lobby = () => {
   const { setGameStateVariable } = useContext(GameStateContext);
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
   const { setGameSettingsVariable } = useContext(GameSettingsContext);
+  const { connectChat } = useContext(ChatContext);
 
   useEffect(() => {
     if (lobbyId) {
       connect(lobbyId).then(() => {
+        connectChat(lobbyId)
         subscribeClient(
           `/topic/lobbies/${lobbyId}/settings`,
           (message: Message) => {
@@ -537,7 +540,7 @@ const Lobby = () => {
           overflowY: "auto",
           padding: "20px",
         }}>
-          <ChatComponent lobbyId={lobbyId} username={user.username} color={user.color} />
+          <ChatComponent lobbyId={lobbyId}/>
         </Box>
       </Box>
     </BackgroundImageLobby>

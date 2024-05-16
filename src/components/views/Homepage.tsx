@@ -26,6 +26,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import UserContext from "../../contexts/UserContext";
 import ProgressBarContainer from "../ui/ProgressBarContainer";
 import ColorPicker from "../ui/ColorPicker";
+import ChatContext from "../../contexts/ChatContext";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const Homepage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { user } = useContext(UserContext);
+  const { resetChat } = useContext(ChatContext);
   const [inputLobbyId, setInputLobbyId] = useState("");
   const [color, setColor] = useState("#000000");
 
@@ -44,6 +46,10 @@ const Homepage = () => {
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [openJoinLobbyErrorDialog, setOpenJoinLobbyErrorDialog] = useState(false);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
+
+  useEffect(() => {
+    resetChat()
+  }, []);
 
   const logout = async () => {
     if (isProduction()) {

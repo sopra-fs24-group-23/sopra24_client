@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Client } from "@stomp/stompjs";
 import { getWebSocketDomain } from "../../helpers/getDomain.js";
 import { isProduction } from "../../helpers/isProduction.js";
@@ -11,6 +11,11 @@ const WebSocketProvider = ( { children } ) => {
   const sessionId = useRef("");
   const subscriptionRequests = useRef(new Map());
 
+
+  useEffect(() => {
+    return () => this.disconnect()
+  }, []);
+
   /** Connect function, returns promise that is only resolved after successful connection,
    * otherwise rejected. Does nothing if the client is already initialized and connected **/
   const connect = ( lobbyId: string ): Promise<void> => {
@@ -18,7 +23,7 @@ const WebSocketProvider = ( { children } ) => {
       sessionId.current = lobbyId;
       // if client not initialized or inactive; create new one
       if (!stompClient.current || !stompClient.current.active) {
-        console.log("Connect called, sessionId: " + sessionId.current)
+        console.log("DEBUG Connect called, sessionId: " + sessionId.current)
         // client setup
         stompClient.current = new Client({
           brokerURL: `${getWebSocketDomain()}`,
@@ -53,6 +58,8 @@ const WebSocketProvider = ( { children } ) => {
   };
 
   const disconnect = () => {
+    console.log("DEBUG disconnect called in WSProvider")
+    unsubscribeAll()
     // might need to do more here: delete subscription requests?
     stompClient.current.deactivate();
   };
@@ -116,8 +123,17 @@ const WebSocketProvider = ( { children } ) => {
     }
   }
 
+  function clientConnected() {
+    if (stompClient.current === null) {
+      return false
+    }
+    else {
+      return stompClient.current.connected
+    }
+  }
+
   return (
-    <WebSocketContext.Provider value={{ connect, disconnect, send, subscribeClient, unsubscribeClient, unsubscribeAll }}>
+    <WebSocketContext.Provider value={{ clientConnected, connect, disconnect, send, subscribeClient, unsubscribeClient, unsubscribeAll }}>
       {children}
     </WebSocketContext.Provider>
   );
