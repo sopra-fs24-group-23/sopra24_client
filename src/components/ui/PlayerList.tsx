@@ -63,7 +63,7 @@ const PlayerList = ({ players, hostView, kickPlayer } ) => {
                 fontFamily: "Londrina Solid",
                 color: player.color
               }}>
-              {player.username}
+                {player.username}
               </Typography>
             </Box>
             {determineIcon(hostView, player)}

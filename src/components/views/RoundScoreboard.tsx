@@ -161,25 +161,25 @@ const RoundScoreboard = () => {
               <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, justifyContent: "space-between" }}>
                 {index + 1}. 
                 <Typography style={{ color: player.color }}>
-                    {player.username}
+                  {player.username}
                 </Typography>
                 <Typography variant="body1">Score: {player.currentScore}</Typography>
               </Box>
             </ListItem>
           ))}
         </List>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <CustomButton 
-              onClick={() => { handleReady(); setIsPressed(true); }}
-              sx={{ 
-                backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
-                "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
-              }}
-              disabled={isPressed}
-            >
-              Ready
-            </CustomButton>
-          </Box>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <CustomButton
+            onClick={() => { handleReady(); setIsPressed(true); }}
+            sx={{
+              backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
+              "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
+            }}
+            disabled={isPressed}
+          >
+            Ready
+          </CustomButton>
+        </Box>
       </Box>
     </BackgroundImageLobby>
   );

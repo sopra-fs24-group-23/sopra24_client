@@ -207,18 +207,18 @@ const VotingResults = () => {
             {renderPlayerAnswers(player)}
           </React.Fragment>
         ))}
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <CustomButton 
-              onClick={() => { handleReady(); setIsPressed(true); }}
-              sx={{ 
-                backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
-                "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
-              }}
-              disabled={isPressed}
-            >
-              Ready
-            </CustomButton>
-          </Box>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <CustomButton
+            onClick={() => { handleReady(); setIsPressed(true); }}
+            sx={{
+              backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
+              "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
+            }}
+            disabled={isPressed}
+          >
+            Ready
+          </CustomButton>
+        </Box>
       </Box>
     </BackgroundImageLobby>
   );

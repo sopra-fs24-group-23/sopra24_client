@@ -32,7 +32,7 @@ import PlayerList from "../ui/PlayerList";
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import { isProduction } from "../../helpers/isProduction";
-import ChatComponent from './ChatComponent'; // Import the ChatComponent
+import ChatComponent from "./ChatComponent";
 
 interface GameSettings {
   categories: string[];
@@ -377,7 +377,7 @@ const Lobby = () => {
         marginBottom: "30px",
       }}>
         <img src="/Images/logo.png" alt="Descriptive Text"
-             style={{ width: "auto", height: "200px", marginTop: "100px" }} />
+          style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton
           onClick={handleOpenDialog}
           sx={{
@@ -415,113 +415,112 @@ const Lobby = () => {
         margin: "auto",
       }}>
         {/* Main box */}
-      <Box sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-between",
-        backgroundColor: "rgba(224, 224, 224, 0.9)",
-        borderColor: "black",
-        borderWidth: "2px",
-        borderStyle: "solid",
-        padding: "20px",
-        borderRadius: "27px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        width: "35%",
-        maxWidth: "500px",
-        height: "90%",
-        //margin: "auto",
-        position: "relative",
-        paddingTop: "30px",
-        paddingBottom: "10px",
-        marginRight: "20px",
-      }}>
         <Box sx={{
           display: "flex",
-          position: "absolute",
-          top: "2%",
-          left: "85%",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: "rgba(224, 224, 224, 0.9)",
+          borderColor: "black",
+          borderWidth: "2px",
+          borderStyle: "solid",
+          padding: "20px",
+          borderRadius: "27px",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+          width: "35%",
+          maxWidth: "500px",
+          height: "90%",
+          //margin: "auto",
+          position: "relative",
+          paddingTop: "30px",
+          paddingBottom: "10px",
+          marginRight: "20px",
         }}>
-          <CustomButton onClick={handleOpenGameSettings}>
-            <SettingsIcon />
-          </CustomButton>
-          <Dialog open={openGameSettings} onClose={handleCloseGameSettings}
-                  PaperProps={{
-                    sx: {
-                      width: "60%",
-                      maxWidth: "none",
-                      height: "60%",
-                      maxHeight: "none",
-                    }
-                  }}
-          >
-            <DialogTitle>Game Settings</DialogTitle>
-            <DialogContent>
-              <GameSettings isHost={isHost} settings={settings} onSettingsChange={setSettings} />
-            </DialogContent>
-          </Dialog>
-        </Box>
-
-        <PlayerList players={players} hostView={isHost} kickPlayer={kickPlayer} />
-
-        {isHost && (
           <Box sx={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#e0e0e0",
-            borderColor: "black",
-            borderWidth: "2px",
-            borderStyle: "solid",
-            width: "60%",
-            height: "5%",
-            margin: "10px auto",
-            padding: "20px",
-            borderRadius: "40px",
-            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-            position: "relative",
-            top: "-5%",
+            position: "absolute",
+            top: "2%",
+            left: "85%",
           }}>
-            <Typography variant="h6" gutterBottom
-                        sx={{
-                          fontFamily: "Londrina Solid",
-                          textAlign: "center",
-                          position: "relative",
-                          top: "30%",
-                        }}>
-              INVITE A FRIEND!
-            </Typography>
+            <CustomButton onClick={handleOpenGameSettings}>
+              <SettingsIcon />
+            </CustomButton>
+            <Dialog open={openGameSettings} onClose={handleCloseGameSettings}
+              PaperProps={{
+                sx: {
+                  width: "60%",
+                  maxWidth: "none",
+                  height: "60%",
+                  maxHeight: "none",
+                }
+              }}
+            >
+              <DialogTitle>Game Settings</DialogTitle>
+              <DialogContent>
+                <GameSettings isHost={isHost} settings={settings} onSettingsChange={setSettings} />
+              </DialogContent>
+            </Dialog>
+          </Box>
+
+          <PlayerList players={players} hostView={isHost} kickPlayer={kickPlayer} />
+
+          {isHost && (
             <Box sx={{
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              width: "100%",
+              backgroundColor: "#e0e0e0",
+              borderColor: "black",
+              borderWidth: "2px",
+              borderStyle: "solid",
+              width: "60%",
+              height: "5%",
+              margin: "10px auto",
+              padding: "20px",
+              borderRadius: "40px",
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+              position: "relative",
+              top: "-5%",
             }}>
-            <Typography variant="body1" gutterBottom
-                        sx={{
-                          fontFamily: "Courier New",
-                          textAlign: "center",
-                         // position: "relative",
-                         // top: "-10%",
-                        }}>
-              {lobbyId}
-            </Typography>
+              <Typography variant="h6" gutterBottom
+                sx={{
+                  fontFamily: "Londrina Solid",
+                  textAlign: "center",
+                  position: "relative",
+                  top: "30%",
+                }}
+              >
+                INVITE A FRIEND!
+              </Typography>
+              <Box sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}>
+                <Typography variant="body1" gutterBottom
+                  sx={{
+                    fontFamily: "Courier New",
+                    textAlign: "center",
+                  }}
+                >
+                  {lobbyId}
+                </Typography>
                 <IconButton onClick={handleCopyLobbyCode} size="large">
                   <ContentCopyIcon />
                 </IconButton>
               </Box>
             </Box>
-          
-        )}
-        <Box sx={{
-          display: "flex",
-          position: "relative",
-          bottom: "1%",
-        }}>
-          {isHost && <CustomButton onClick={handleStartGame} disabled={players.length < 2}>Start Game</CustomButton>}
+          )}
+          <Box sx={{
+            display: "flex",
+            position: "relative",
+            bottom: "1%",
+          }}>
+            {isHost && <CustomButton onClick={handleStartGame} disabled={players.length < 2}>Start Game</CustomButton>}
+          </Box>
         </Box>
-      </Box>
         {/* Add ChatComponent here */}
         <Box sx={{
           display: "flex",

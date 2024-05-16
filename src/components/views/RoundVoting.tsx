@@ -94,7 +94,7 @@ const RoundVoting = () => {
         borderStyle: "solid",
       }}>
         <Typography variant="h6" style={{ color: player.color }}>
-            {player.username}
+          {player.username}
         </Typography>
         {/* Iterate over the player's currentAnswers */}
         {player.currentAnswers.map((answer, index) => {
@@ -216,18 +216,18 @@ const RoundVoting = () => {
             {renderPlayerAnswers(player)}
           </React.Fragment>
         ))}
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <CustomButton 
-              onClick={() => { handleReady(); setIsReady(true); }}
-              sx={{ 
-                backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF ",
-                "&:hover": { backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF" }
-              }}
-              disabled={isReady}
-            >
-              Ready
-            </CustomButton>
-          </Box>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <CustomButton
+            onClick={() => { handleReady(); setIsReady(true); }}
+            sx={{
+              backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF ",
+              "&:hover": { backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF" }
+            }}
+            disabled={isReady}
+          >
+            Ready
+          </CustomButton>
+        </Box>
       </Box>
     </BackgroundImageLobby>
   );

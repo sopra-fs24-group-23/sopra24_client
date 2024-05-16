@@ -26,13 +26,13 @@ const ColorPicker = ({ score, color, setColor }) => {
       <InputLabel id="color-picker-label" sx={{ fontFamily: "Londrina Solid, cursive", fontSize: "0.8rem" }}>
         Choose color
       </InputLabel>
-    <Select labelId="color-picker-label" value={color} onChange={handleChange}>
-      {availableColors.map((color) => (
-        <MenuItem key={color} value={color}>
-          <div style={{ backgroundColor: color, width: "100%", height: "20px" }} />
-        </MenuItem>
-      ))}
-    </Select>
+      <Select labelId="color-picker-label" value={color} onChange={handleChange}>
+        {availableColors.map((color) => (
+          <MenuItem key={color} value={color}>
+            <div style={{ backgroundColor: color, width: "100%", height: "20px" }} />
+          </MenuItem>
+        ))}
+      </Select>
     </div>
   );
 };

@@ -43,6 +43,7 @@ const FinalScoreboard = () => {
 
   useEffect(() => {
     unsubscribeClient(`/topic/lobbies/${lobbyId}/close`)
+
     return () => {
       if (!gameContinuing.current) {
         const token = localStorage.getItem("token");

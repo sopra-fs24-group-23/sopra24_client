@@ -266,46 +266,47 @@ const Homepage = () => {
               <Grid container alignItems="center" justifyContent="center">
                 <Grid item>
                   {/*<Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>*/}
-                <TextField
-                  label = "Username"
-                  value={username || ""}
-                  onChange={(e) => setUsername(e.target.value)}
-                  sx={{
-                    "& label": {
-                      fontFamily: "Londrina Solid, cursive",
-                    },
-                    "& input": {
-                      fontFamily: "Londrina Solid, cursive"
-                    },
-                  }}
-                />
+                  <TextField
+                    label = "Username"
+                    value={username || ""}
+                    onChange={(e) => setUsername(e.target.value)}
+                    sx={{
+                      "& label": {
+                        fontFamily: "Londrina Solid, cursive",
+                      },
+                      "& input": {
+                        fontFamily: "Londrina Solid, cursive"
+                      },
+                    }}
+                  />
                 </Grid>
-              <Grid item>
-                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "flex-start" }}>
-                <ColorPicker score={profile.totalScore} color={color} setColor={setColor} />
-                <Tooltip title="You can change the color of how your username is displayed
-                on the Leaderboard. Unlock the next color by continuing playing Global Guess!">
-                  <InfoOutlinedIcon sx={{ marginLeft: "10px" }}/>
-                </Tooltip>
-                </Box>
-              </Grid>
                 <Grid item>
-                <Tooltip title="Save">
-                  <IconButton disabled={!username} onClick={handleSaveClick}>
-                    <SaveIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Exit">
-                  <IconButton onClick={handleCancelClick}>
-                    <CloseIcon />
-                  </IconButton>
-                </Tooltip>
+                  <Box sx={{ display: "flex", flexDirection: "row", alignItems: "flex-start" }}>
+                    <ColorPicker score={profile.totalScore} color={color} setColor={setColor} />
+                    <Tooltip title="You can change the color of how your username is displayed
+                      on the Leaderboard. Unlock the next color by continuing playing Global Guess!"
+                    >
+                      <InfoOutlinedIcon sx={{ marginLeft: "10px" }}/>
+                    </Tooltip>
+                  </Box>
+                </Grid>
+                <Grid item>
+                  <Tooltip title="Save">
+                    <IconButton disabled={!username} onClick={handleSaveClick}>
+                      <SaveIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Exit">
+                    <IconButton onClick={handleCancelClick}>
+                      <CloseIcon />
+                    </IconButton>
+                  </Tooltip>
                 </Grid>
               </Grid>
             ) : (
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "left" }}>
                 <Typography variant="h4" style={{ color: color, fontFamily: "Londrina Solid"}}>
-                    {profile.username}
+                  {profile.username}
                 </Typography>
                 <Tooltip title="Edit">
                   <EditIcon onClick={handleEditClick} sx={{ marginLeft: "10px", cursor: "pointer" }} />
