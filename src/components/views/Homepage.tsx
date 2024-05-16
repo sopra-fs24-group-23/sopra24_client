@@ -304,7 +304,9 @@ const Homepage = () => {
               </Grid>
             ) : (
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "left" }}>
-                {profile.username}
+                <Typography variant="h4" style={{ color: color, fontFamily: "Londrina Solid"}}>
+                    {profile.username}
+                </Typography>
                 <Tooltip title="Edit">
                   <EditIcon onClick={handleEditClick} sx={{ marginLeft: "10px", cursor: "pointer" }} />
                 </Tooltip>

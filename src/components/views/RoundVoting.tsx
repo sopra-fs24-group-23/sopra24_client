@@ -93,7 +93,9 @@ const RoundVoting = () => {
         borderWidth: "2px",
         borderStyle: "solid",
       }}>
-        <Typography variant="h6">{player.username}</Typography>
+        <Typography variant="h6" style={{ color: player.color }}>
+            {player.username}
+        </Typography>
         {/* Iterate over the player's currentAnswers */}
         {player.currentAnswers.map((answer, index) => {
           const isCurrentUser = user.username === player.username;

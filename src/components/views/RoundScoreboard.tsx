@@ -12,6 +12,7 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, L
 interface Player {
   username: string;
   currentScore: number;
+  color: string;
 }
 const RoundScoreboard = () => {
   const { lobbyId } = useParams();
@@ -158,7 +159,10 @@ const RoundScoreboard = () => {
           {players.map((player, index) => (
             <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, justifyContent: "space-between" }}>
-                {index + 1}. {player.username}
+                {index + 1}. 
+                <Typography style={{ color: player.color }}>
+                    {player.username}
+                </Typography>
                 <Typography variant="body1">Score: {player.currentScore}</Typography>
               </Box>
             </ListItem>

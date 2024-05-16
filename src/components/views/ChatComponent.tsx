@@ -1,23 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Client } from '@stomp/stompjs';
 import CustomButton from 'components/ui/CustomButton'; // Import the CustomButton
+import UserContext from '../../contexts/UserContext';
 
 interface ChatMessage {
   sender: string;
   content: string;
   timestamp: string;
+  color: string;
 }
 
 interface ChatComponentProps {
   lobbyId: string;
   username: string;
+  color: string;
 }
 
-const ChatComponent: React.FC<ChatComponentProps> = ({ lobbyId, username }) => {
+const ChatComponent: React.FC<ChatComponentProps> = ({ lobbyId, username, color }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const stompClientRef = useRef<Client | null>(null);
+  const { user } = useContext(UserContext);
+
 
   useEffect(() => {
     const stompClient = new Client({
@@ -58,6 +63,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ lobbyId, username }) => {
     if (newMessage.trim() && isConnected) {
       const chatMessage: ChatMessage = {
         sender: username, // Use the actual sender's username
+        color: color,
         content: newMessage,
         timestamp: new Date().toISOString()
       };
@@ -81,7 +87,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ lobbyId, username }) => {
       <div className="chat-window" style={{ flex: 1, maxHeight: '300px', overflowY: 'auto', padding: '5px', borderRadius: '5px',  marginBottom: '10px' }}>
         {messages.map((msg, index) => (
           <div key={index}>
-            <strong>{msg.sender}</strong>: {msg.content}
+            <strong style={{ color: msg.color }}>{msg.sender}</strong>: {msg.content}
           </div>
         ))}
       </div>

@@ -94,7 +94,9 @@ const VotingResults = () => {
         borderWidth: "2px",
         borderStyle: "solid",
       }}>
-        <Typography variant="h6">{player.username}</Typography>
+        <Typography variant="h6" style={{ color: player.color }}>
+          {player.username}
+        </Typography>
         {player.currentAnswers.map((answer, index) => (
           <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
             {/* Set a fixed width for the category label */}

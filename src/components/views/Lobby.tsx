@@ -538,7 +538,7 @@ const Lobby = () => {
           overflowY: "auto",
           padding: "20px",
         }}>
-          <ChatComponent lobbyId={lobbyId} username={user.username} />
+          <ChatComponent lobbyId={lobbyId} username={user.username} color={user.color} />
         </Box>
       </Box>
     </BackgroundImageLobby>
