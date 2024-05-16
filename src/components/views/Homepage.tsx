@@ -69,6 +69,8 @@ const Homepage = () => {
   const saveUpdate = async () => {
     try {
       await api.put("/users/" + user.id, { username: username, color: color });
+      user.username = username
+      user.color = color
       setProfile({ ...profile, username: username, color: color }); // Update local profile state
       setColor(color);
       setIsUsernameUpdateDialogOpen(true);
