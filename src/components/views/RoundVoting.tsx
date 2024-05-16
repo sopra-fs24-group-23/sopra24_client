@@ -18,7 +18,7 @@ const RoundVoting = () => {
   const [doubts, setDoubts] = useState([]);
   const [doubtedAnswers, setDoubtedAnswers] = useState([]);
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   /* Context variables */
   const { gameSettings } = useContext(GameSettingsContext);
@@ -109,7 +109,7 @@ const RoundVoting = () => {
               <Typography sx={{ width: "150px", flexShrink: 0 }}>{answer.category}</Typography>
               <Typography sx={{ textAlign: "left", flexGrow: 1}}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
               {!isCurrentUser && (
-                <IconButton onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "blue" : "grey" }}>
+                <IconButton disabled={isReady} onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "blue" : "grey" }}>
                   <CancelOutlinedIcon />
                 </IconButton>
               )}
@@ -218,12 +218,12 @@ const RoundVoting = () => {
         ))}
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <CustomButton 
-              onClick={() => { handleReady(); setIsPressed(true); }}
+              onClick={() => { handleReady(); setIsReady(true); }}
               sx={{ 
-                backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
-                "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
+                backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF ",
+                "&:hover": { backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF" }
               }}
-              disabled={isPressed}
+              disabled={isReady}
             >
               Ready
             </CustomButton>
