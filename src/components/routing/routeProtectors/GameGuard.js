@@ -29,7 +29,11 @@ export const GameGuard = () => {
     if (token && id && user === null) {
       const fetchUser = async () => {
         try {
-          const response = await api.get("/users/" + id);
+          const response = await api.get("/users/" + id, {
+            headers: {
+              "token": `${token}`
+            }
+          });
           setUser(new User(response.data))
         } catch (e) {
           console.error("There was an error fetching the user: ", e);

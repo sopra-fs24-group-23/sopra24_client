@@ -10,12 +10,14 @@ import { isProduction } from "../../helpers/isProduction";
 
 const GlobalLeaderboard = () => {
   const navigate = useNavigate();
-  const [leaderboardData, setLeaderboardData] = useState([{ username: "", totalScore: 0, gamesPlayed: 0, gamesWon: 0 }]);
+  const [leaderboardData, setLeaderboardData] = useState([{ username: "", totalScore: 0, gamesPlayed: 0, gamesWon: 0, color: "" }]);
 
   const fetchLeaderboardData = async () => {
     try {
       const response = await api.get("/leaderboards/total-score");
+      //console.log(response);
       setLeaderboardData(response.data);
+      //console.log(leaderboardData);
     } catch (error) {
       if(!isProduction) console.error("Failed to fetch leaderboard data:", error);
     }
@@ -129,7 +131,7 @@ const GlobalLeaderboard = () => {
             <List>
               {leaderboardData.sort((a, b) => (b.totalScore / b.gamesPlayed) - (a.totalScore / a.gamesPlayed)).map((player, index) => (
                 <ListItem key={index}>
-                  <Typography>
+                  <Typography style={{ color: player.color }}>
                     {player.username}
                   </Typography>
                 </ListItem>

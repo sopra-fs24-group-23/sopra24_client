@@ -18,6 +18,7 @@ const RoundVoting = () => {
   const [doubts, setDoubts] = useState([]);
   const [doubtedAnswers, setDoubtedAnswers] = useState([]);
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   /* Context variables */
   const { gameSettings } = useContext(GameSettingsContext);
@@ -92,7 +93,9 @@ const RoundVoting = () => {
         borderWidth: "2px",
         borderStyle: "solid",
       }}>
-        <Typography variant="h6">{player.username}</Typography>
+        <Typography variant="h6" style={{ color: player.color }}>
+          {player.username}
+        </Typography>
         {/* Iterate over the player's currentAnswers */}
         {player.currentAnswers.map((answer, index) => {
           const isCurrentUser = user.username === player.username;
@@ -106,7 +109,7 @@ const RoundVoting = () => {
               <Typography sx={{ width: "150px", flexShrink: 0 }}>{answer.category}</Typography>
               <Typography sx={{ textAlign: "left", flexGrow: 1}}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
               {!isCurrentUser && (
-                <IconButton onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "blue" : "grey" }}>
+                <IconButton disabled={isReady} onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "blue" : "grey" }}>
                   <CancelOutlinedIcon />
                 </IconButton>
               )}
@@ -129,6 +132,13 @@ const RoundVoting = () => {
     disconnect()
     navigate("/homepage")
   }
+
+  const handleReady = () => {
+    send(`/app/games/${lobbyId}/ready/${user.username}`, JSON.stringify({ ready: true }));
+    if (gameState.players.every(player => player.isReady)) {
+      navigate(`/lobbies/${lobbyId}/voting-results`);
+    }
+  };
 
   return (
     <BackgroundImageLobby>
@@ -206,6 +216,18 @@ const RoundVoting = () => {
             {renderPlayerAnswers(player)}
           </React.Fragment>
         ))}
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <CustomButton
+            onClick={() => { handleReady(); setIsReady(true); }}
+            sx={{
+              backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF ",
+              "&:hover": { backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF" }
+            }}
+            disabled={isReady}
+          >
+            Ready
+          </CustomButton>
+        </Box>
       </Box>
     </BackgroundImageLobby>
   );

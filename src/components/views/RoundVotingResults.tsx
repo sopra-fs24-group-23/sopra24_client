@@ -5,7 +5,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import Countdown from "../ui/Countdown";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import WebSocketContext from "../../contexts/WebSocketContext";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Typography, Box, IconButton} from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Typography,
+  Box,
+  Tooltip,
+} from "@mui/material";
 import CustomButton from "../ui/CustomButton";
 /* Icons import */
 import CircleIcon from "@mui/icons-material/Circle";
@@ -20,6 +29,8 @@ const VotingResults = () => {
   const navigate = useNavigate();
   const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+  
 
   /* Context variables */
   const { gameState } = useContext(GameStateContext);
@@ -43,12 +54,30 @@ const VotingResults = () => {
   /* Render Icons */
   const renderStatusIcons = (answer) => (
     <Box sx={{ display: "flex", gap: "5px" }}>
-      {answer.isCorrect && <CircleIcon sx={{ color: "green" }} />}
-      {answer.joker && <AutoAwesomeIcon sx={{ color: "yellow" }} />}
-      {answer.isDoubted && <CancelOutlinedIcon sx={{ color: "blue" }} />}
-      {answer.isUnique && <LooksOneOutlinedIcon sx={{ color: "purple" }} />}
-      {answer.answer && !answer.isCorrect && <CircleIcon sx={{ color: "red" }} />}
-      {!answer.isUnique && <ContentCopyOutlinedIcon sx={{ color: "purple" }} />}
+      {answer.isCorrect ? (
+        <Tooltip title={"This answer is correct."}>
+          <CircleIcon sx={{ color: "green" }} />
+        </Tooltip>) : null}
+      {answer.joker ? (
+        <Tooltip title={"This answer was a joker."}>
+          <AutoAwesomeIcon sx={{ color: "yellow" }} />
+        </Tooltip>) : null}
+      {answer.isDoubted ? (
+        <Tooltip title={"This answer was doubted."}>
+          <CancelOutlinedIcon sx={{ color: "blue" }} />
+        </Tooltip>) : null}
+      {answer.isUnique ? (
+        <Tooltip title={"This answer is unique."}>
+          <LooksOneOutlinedIcon sx={{ color: "purple" }} />
+        </Tooltip>) : null}
+      {answer.answer ? !answer.isCorrect && (
+        <Tooltip title={"This answer is incorrect."}>
+          <CircleIcon sx={{ color: "red" }} />
+        </Tooltip>) : null}
+      {!answer.isUnique ? (
+        <Tooltip title={"This answer is not unique."}>
+          <ContentCopyOutlinedIcon sx={{ color: "purple" }} />
+        </Tooltip>) : null}
     </Box>
   );
 
@@ -64,13 +93,16 @@ const VotingResults = () => {
         borderWidth: "2px",
         borderStyle: "solid",
       }}>
-        <Typography variant="h6">{player.username}</Typography>
+        <Typography variant="h6" style={{ color: player.color }}>
+          {player.username}
+        </Typography>
         {player.currentAnswers.map((answer, index) => (
           <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
             {/* Set a fixed width for the category label */}
             <Typography sx={{ width: "150px", flexShrink: 0 }}>{answer.category}</Typography>
             {/* Have answer aligned properly */}
             <Typography sx={{ textAlign: "left", flexGrow: 1}}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
+            <Typography sx={{ width: "50px", textAlign: "right" }}>{answer.score} pts </Typography>
             {renderStatusIcons(answer)}
           </Box>
         ))}
@@ -90,6 +122,13 @@ const VotingResults = () => {
     disconnect()
     navigate("/homepage")
   }
+
+  const handleReady = () => {
+    send(`/app/games/${lobbyId}/ready/${user.username}`, JSON.stringify({ ready: true }));
+    if (gameState.players.every(player => player.isReady)) {
+      navigate(`/lobbies/${lobbyId}/scoreboard`);
+    }
+  };
 
   return (
     <BackgroundImageLobby>
@@ -167,6 +206,18 @@ const VotingResults = () => {
             {renderPlayerAnswers(player)}
           </React.Fragment>
         ))}
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <CustomButton
+            onClick={() => { handleReady(); setIsPressed(true); }}
+            sx={{
+              backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
+              "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
+            }}
+            disabled={isPressed}
+          >
+            Ready
+          </CustomButton>
+        </Box>
       </Box>
     </BackgroundImageLobby>
   );

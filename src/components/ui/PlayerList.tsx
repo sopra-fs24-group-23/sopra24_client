@@ -7,6 +7,8 @@ import CloseIcon from "@mui/icons-material/Close";
 
 const PlayerList = ({ players, hostView, kickPlayer } ) => {
 
+  console.log(players);
+
   const determineIcon = ( hostView, player ) => {
     // if player is host --> host icon
     if (player.isHost) {
@@ -57,7 +59,12 @@ const PlayerList = ({ players, hostView, kickPlayer } ) => {
         {players.map((player, index) => (
           <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, justifyContent: "space-between" }}>
-              {player.username}
+              <Typography sx={{
+                fontFamily: "Londrina Solid",
+                color: player.color
+              }}>
+                {player.username}
+              </Typography>
             </Box>
             {determineIcon(hostView, player)}
           </ListItem>

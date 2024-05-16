@@ -4,7 +4,6 @@ import { List, ListItem, Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { useNavigate, useParams } from "react-router-dom";
 import GameStateContext from "../../contexts/GameStateContext";
-import GameSettingsContext from "../../contexts/GameSettingsContext";
 import CustomButton from "../ui/CustomButton";
 import Confetti from "react-confetti"
 interface Player {
@@ -26,7 +25,7 @@ const FinalScoreboard = () => {
 
   /* Context Variables */
   const { gameState } = useContext(GameStateContext);
-  const { disconnect, send, unsubscribeAll } = useContext(WebSocketContext);
+  const { disconnect, unsubscribeClient, send, unsubscribeAll } = useContext(WebSocketContext);
 
   useEffect(() => {
     if (gameState) {
@@ -42,6 +41,8 @@ const FinalScoreboard = () => {
   }, [gameState]);
 
   useEffect(() => {
+    unsubscribeClient(`/topic/lobbies/${lobbyId}/close`)
+
     return () => {
       if (!gameContinuing.current) {
         const token = localStorage.getItem("token");
