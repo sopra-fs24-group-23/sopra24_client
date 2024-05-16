@@ -71,6 +71,7 @@ const RoundScoreboard = () => {
         const players = gameState.players.map((player: any) => ({
           username: player.username,
           currentScore: player.currentScore,
+          color: player.color,
         }));
         sortedPlayers = players.sort((a, b) => b.currentScore - a.currentScore);
         setPlayers(players);
