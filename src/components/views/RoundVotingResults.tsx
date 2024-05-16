@@ -27,6 +27,7 @@ import UserContext from "../../contexts/UserContext";
 const VotingResults = () => {
   const { lobbyId } = useParams();
   const navigate = useNavigate();
+  const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   

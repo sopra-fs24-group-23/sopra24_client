@@ -14,6 +14,7 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, T
 const RoundVoting = () => {
   const { lobbyId } = useParams();
   const navigate = useNavigate();
+  const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
   const [doubts, setDoubts] = useState([]);
   const [doubtedAnswers, setDoubtedAnswers] = useState([]);
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
