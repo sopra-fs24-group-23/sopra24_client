@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Select, MenuItem, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";
-import PlayerList from "./PlayerList";
 
 const ColorPicker = ({ score, color, setColor }) => {
   const colorRequirements = {

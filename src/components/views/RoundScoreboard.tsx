@@ -18,8 +18,6 @@ const RoundScoreboard = () => {
   const { lobbyId } = useParams();
   const navigate = useNavigate();
   const [players, setPlayers] = useState<Player[]>([]);
-  const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
-  const [maxRoundNumber, setMaxRoundNumber] = useState(0);
   const gameContinuing = useRef(false)
   let sortedPlayers = [];
 

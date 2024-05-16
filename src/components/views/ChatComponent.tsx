@@ -21,7 +21,6 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ lobbyId, username, color 
   const [newMessage, setNewMessage] = useState<string>("");
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const stompClientRef = useRef<Client | null>(null);
-  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const stompClient = new Client({

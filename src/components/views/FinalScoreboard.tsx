@@ -4,7 +4,6 @@ import { List, ListItem, Typography, Box, } from "@mui/material";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { useNavigate, useParams } from "react-router-dom";
 import GameStateContext from "../../contexts/GameStateContext";
-import GameSettingsContext from "../../contexts/GameSettingsContext";
 import CustomButton from "../ui/CustomButton";
 import Confetti from "react-confetti"
 interface Player {

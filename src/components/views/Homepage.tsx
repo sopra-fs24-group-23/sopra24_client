@@ -26,7 +26,6 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import UserContext from "../../contexts/UserContext";
 import ProgressBarContainer from "../ui/ProgressBarContainer";
 import ColorPicker from "../ui/ColorPicker";
-import GameFormField from "../ui/GameFormField";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -108,14 +107,6 @@ const Homepage = () => {
   const goToLeaderboards = () => {
     navigate("/leaderboards");
   };
-
-  // Updating the progress bar
-  function updateProgressBar(currentPoints, totalPointsNeeded) {
-    const progressBar = document.getElementById("progressBar");
-    const width = (currentPoints / totalPointsNeeded) * 100;
-    progressBar.style.width = width + "%";
-  }
-
 
   const createLobby = async () => {
     try {
