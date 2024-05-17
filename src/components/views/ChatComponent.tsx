@@ -4,6 +4,7 @@ import ChatContext from "../../contexts/ChatContext";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import { isProduction } from "../../helpers/isProduction";
 import UserContext from "../../contexts/UserContext";
+import { Box } from "@mui/material";
 
 interface ChatMessage {
   sender: string;
@@ -42,6 +43,21 @@ const ChatComponent: React.FC<ChatComponentProps> = ( { lobbyId } ) => {
   };
 
   return (
+    <Box sx={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      backgroundColor: "rgba(224, 224, 224, 0.9)",
+      borderColor: "black",
+      borderWidth: "2px",
+      borderStyle: "solid",
+      borderRadius: "27px",
+      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+      width: "230px",
+      maxHeight: "60%",
+      overflowY: "auto",
+      padding: "20px",
+    }}>
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div className="chat-window" style={{ flex: 1, maxHeight: "300px", overflowY: "auto", padding: "5px", borderRadius: "5px", marginBottom: "10px" }}>
         {messages.map((msg, index) => (
@@ -82,6 +98,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ( { lobbyId } ) => {
         </CustomButton>
       </div>
     </div>
+    </Box>
   );
 };
 
