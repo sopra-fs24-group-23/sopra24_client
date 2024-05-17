@@ -8,6 +8,8 @@ import GameSettingsContext from "../../contexts/GameSettingsContext";
 import UserContext from "../../contexts/UserContext";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import Countdown from "../ui/Countdown";
+import ChatComponent from "./ChatComponent";
+import ChatContext from "../../contexts/ChatContext";
 import { isProduction } from "../../helpers/isProduction";
 import { Typography, Box, TextField, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 const RoundInput = () => {
@@ -185,6 +187,14 @@ const RoundInput = () => {
         </Dialog>
       </Box>
       <Box sx={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "flex-start",
+      width: "90%",
+      margin: "auto",
+    }}>
+      {/* Main box */ }
+      <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
         borderWidth: "2px",
@@ -236,6 +246,11 @@ const RoundInput = () => {
           Done
         </CustomButton>
       </Box>
+        {/* Chat Component */}
+        <Box sx={{ marginLeft: "20px"}}>
+          <ChatComponent lobbyId={lobbyId} />
+        </Box>
+        </Box>
     </BackgroundImageLobby>
   )
 }
