@@ -86,7 +86,8 @@ const GlobalLeaderboard = () => {
         borderRadius: "27px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         width: "100%",
-        maxWidth: "70%",
+        //maxWidth: "70%",
+        maxWidth: "800px",
         height: "70%",
         marginTop: "80px",
         marginBottom: "30px",
@@ -107,7 +108,7 @@ const GlobalLeaderboard = () => {
           display: "flex",
           flexDirection: "row",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
         }}>
           <Box sx={{
             backgroundColor: "#e0e0e0",
