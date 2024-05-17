@@ -191,17 +191,17 @@ const RoundInput = () => {
         borderStyle: "solid",
         width: "60%",
         height: "auto",
-        minHeight: "80%",
+        minHeight: "60%",
         margin: "auto",
         padding: "20px",
         borderRadius: "10px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         position: "relative",
         top: "10px",
-      /*alignItems: "center",
-        justifyContent: "center",
+        alignItems: "center",
+        justifyContent: "space-between",
         display: "flex",
-        flexDirection: "column", */
+        flexDirection: "column",
         overflowY: "auto",
       }}>
         <Typography variant="h4" gutterBottom sx={{
