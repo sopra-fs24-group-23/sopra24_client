@@ -194,6 +194,7 @@ const Homepage = () => {
 
   return (
     <HomepageBackgroundImage>
+      {/* Top bar */}
       <Box sx={{
         display: "flex",
         justifyContent: "flex-end",
@@ -237,7 +238,9 @@ const Homepage = () => {
         // height: "70%",
         margin: "auto",
         position: "relative",
-        top: 10,
+        top: 80,
+        marginTop: "100px",
+        zIndex: 1, // ensure grey box is below the top bar
       }}>
         {/* Player's Name */}
         {profile && (
