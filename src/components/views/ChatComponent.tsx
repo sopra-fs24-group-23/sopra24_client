@@ -17,7 +17,7 @@ interface ChatComponentProps {
   lobbyId: string;
 }
 
-const ChatComponent: React.FC<ChatComponentProps> = ( { lobbyId } ) => {
+const ChatComponent: React.FC<ChatComponentProps> = ({ lobbyId }) => {
   const { messages, isChatSubscribed } = useContext(ChatContext)
   const { send } = useContext(WebSocketContext)
   const { user } = useContext(UserContext)
@@ -58,46 +58,46 @@ const ChatComponent: React.FC<ChatComponentProps> = ( { lobbyId } ) => {
       overflowY: "auto",
       padding: "20px",
     }}>
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <div className="chat-window" style={{ flex: 1, maxHeight: "300px", overflowY: "auto", padding: "5px", borderRadius: "5px", marginBottom: "10px" }}>
-        {messages.map((msg, index) => (
-          <div key={index}>
-            <strong style={{ color: msg.color }}>{msg.sender}</strong>: {msg.content}
-          </div>
-        ))}
+      <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <div className="chat-window" style={{ flex: 1, maxHeight: "300px", overflowY: "auto", padding: "5px", borderRadius: "5px", marginBottom: "10px" }}>
+          {messages.map((msg, index) => (
+            <div key={index}>
+              <strong style={{ color: msg.color }}>{msg.sender}</strong>: {msg.content}
+            </div>
+          ))}
+        </div>
+        <div className="chat-input-container" style={{ display: "flex", alignItems: "center" }}>
+          <input
+            type="text"
+            value={inputMessage}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault()
+                sendMessage()
+              }
+            }}
+            onChange={(e) => setInputMessage(e.target.value)}
+            placeholder="Type a message..."
+            style={{
+              flex: 1,
+              padding: "3px",
+              marginRight: "10px",
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              color: "black",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+              outline: "none"
+            }}
+          />
+          <CustomButton
+            onClick={sendMessage}
+            disabled={inputMessage === ""}
+            sx={{ padding: "2px 5px", fontSize: "12px" }} // Smaller button styling
+          >
+            Send
+          </CustomButton>
+        </div>
       </div>
-      <div className="chat-input-container" style={{ display: "flex", alignItems: "center" }}>
-        <input
-          type="text"
-          value={inputMessage}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              event.preventDefault()
-              sendMessage()
-            }
-          }}
-          onChange={(e) => setInputMessage(e.target.value)}
-          placeholder="Type a message..."
-          style={{
-            flex: 1,
-            padding: "3px",
-            marginRight: "10px",
-            backgroundColor: "rgba(255, 255, 255, 0.2)",
-            color: "black",
-            border: "1px solid #ccc",
-            borderRadius: "5px",
-            outline: "none"
-          }}
-        />
-        <CustomButton
-          onClick={sendMessage}
-          disabled={inputMessage === ""}
-          sx={{ padding: "2px 5px", fontSize: "12px" }} // Smaller button styling
-        >
-          Send
-        </CustomButton>
-      </div>
-    </div>
     </Box>
   );
 };
