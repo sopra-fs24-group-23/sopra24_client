@@ -525,7 +525,7 @@ const Lobby = () => {
           </Box>
         </Box>
         <Box>
-          <ChatComponent lobbyId={lobbyId}/>
+          <ChatComponent lobbyId={lobbyId} />
         </Box>
       </Box>
     </BackgroundImageLobby>

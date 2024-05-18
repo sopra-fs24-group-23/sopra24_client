@@ -37,7 +37,7 @@ const RoundInput = () => {
 
   useEffect(() => {
     if (gameSettings.categories) {
-      if(!isProduction) console.log("DEBUG refs were initialized")
+      if (!isProduction) console.log("DEBUG refs were initialized")
       inputRefs.current = gameSettings.categories.reduce((acc, category) => ({ ...acc, [category]: { answer: "", isJoker: false } }), {})
     }
   }, [gameSettings]);
@@ -112,7 +112,7 @@ const RoundInput = () => {
       }
     });
 
-    if(!isProduction) console.log("Payload being sent:", JSON.stringify(answersList));
+    if (!isProduction) console.log("Payload being sent:", JSON.stringify(answersList));
     send(`/app/games/${lobbyId}/answers/${user.username}`, JSON.stringify(answersList));
   };
 
@@ -121,7 +121,7 @@ const RoundInput = () => {
   }
 
   const handleAwaitingAnswers = () => {
-    if(!isProduction) console.log("DEBUG Sending answers to BE")
+    if (!isProduction) console.log("DEBUG Sending answers to BE")
     formatAndSendAnswers(inputRefs.current);
   }
 
@@ -187,70 +187,70 @@ const RoundInput = () => {
         </Dialog>
       </Box>
       <Box sx={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "flex-start",
-      width: "90%",
-      margin: "auto",
-    }}>
-      {/* Main box */ }
-      <Box sx={{
-        backgroundColor: "rgba(224, 224, 224, 0.9)",
-        borderColor: "black",
-        borderWidth: "2px",
-        borderStyle: "solid",
-        width: "60%",
-        height: "auto",
-        minHeight: "60%",
-        margin: "auto",
-        padding: "20px",
-        borderRadius: "10px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        position: "relative",
-        top: "10px",
-        alignItems: "center",
-        justifyContent: "space-between",
         display: "flex",
-        flexDirection: "column",
-        overflowY: "auto",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        width: "90%",
+        margin: "auto",
       }}>
-        <Typography variant="h4" gutterBottom sx={{
-          fontFamily: "Londrina Solid",
-          textAlign: "center",
-        }}>
-          Answers must start with {gameState.currentLetter}
-        </Typography>
-        <Countdown duration={gameSettings.inputDuration} />
+        {/* Main box */}
         <Box sx={{
+          backgroundColor: "rgba(224, 224, 224, 0.9)",
+          borderColor: "black",
+          borderWidth: "2px",
+          borderStyle: "solid",
+          width: "60%",
+          height: "auto",
+          minHeight: "60%",
+          margin: "auto",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+          position: "relative",
+          top: "10px",
+          alignItems: "center",
+          justifyContent: "space-between",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          flexWrap: "wrap",
-          width: "90%"
+          overflowY: "auto",
         }}>
-          {gameSettings && gameSettings.categories && gameSettings.categories.map((category) => (
-            <Box key={category} sx={{ margin: "10px 0" }}>
-              <TextField
-                label={category}
-                key={category}
-                onChange={(e) => handleInputChange(category, e.target.value)}
-              />
-              <IconButton onClick={() => handleJokerClick(category)}>
-                <AutoAwesomeIcon style={{ color: jokerCategory === category ? "yellow" : "grey" }} />
-              </IconButton>
-            </Box>
-          ))}
+          <Typography variant="h4" gutterBottom sx={{
+            fontFamily: "Londrina Solid",
+            textAlign: "center",
+          }}>
+            Answers must start with {gameState.currentLetter}
+          </Typography>
+          <Countdown duration={gameSettings.inputDuration} />
+          <Box sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            flexWrap: "wrap",
+            width: "90%"
+          }}>
+            {gameSettings && gameSettings.categories && gameSettings.categories.map((category) => (
+              <Box key={category} sx={{ margin: "10px 0" }}>
+                <TextField
+                  label={category}
+                  key={category}
+                  onChange={(e) => handleInputChange(category, e.target.value)}
+                />
+                <IconButton onClick={() => handleJokerClick(category)}>
+                  <AutoAwesomeIcon style={{ color: jokerCategory === category ? "yellow" : "grey" }} />
+                </IconButton>
+              </Box>
+            ))}
+          </Box>
+          <CustomButton onClick={handleDone} disabled={!allFieldsFilled}>
+            Done
+          </CustomButton>
         </Box>
-        <CustomButton onClick={handleDone} disabled={!allFieldsFilled}>
-          Done
-        </CustomButton>
-      </Box>
         {/* Chat Component */}
-        <Box sx={{ marginLeft: "20px"}}>
+        <Box sx={{ marginLeft: "20px" }}>
           <ChatComponent lobbyId={lobbyId} />
         </Box>
-        </Box>
+      </Box>
     </BackgroundImageLobby>
   )
 }

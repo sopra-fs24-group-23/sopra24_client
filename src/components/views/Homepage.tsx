@@ -269,7 +269,7 @@ const Homepage = () => {
                 <Grid item>
                   {/*<Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>*/}
                   <TextField
-                    label = "Username"
+                    label="Username"
                     value={username || ""}
                     onChange={(e) => setUsername(e.target.value)}
                     sx={{
@@ -288,7 +288,7 @@ const Homepage = () => {
                     <Tooltip title="You can change the color of how your username is displayed
                       on the Leaderboard. Unlock the next color by continuing playing Global Guess!"
                     >
-                      <InfoOutlinedIcon sx={{ marginLeft: "10px" }}/>
+                      <InfoOutlinedIcon sx={{ marginLeft: "10px" }} />
                     </Tooltip>
                   </Box>
                 </Grid>
@@ -307,7 +307,7 @@ const Homepage = () => {
               </Grid>
             ) : (
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "left" }}>
-                <Typography variant="h4" style={{ color: color, fontFamily: "Londrina Solid"}}>
+                <Typography variant="h4" style={{ color: color, fontFamily: "Londrina Solid" }}>
                   {profile.username}
                 </Typography>
                 <Tooltip title="Edit">
@@ -328,7 +328,7 @@ const Homepage = () => {
               }}>
               {profile && `Unlock the next color at ${getNextScore(profile.totalScore)} points!`}
               <Tooltip title="By entering the next level you receive a new color to display your username!">
-                <InfoOutlinedIcon sx={{ marginLeft: "10px" }}/>
+                <InfoOutlinedIcon sx={{ marginLeft: "10px" }} />
               </Tooltip>
             </Typography>
             <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={getNextScore(profile.totalScore)} />
