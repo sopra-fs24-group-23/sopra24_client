@@ -26,6 +26,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import UserContext from "../../contexts/UserContext";
 import ProgressBarContainer from "../ui/ProgressBarContainer";
 import ColorPicker from "../ui/ColorPicker";
+import ChatContext from "../../contexts/ChatContext";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const Homepage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { user } = useContext(UserContext);
+  const { resetChat } = useContext(ChatContext);
   const [inputLobbyId, setInputLobbyId] = useState("");
   const [color, setColor] = useState("#000000");
 
@@ -44,6 +46,10 @@ const Homepage = () => {
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [openJoinLobbyErrorDialog, setOpenJoinLobbyErrorDialog] = useState(false);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
+
+  useEffect(() => {
+    resetChat()
+  }, []);
 
   const logout = async () => {
     if (isProduction()) {
@@ -69,6 +75,8 @@ const Homepage = () => {
   const saveUpdate = async () => {
     try {
       await api.put("/users/" + user.id, { username: username, color: color });
+      user.username = username
+      user.color = color
       setProfile({ ...profile, username: username, color: color }); // Update local profile state
       setColor(color);
       setIsUsernameUpdateDialogOpen(true);
@@ -186,6 +194,7 @@ const Homepage = () => {
 
   return (
     <HomepageBackgroundImage>
+      {/* Top bar */}
       <Box sx={{
         display: "flex",
         justifyContent: "flex-end",
@@ -229,7 +238,9 @@ const Homepage = () => {
         // height: "70%",
         margin: "auto",
         position: "relative",
-        top: 10,
+        top: 80,
+        marginTop: "100px",
+        zIndex: 1, // ensure grey box is below the top bar
       }}>
         {/* Player's Name */}
         {profile && (
@@ -258,7 +269,7 @@ const Homepage = () => {
                 <Grid item>
                   {/*<Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>*/}
                   <TextField
-                    label = "Username"
+                    label="Username"
                     value={username || ""}
                     onChange={(e) => setUsername(e.target.value)}
                     sx={{
@@ -277,7 +288,7 @@ const Homepage = () => {
                     <Tooltip title="You can change the color of how your username is displayed
                       on the Leaderboard. Unlock the next color by continuing playing Global Guess!"
                     >
-                      <InfoOutlinedIcon sx={{ marginLeft: "10px" }}/>
+                      <InfoOutlinedIcon sx={{ marginLeft: "10px" }} />
                     </Tooltip>
                   </Box>
                 </Grid>
@@ -296,7 +307,7 @@ const Homepage = () => {
               </Grid>
             ) : (
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "left" }}>
-                <Typography variant="h4" style={{ color: color, fontFamily: "Londrina Solid"}}>
+                <Typography variant="h4" style={{ color: color, fontFamily: "Londrina Solid" }}>
                   {profile.username}
                 </Typography>
                 <Tooltip title="Edit">
@@ -317,7 +328,7 @@ const Homepage = () => {
               }}>
               {profile && `Unlock the next color at ${getNextScore(profile.totalScore)} points!`}
               <Tooltip title="By entering the next level you receive a new color to display your username!">
-                <InfoOutlinedIcon sx={{ marginLeft: "10px" }}/>
+                <InfoOutlinedIcon sx={{ marginLeft: "10px" }} />
               </Tooltip>
             </Typography>
             <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={getNextScore(profile.totalScore)} />

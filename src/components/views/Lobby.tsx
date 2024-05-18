@@ -33,6 +33,7 @@ import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import { isProduction } from "../../helpers/isProduction";
 import ChatComponent from "./ChatComponent";
+import ChatContext from "../../contexts/ChatContext";
 
 interface GameSettings {
   categories: string[];
@@ -76,10 +77,12 @@ const Lobby = () => {
   const { setGameStateVariable } = useContext(GameStateContext);
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
   const { setGameSettingsVariable } = useContext(GameSettingsContext);
+  const { connectChat } = useContext(ChatContext);
 
   useEffect(() => {
     if (lobbyId) {
       connect(lobbyId).then(() => {
+        connectChat(lobbyId)
         subscribeClient(
           `/topic/lobbies/${lobbyId}/settings`,
           (message: Message) => {
@@ -521,23 +524,8 @@ const Lobby = () => {
             {isHost && <CustomButton onClick={handleStartGame} disabled={players.length < 2}>Start Game</CustomButton>}
           </Box>
         </Box>
-        {/* Add ChatComponent here */}
-        <Box sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          backgroundColor: "rgba(224, 224, 224, 0.9)",
-          borderColor: "black",
-          borderWidth: "2px",
-          borderStyle: "solid",
-          borderRadius: "27px",
-          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-          width: "25%",
-          maxHeight: "60%",
-          overflowY: "auto",
-          padding: "20px",
-        }}>
-          <ChatComponent lobbyId={lobbyId} username={user.username} color={user.color} />
+        <Box>
+          <ChatComponent lobbyId={lobbyId} />
         </Box>
       </Box>
     </BackgroundImageLobby>

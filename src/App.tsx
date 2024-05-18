@@ -4,19 +4,21 @@ import WebSocketProvider from "./components/providers/WebSocketProvider";
 import UserProvider from "./components/providers/UserProvider";
 import GameStateProvider from "./components/providers/GameStateProvider";
 import GameSettingsProvider from "./components/providers/GameSettingsProvider";
-
+import ChatProvider from "./components/providers/ChatProvider";
 
 const App = () => {
   return (
     <WebSocketProvider>
       <UserProvider>
-        <GameStateProvider>
-          <GameSettingsProvider>
-            <div>
-              <AppRouter />
-            </div>
-          </GameSettingsProvider>
-        </GameStateProvider>
+        <ChatProvider>
+          <GameStateProvider>
+            <GameSettingsProvider>
+              <div>
+                <AppRouter />
+              </div>
+            </GameSettingsProvider>
+          </GameStateProvider>
+        </ChatProvider>
       </UserProvider>
     </WebSocketProvider>
   );
