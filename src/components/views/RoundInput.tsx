@@ -192,6 +192,7 @@ const RoundInput = () => {
         alignItems: "flex-start",
         width: "90%",
         margin: "auto",
+        height: "80vh", // Ensures that the container takes up most of the viewport height
       }}>
         {/* Main box */}
         <Box sx={{
@@ -200,6 +201,7 @@ const RoundInput = () => {
           borderWidth: "2px",
           borderStyle: "solid",
           width: "60%",
+          minWidth: "60%", // Ensure a minimum width for the main box
           height: "auto",
           minHeight: "60%",
           margin: "auto",

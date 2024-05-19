@@ -8,7 +8,6 @@ import Countdown from "../ui/Countdown";
 import UserContext from "../../contexts/UserContext";
 import CustomButton from "../ui/CustomButton";
 import ChatComponent from "./ChatComponent";
-import ChatContext from "../../contexts/ChatContext";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, List, ListItem, Typography, Box } from "@mui/material";
 
 interface Player {
