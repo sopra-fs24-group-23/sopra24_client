@@ -9,7 +9,6 @@ import UserContext from "../../contexts/UserContext";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import Countdown from "../ui/Countdown";
 import ChatComponent from "./ChatComponent";
-import ChatContext from "../../contexts/ChatContext";
 import { isProduction } from "../../helpers/isProduction";
 import { Typography, Box, TextField, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 const RoundInput = () => {
@@ -204,6 +203,7 @@ const RoundInput = () => {
           minWidth: "60%", // Ensure a minimum width for the main box
           height: "auto",
           minHeight: "60%",
+          maxHeight: "80%",
           margin: "auto",
           padding: "20px",
           borderRadius: "10px",

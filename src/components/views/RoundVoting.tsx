@@ -195,6 +195,7 @@ const RoundVoting = () => {
         borderStyle: "solid",
         width: "60%",
         height: "auto",
+        maxHeight: "80%",
         margin: "auto",
         padding: "20px",
         borderRadius: "10px",

@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Countdown from "../ui/Countdown";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import WebSocketContext from "../../contexts/WebSocketContext";
+import ChatComponent from "./ChatComponent";
 import {
   Dialog,
   DialogTitle,
@@ -179,12 +180,24 @@ const VotingResults = () => {
         </Dialog>
       </Box>
       <Box sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        width: "90%",
+        margin: "auto",
+        height: "80vh",
+      }}>
+        {/* Main box */}
+      <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
         borderWidth: "2px",
         borderStyle: "solid",
         width: "60%",
         height: "auto",
+        minWidth: "60%",
+        minHeight: "60%",
+        maxHeight: "80%",
         margin: "auto",
         padding: "20px",
         borderRadius: "10px",
@@ -217,6 +230,13 @@ const VotingResults = () => {
           >
             Ready
           </CustomButton>
+        </Box>
+      </Box>
+        {/* Chat Component */}
+        <Box sx={{
+          marginLeft: "20px" // Adding some space between the main box and chat
+        }}>
+          <ChatComponent lobbyId={lobbyId} />
         </Box>
       </Box>
     </BackgroundImageLobby>
