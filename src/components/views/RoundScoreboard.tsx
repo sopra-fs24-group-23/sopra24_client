@@ -7,6 +7,8 @@ import GameSettingsContext from "../../contexts/GameSettingsContext";
 import Countdown from "../ui/Countdown";
 import UserContext from "../../contexts/UserContext";
 import CustomButton from "../ui/CustomButton";
+import ChatComponent from "./ChatComponent";
+import ChatContext from "../../contexts/ChatContext";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, List, ListItem, Typography, Box } from "@mui/material";
 
 interface Player {
@@ -139,12 +141,23 @@ const RoundScoreboard = () => {
         </Dialog>
       </Box>
       <Box sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        width: "90%",
+        margin: "auto",
+        height: "80vh", // Ensures that the container takes up most of the viewport height
+      }}>
+      {/* Main box */}
+      <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
         borderWidth: "2px",
         borderStyle: "solid",
         width: "60%",
-        height: "60%",
+        minWidth: "60%", // Ensure a minimum width for the main box
+        //height: "60%",
+        height: "80%",
         margin: "auto",
         padding: "20px",
         borderRadius: "10px",
@@ -178,6 +191,13 @@ const RoundScoreboard = () => {
           >
             Ready
           </CustomButton>
+        </Box>
+      </Box>
+        {/* Chat Component */}
+        <Box sx={{
+          marginLeft: "20px" // Adding some space between the main box and chat
+        }}>
+          <ChatComponent lobbyId={lobbyId} />
         </Box>
       </Box>
     </BackgroundImageLobby>
