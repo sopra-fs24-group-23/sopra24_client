@@ -114,7 +114,7 @@ const Instructions = () => {
           answer that was not
           a joker, the author will receive 5 extra points on that answer, no matter whether it is correct or not!<br />
 
-          After each round you will then be directed to to an overview screen to see which answer was a joker, doubted,
+          After each round you will then be directed to an overview screen to see which answer was a joker, doubted,
           wrong, correct,
           unique or a duplicate. <br />
           <br />
