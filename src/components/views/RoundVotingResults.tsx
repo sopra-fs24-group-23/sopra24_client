@@ -17,6 +17,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import CustomButton from "../ui/CustomButton";
+import StyledBox from "../ui/StyledBox";
 /* Icons import */
 import CircleIcon from "@mui/icons-material/Circle";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
@@ -31,7 +32,7 @@ const VotingResults = () => {
   const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
-  
+
 
   /* Context variables */
   const { gameState } = useContext(GameStateContext);
@@ -102,7 +103,7 @@ const VotingResults = () => {
             {/* Set a fixed width for the category label */}
             <Typography sx={{ width: "150px", flexShrink: 0 }}>{answer.category}</Typography>
             {/* Have answer aligned properly */}
-            <Typography sx={{ textAlign: "left", flexGrow: 1}}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
+            <Typography sx={{ textAlign: "left", flexGrow: 1 }}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
             <Typography sx={{ width: "50px", textAlign: "right" }}>{answer.score} pts </Typography>
             {renderStatusIcons(answer)}
           </Box>
@@ -133,25 +134,7 @@ const VotingResults = () => {
 
   return (
     <BackgroundImageLobby>
-      <Box sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        //height: "50vh", // Use viewport height to fill the screen
-        padding: "20px",
-        backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
-        borderColor: "black",
-        borderWidth: "2px",
-        borderStyle: "solid",
-        borderRadius: "27px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        width: "90%",
-        height: "5%",
-        margin: "auto",
-        position: "relative",
-        top: 30,
-        marginBottom: "30px",
-      }}>
+      <StyledBox>
         <img src="/Images/logo.png" alt="Descriptive Text"
           style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton
@@ -178,7 +161,7 @@ const VotingResults = () => {
             <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
           </DialogActions>
         </Dialog>
-      </Box>
+      </StyledBox>
       <Box sx={{
         display: "flex",
         justifyContent: "center",
@@ -188,50 +171,50 @@ const VotingResults = () => {
         height: "80vh",
       }}>
         {/* Main box */}
-      <Box sx={{
-        backgroundColor: "rgba(224, 224, 224, 0.9)",
-        borderColor: "black",
-        borderWidth: "2px",
-        borderStyle: "solid",
-        width: "60%",
-        height: "auto",
-        minWidth: "60%",
-        minHeight: "60%",
-        maxHeight: "80%",
-        margin: "auto",
-        padding: "20px",
-        borderRadius: "10px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        position: "relative",
-        top: "10px",
-        overflowY: "auto",
-      }}>
-        <Typography variant="h4" gutterBottom sx={{
-          fontFamily: "Londrina Solid",
-          textAlign: "center",
+        <Box sx={{
+          backgroundColor: "rgba(224, 224, 224, 0.9)",
+          borderColor: "black",
+          borderWidth: "2px",
+          borderStyle: "solid",
+          width: "60%",
+          height: "auto",
+          minWidth: "60%",
+          minHeight: "60%",
+          maxHeight: "80%",
+          margin: "auto",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+          position: "relative",
+          top: "10px",
+          overflowY: "auto",
         }}>
-          Voting Results
-        </Typography>
-        <Countdown duration={gameSettings.scoreboardDuration} />
-        {/* Iterate over all players to render their answers */}
-        {gameState.players.map((player) => (
-          <React.Fragment key={player.id}>
-            {renderPlayerAnswers(player)}
-          </React.Fragment>
-        ))}
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <CustomButton
-            onClick={() => { handleReady(); setIsPressed(true); }}
-            sx={{
-              backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
-              "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
-            }}
-            disabled={isPressed}
-          >
-            Ready
-          </CustomButton>
+          <Typography variant="h4" gutterBottom sx={{
+            fontFamily: "Londrina Solid",
+            textAlign: "center",
+          }}>
+            Voting Results
+          </Typography>
+          <Countdown duration={gameSettings.scoreboardDuration} />
+          {/* Iterate over all players to render their answers */}
+          {gameState.players.map((player) => (
+            <React.Fragment key={player.id}>
+              {renderPlayerAnswers(player)}
+            </React.Fragment>
+          ))}
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <CustomButton
+              onClick={() => { handleReady(); setIsPressed(true); }}
+              sx={{
+                backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
+                "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
+              }}
+              disabled={isPressed}
+            >
+              Ready
+            </CustomButton>
+          </Box>
         </Box>
-      </Box>
         {/* Chat Component */}
         <Box sx={{
           marginLeft: "20px" // Adding some space between the main box and chat

@@ -91,36 +91,36 @@ const FinalScoreboard = () => {
         margin: "auto",
         height: "80vh", // Ensures that the container takes up most of the viewport height
       }}>
-      {/* Main box */}
-      <Box sx={{
-        backgroundColor: "rgba(224, 224, 224, 0.9)",
-        borderColor: "black",
-        borderWidth: "2px",
-        borderStyle: "solid",
-        width: "60%",
-        minWidth: "60%",
-        height: "60%",
-        minHeight: "60%",
-        margin: "auto",
-        padding: "20px",
-        borderRadius: "10px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        position: "relative",
-        top: "10px",
-      }}>
-        {header}
-        <List sx={{ width: "100%" }}>
-          {players.map((player, index) => (
-            <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, justifyContent: "space-between" }}>
-                {index + 1}. {player.username}
-                <Typography variant="body1">Score: {player.currentScore}</Typography>
-              </Box>
-            </ListItem>
-          ))}
-        </List>
-        <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
-      </Box>
+        {/* Main box */}
+        <Box sx={{
+          backgroundColor: "rgba(224, 224, 224, 0.9)",
+          borderColor: "black",
+          borderWidth: "2px",
+          borderStyle: "solid",
+          width: "60%",
+          minWidth: "60%",
+          height: "60%",
+          minHeight: "60%",
+          margin: "auto",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+          position: "relative",
+          top: "10px",
+        }}>
+          {header}
+          <List sx={{ width: "100%" }}>
+            {players.map((player, index) => (
+              <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, justifyContent: "space-between" }}>
+                  {index + 1}. {player.username}
+                  <Typography variant="body1">Score: {player.currentScore}</Typography>
+                </Box>
+              </ListItem>
+            ))}
+          </List>
+          <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
+        </Box>
         {/* Chat Component */}
         <Box sx={{
           marginLeft: "20px"

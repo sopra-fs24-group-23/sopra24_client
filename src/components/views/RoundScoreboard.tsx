@@ -9,6 +9,7 @@ import UserContext from "../../contexts/UserContext";
 import CustomButton from "../ui/CustomButton";
 import ChatComponent from "./ChatComponent";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, List, ListItem, Typography, Box } from "@mui/material";
+import StyledBox from "../ui/StyledBox";
 
 interface Player {
   username: string;
@@ -93,25 +94,7 @@ const RoundScoreboard = () => {
 
   return (
     <BackgroundImageLobby>
-      <Box sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        //height: "50vh", // Use viewport height to fill the screen
-        padding: "20px",
-        backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
-        borderColor: "black",
-        borderWidth: "2px",
-        borderStyle: "solid",
-        borderRadius: "27px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        width: "90%",
-        height: "5%",
-        margin: "auto",
-        position: "relative",
-        top: 30,
-        marginBottom: "30px",
-      }}>
+      <StyledBox>
         <img src="/Images/logo.png" alt="Descriptive Text"
           style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton
@@ -138,7 +121,7 @@ const RoundScoreboard = () => {
             <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
           </DialogActions>
         </Dialog>
-      </Box>
+      </StyledBox>
       <Box sx={{
         display: "flex",
         justifyContent: "center",
@@ -147,51 +130,51 @@ const RoundScoreboard = () => {
         margin: "auto",
         height: "80vh", // Ensures that the container takes up most of the viewport height
       }}>
-      {/* Main box */}
-      <Box sx={{
-        backgroundColor: "rgba(224, 224, 224, 0.9)",
-        borderColor: "black",
-        borderWidth: "2px",
-        borderStyle: "solid",
-        width: "60%",
-        minWidth: "60%", // Ensure a minimum width for the main box
-        //height: "60%",
-        height: "80%",
-        margin: "auto",
-        padding: "20px",
-        borderRadius: "10px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        position: "relative",
-        top: "10px",
-      }}>
-        {header}
-        <Countdown duration={parseInt(gameSettings.scoreboardDuration)}/>
-        <List sx={{ width: "100%" }}>
-          {players.map((player, index) => (
-            <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, justifyContent: "space-between" }}>
-                {index + 1}. 
-                <Typography style={{ color: player.color }}>
-                  {player.username}
-                </Typography>
-                <Typography variant="body1">Score: {player.currentScore}</Typography>
-              </Box>
-            </ListItem>
-          ))}
-        </List>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <CustomButton
-            onClick={() => { handleReady(); setIsPressed(true); }}
-            sx={{
-              backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
-              "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
-            }}
-            disabled={isPressed}
-          >
-            Ready
-          </CustomButton>
+        {/* Main box */}
+        <Box sx={{
+          backgroundColor: "rgba(224, 224, 224, 0.9)",
+          borderColor: "black",
+          borderWidth: "2px",
+          borderStyle: "solid",
+          width: "60%",
+          minWidth: "60%", // Ensure a minimum width for the main box
+          //height: "60%",
+          height: "80%",
+          margin: "auto",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+          position: "relative",
+          top: "10px",
+        }}>
+          {header}
+          <Countdown duration={parseInt(gameSettings.scoreboardDuration)} />
+          <List sx={{ width: "100%" }}>
+            {players.map((player, index) => (
+              <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, justifyContent: "space-between" }}>
+                  {index + 1}.
+                  <Typography style={{ color: player.color }}>
+                    {player.username}
+                  </Typography>
+                  <Typography variant="body1">Score: {player.currentScore}</Typography>
+                </Box>
+              </ListItem>
+            ))}
+          </List>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <CustomButton
+              onClick={() => { handleReady(); setIsPressed(true); }}
+              sx={{
+                backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
+                "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
+              }}
+              disabled={isPressed}
+            >
+              Ready
+            </CustomButton>
+          </Box>
         </Box>
-      </Box>
         {/* Chat Component */}
         <Box sx={{
           marginLeft: "20px" // Adding some space between the main box and chat
