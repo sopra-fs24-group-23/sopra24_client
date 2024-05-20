@@ -80,6 +80,13 @@ const Lobby = () => {
   const { setGameSettingsVariable } = useContext(GameSettingsContext);
   const { connectChat } = useContext(ChatContext);
 
+  const MAX_ROUNDS_LIMIT = 10; 
+  const MAX_VOTING_DURATION_LIMIT = 90; 
+  const MAX_INPUT_DURATION_LIMIT = 90; 
+  const MAX_SCOREBOARD_DURATION_LIMIT = 60; 
+  const MAX_PLAYERS_LIMIT = 10; 
+
+
   useEffect(() => {
     if (lobbyId) {
       connect(lobbyId).then(() => {
@@ -99,6 +106,12 @@ const Lobby = () => {
             if (!isProduction) console.log(`Received PlayerList update: ${message.body}`);
             const receivedPlayers = JSON.parse(message.body);
             setPlayers(receivedPlayers);
+          },
+        );
+        subscribeClient(
+          `/topic/lobbies/${lobbyId}/errors`,
+          (message: Message) => {
+            alert(message.body);
           },
         );
         if (user) {
@@ -214,6 +227,7 @@ const Lobby = () => {
       send(`/app/lobbies/${lobbyId}/kick/${usernameToKick}`, JSON.stringify({ token }));
     }
   };
+
   const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
     const [tempSettings, setTempSettings] = useState(settings);
     const initialCategories = settings.categories && settings.categories.length > 0 ? settings.categories : ["Country", "City"];
@@ -244,11 +258,11 @@ const Lobby = () => {
     const handleSaveSettings = async () => {
       try {
         const newErrors = {
-          maxRounds: tempSettings.maxRounds.toString() === "" || tempSettings.maxRounds === 0,
-          votingDuration: tempSettings.votingDuration.toString() === "" || tempSettings.votingDuration === 0,
-          inputDuration: tempSettings.inputDuration.toString() === "" || tempSettings.inputDuration === 0,
-          scoreboardDuration: tempSettings.scoreboardDuration.toString() === "" || tempSettings.scoreboardDuration === 0,
-          maxPlayers: tempSettings.maxPlayers.toString() === "" || tempSettings.maxPlayers === 0,
+          maxRounds: tempSettings.maxRounds.toString() === "" || tempSettings.maxRounds === 0 || tempSettings.maxRounds > MAX_ROUNDS_LIMIT,
+          votingDuration: tempSettings.votingDuration.toString() === "" || tempSettings.votingDuration === 0 || tempSettings.votingDuration > MAX_VOTING_DURATION_LIMIT,
+          inputDuration: tempSettings.inputDuration.toString() === "" || tempSettings.inputDuration === 0 || tempSettings.inputDuration > MAX_INPUT_DURATION_LIMIT,
+          scoreboardDuration: tempSettings.scoreboardDuration.toString() === "" || tempSettings.scoreboardDuration === 0 || tempSettings.scoreboardDuration > MAX_SCOREBOARD_DURATION_LIMIT,
+          maxPlayers: tempSettings.maxPlayers.toString() === "" || tempSettings.maxPlayers === 0 || tempSettings.maxPlayers > MAX_PLAYERS_LIMIT,
         };
         setErrors(newErrors);
         if (!Object.values(newErrors).includes(true)) {
@@ -258,6 +272,8 @@ const Lobby = () => {
           const requestBody = JSON.stringify(newSettings);
           send(`/app/lobbies/${lobbyId}/settings`, requestBody);
           handleCloseGameSettings();
+        } else {
+          alert("Some settings exceed allowed limits. Please adjust them.");
         }
       } catch (error) {
         if (!isProduction) console.error("Failed to update game settings:", error);
@@ -312,7 +328,7 @@ const Lobby = () => {
                 value={tempSettings.maxRounds}
                 onChange={(e) => handleInputChange(e, "maxRounds")}
                 error={errors.maxRounds}
-                helperText={errors.maxRounds ? "Can't be 0 or empty" : ""}
+                helperText={errors.maxRounds ? "Can't be 0, empty or exceed " + MAX_ROUNDS_LIMIT : ""}
               />
             </Grid>
             <Grid item xs={6}>
@@ -321,7 +337,7 @@ const Lobby = () => {
                 value={tempSettings.votingDuration}
                 onChange={(e) => handleInputChange(e, "votingDuration")}
                 error={errors.votingDuration}
-                helperText={errors.votingDuration ? "Can't be 0 or empty" : ""}
+                helperText={errors.votingDuration ? "Can't be 0, empty or exceed " + MAX_VOTING_DURATION_LIMIT : ""}
               />
             </Grid>
             <Grid item xs={6}>
@@ -330,7 +346,7 @@ const Lobby = () => {
                 value={tempSettings.inputDuration}
                 onChange={(e) => handleInputChange(e, "inputDuration")}
                 error={errors.inputDuration}
-                helperText={errors.inputDuration ? "Can't be 0 or empty" : ""}
+                helperText={errors.inputDuration ? "Can't be 0, empty or exceed " + MAX_INPUT_DURATION_LIMIT : ""}
               />
             </Grid>
             <Grid item xs={6}>
@@ -339,7 +355,7 @@ const Lobby = () => {
                 value={tempSettings.scoreboardDuration}
                 onChange={(e) => handleInputChange(e, "scoreboardDuration")}
                 error={errors.scoreboardDuration}
-                helperText={errors.scoreboardDuration ? "Can't be 0 or empty" : ""}
+                helperText={errors.scoreboardDuration ? "Can't be 0, empty or exceed " + MAX_SCOREBOARD_DURATION_LIMIT : ""}
               />
             </Grid>
             <Grid item xs={6}>
@@ -348,7 +364,7 @@ const Lobby = () => {
                 value={tempSettings.maxPlayers}
                 onChange={(e) => handleInputChange(e, "maxPlayers")}
                 error={errors.maxPlayers}
-                helperText={errors.maxPlayers ? "Can't be 0 or empty" : ""}
+                helperText={errors.maxPlayers ? "Can't be 0, empty or exceed " + MAX_PLAYERS_LIMIT : ""}
               />
             </Grid>
             <Grid item xs={12}>
@@ -357,6 +373,8 @@ const Lobby = () => {
           </Grid>
         ) : (
           <>
+            <Typography>The host has set the following game settings:</Typography>
+            <br />
             <Typography>Categories: {settings.isRandom ? "Randomized" : settings.categories.join(", ")}</Typography>
             <Typography>Max Rounds: {settings.maxRounds}</Typography>
             <Typography>Time-limit to vote (seconds): {settings.votingDuration}</Typography>
