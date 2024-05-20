@@ -11,6 +11,7 @@ import Countdown from "../ui/Countdown";
 import ChatComponent from "./ChatComponent";
 import { isProduction } from "../../helpers/isProduction";
 import { Typography, Box, TextField, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
+import StyledBox from "../ui/StyledBox";
 const RoundInput = () => {
   /* Context Variables */
   const { gameSettings } = useContext(GameSettingsContext);
@@ -139,25 +140,7 @@ const RoundInput = () => {
 
   return (
     <BackgroundImageLobby>
-      <Box sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        //height: "50vh", // Use viewport height to fill the screen
-        padding: "20px",
-        backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
-        borderColor: "black",
-        borderWidth: "2px",
-        borderStyle: "solid",
-        borderRadius: "27px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        width: "90%",
-        height: "5%",
-        margin: "auto",
-        position: "relative",
-        top: 30,
-        marginBottom: "30px",
-      }}>
+      <StyledBox>
         <img src="/Images/logo.png" alt="Descriptive Text"
           style={{ width: "auto", height: "200px", marginTop: "100px" }} />
         <CustomButton
@@ -184,7 +167,7 @@ const RoundInput = () => {
             <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
           </DialogActions>
         </Dialog>
-      </Box>
+      </StyledBox>
       <Box sx={{
         display: "flex",
         justifyContent: "center",
