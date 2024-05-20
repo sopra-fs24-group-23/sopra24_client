@@ -69,6 +69,7 @@ const Lobby = () => {
     scoreboardDuration: 30,
     maxPlayers: 4,
   });
+  const [openHostLeftDialog, setOpenHostLeftDialog] = useState(false);
 
   const gameStarting = useRef(false);
   const lobbyClosing = useRef(false);
@@ -114,8 +115,9 @@ const Lobby = () => {
           `/topic/lobbies/${lobbyId}/close`,
           () => {
             lobbyClosing.current = true;
-            if (!isHost) alert("Sorry, the host has left the game! Returning you to the homepage.");
-            navigate("/homepage");
+            //if (!isHost) alert("Sorry, the host has left the game! Returning you to the homepage.");
+            //navigate("/homepage");
+            if (!isHost) handleOpenHostLeftDialog();
           },
         );
         subscribeClient(
@@ -167,6 +169,15 @@ const Lobby = () => {
       }
     };
   }, []);
+
+  const handleOpenHostLeftDialog = () => {
+    setOpenHostLeftDialog(true);
+  }
+
+  const handleCloseHostLeftDialog = () => {
+    setOpenHostLeftDialog(false);
+    navigate("/homepage");
+  }
 
   const handleOpenDialog = () => {
     setOpenLeaveDialog(true);
@@ -528,6 +539,17 @@ const Lobby = () => {
           <ChatComponent lobbyId={lobbyId} />
         </Box>
       </Box>
+      <Dialog open={openHostLeftDialog} onClose={handleCloseHostLeftDialog}>
+        <DialogTitle>Host has left the game</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Sorry, the host has left the game! Returning you to the homepage.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <CustomButton onClick={handleCloseHostLeftDialog}>OK</CustomButton>
+        </DialogActions>
+      </Dialog>
     </BackgroundImageLobby>
   );
 };
