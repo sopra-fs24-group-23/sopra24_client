@@ -6,12 +6,15 @@ import CustomButton from "components/ui/CustomButton";
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import UserContext from "../../contexts/UserContext";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import Countdown from "../ui/Countdown";
 import ChatComponent from "./ChatComponent";
 import { isProduction } from "../../helpers/isProduction";
-import { Typography, Box, TextField, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
+import { Typography, Box, TextField, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Tooltip } from "@mui/material";
 import StyledBox from "../ui/StyledBox";
+import TooltipContent from "components/ui/TooltipContent";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+
 const RoundInput = () => {
   /* Context Variables */
   const { gameSettings } = useContext(GameSettingsContext);
@@ -143,17 +146,40 @@ const RoundInput = () => {
       <StyledBox>
         <img src="/Images/logo.png" alt="Descriptive Text"
           style={{ width: "auto", height: "200px", marginTop: "100px" }} />
-        <CustomButton
-          onClick={handleOpenDialog}
-          sx={{
-            backgroundColor: "#e0e0e0",
-            "&:hover": {
-              backgroundColor: "red",
-            },
-          }}
-        >
-          Leave Game
-        </CustomButton>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Tooltip title={<TooltipContent />} placement="bottom" arrow>
+            <IconButton
+              sx={{
+                fontFamily: "Londrina Solid",
+                backgroundColor: "#f8f8f8", // button color
+                color: "black", // text color
+                borderColor: "black",
+                borderWidth: "1px",
+                borderStyle: "solid",
+                fontSize: "16px",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+                boxShadow: "0px 4px 3px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)", // This is the Material-UI default, adjust to match mockup
+                //boxShadow: '2px 2px 10px rgba(0,0,0,0.1)',
+                borderRadius: "20px",
+                padding: "6px 16px"
+              }}
+            >
+              <HelpOutlineIcon />
+            </IconButton>
+          </Tooltip>
+          <CustomButton
+            onClick={handleOpenDialog}
+            sx={{
+              backgroundColor: "#e0e0e0",
+              "&:hover": {
+                backgroundColor: "red",
+              },
+            }}
+          >
+            Leave Game
+          </CustomButton>
+        </Box>
         <Dialog open={openLeaveDialog} onClose={handleCloseDialog}>
           <DialogTitle>Leave the game?</DialogTitle>
           <DialogContent>
