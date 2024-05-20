@@ -32,7 +32,7 @@ const VotingResults = () => {
   const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
-  
+
 
   /* Context variables */
   const { gameState } = useContext(GameStateContext);
@@ -103,7 +103,7 @@ const VotingResults = () => {
             {/* Set a fixed width for the category label */}
             <Typography sx={{ width: "150px", flexShrink: 0 }}>{answer.category}</Typography>
             {/* Have answer aligned properly */}
-            <Typography sx={{ textAlign: "left", flexGrow: 1}}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
+            <Typography sx={{ textAlign: "left", flexGrow: 1 }}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
             <Typography sx={{ width: "50px", textAlign: "right" }}>{answer.score} pts </Typography>
             {renderStatusIcons(answer)}
           </Box>
@@ -171,50 +171,50 @@ const VotingResults = () => {
         height: "80vh",
       }}>
         {/* Main box */}
-      <Box sx={{
-        backgroundColor: "rgba(224, 224, 224, 0.9)",
-        borderColor: "black",
-        borderWidth: "2px",
-        borderStyle: "solid",
-        width: "60%",
-        height: "auto",
-        minWidth: "60%",
-        minHeight: "60%",
-        maxHeight: "80%",
-        margin: "auto",
-        padding: "20px",
-        borderRadius: "10px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        position: "relative",
-        top: "10px",
-        overflowY: "auto",
-      }}>
-        <Typography variant="h4" gutterBottom sx={{
-          fontFamily: "Londrina Solid",
-          textAlign: "center",
+        <Box sx={{
+          backgroundColor: "rgba(224, 224, 224, 0.9)",
+          borderColor: "black",
+          borderWidth: "2px",
+          borderStyle: "solid",
+          width: "60%",
+          height: "auto",
+          minWidth: "60%",
+          minHeight: "60%",
+          maxHeight: "80%",
+          margin: "auto",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+          position: "relative",
+          top: "10px",
+          overflowY: "auto",
         }}>
-          Voting Results
-        </Typography>
-        <Countdown duration={gameSettings.scoreboardDuration} />
-        {/* Iterate over all players to render their answers */}
-        {gameState.players.map((player) => (
-          <React.Fragment key={player.id}>
-            {renderPlayerAnswers(player)}
-          </React.Fragment>
-        ))}
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <CustomButton
-            onClick={() => { handleReady(); setIsPressed(true); }}
-            sx={{
-              backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
-              "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
-            }}
-            disabled={isPressed}
-          >
-            Ready
-          </CustomButton>
+          <Typography variant="h4" gutterBottom sx={{
+            fontFamily: "Londrina Solid",
+            textAlign: "center",
+          }}>
+            Voting Results
+          </Typography>
+          <Countdown duration={gameSettings.scoreboardDuration} />
+          {/* Iterate over all players to render their answers */}
+          {gameState.players.map((player) => (
+            <React.Fragment key={player.id}>
+              {renderPlayerAnswers(player)}
+            </React.Fragment>
+          ))}
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <CustomButton
+              onClick={() => { handleReady(); setIsPressed(true); }}
+              sx={{
+                backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF ",
+                "&:hover": { backgroundColor: isPressed ? "#e0e0e0" : "#FFFFFF" }
+              }}
+              disabled={isPressed}
+            >
+              Ready
+            </CustomButton>
+          </Box>
         </Box>
-      </Box>
         {/* Chat Component */}
         <Box sx={{
           marginLeft: "20px" // Adding some space between the main box and chat
