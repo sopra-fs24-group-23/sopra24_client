@@ -223,7 +223,7 @@ const Lobby = () => {
         if (!isProduction) console.error("Failed to copy lobby code to clipboard:", error);
       });
   };
-  const kickPlayer = (usernameToKick: String) => {
+  const kickPlayer = (usernameToKick: string) => {
     const token = localStorage.getItem("token");
     if (token) {
       send(`/app/lobbies/${lobbyId}/kick/${usernameToKick}`, JSON.stringify({ token }));
@@ -417,7 +417,7 @@ const Lobby = () => {
       }}>
         <img src="/Images/logo.png" alt="Descriptive Text"
           style={{ width: "auto", height: "200px", marginTop: "100px" }} />
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Tooltip title={<TooltipContent />} placement="bottom" arrow>
             <IconButton
               sx={{

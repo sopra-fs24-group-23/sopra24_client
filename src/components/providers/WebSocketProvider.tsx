@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Client } from "@stomp/stompjs";
 import { getWebSocketDomain } from "../../helpers/getDomain.js";
 import { isProduction } from "../../helpers/isProduction.js";
@@ -13,7 +13,7 @@ const WebSocketProvider = ( { children } ) => {
 
 
   useEffect(() => {
-    return () => this.disconnect()
+    return () => disconnect()
   }, []);
 
   /** Connect function, returns promise that is only resolved after successful connection,
@@ -132,8 +132,19 @@ const WebSocketProvider = ( { children } ) => {
     }
   }
 
+  // needed to avoid recreating context value object on every render
+  const contextValue = useMemo(() => ({
+    clientConnected,
+    connect,
+    disconnect,
+    send,
+    subscribeClient,
+    unsubscribeClient,
+    unsubscribeAll
+  }), [clientConnected, connect, disconnect, send, subscribeClient, unsubscribeClient, unsubscribeAll])
+
   return (
-    <WebSocketContext.Provider value={{ clientConnected, connect, disconnect, send, subscribeClient, unsubscribeClient, unsubscribeAll }}>
+    <WebSocketContext.Provider value={contextValue}>
       {children}
     </WebSocketContext.Provider>
   );

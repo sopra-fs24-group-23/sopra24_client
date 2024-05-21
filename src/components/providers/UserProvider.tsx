@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import UserContext from "../../contexts/UserContext";
 import PropTypes from "prop-types";
 
 const UserProvider = ( { children } ) => {
   const [user, setUser] = useState(null);
 
+  const contextValue = useMemo(() => ({
+    user,
+    setUser
+  }), [user, setUser])
+
   return(
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={contextValue}>
       {children}
     </UserContext.Provider>
   )

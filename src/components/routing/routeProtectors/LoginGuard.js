@@ -12,7 +12,3 @@ export const LoginGuard = () => {
 
   return <Navigate to="/homepage" replace />;
 };
-
-LoginGuard.propTypes = {
-  children: PropTypes.node
-}

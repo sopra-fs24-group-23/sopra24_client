@@ -16,7 +16,7 @@ const App = () => {
             <GameSettingsProvider>
               <div>
                 <AppRouter />
-                <ConsentBanner onConsent={() => console.log('Consented')} onDecline={() => console.log('Declined')} />
+                <ConsentBanner onConsent={() => console.log("Consented")} onDecline={() => console.log("Declined")} />
               </div>
             </GameSettingsProvider>
           </GameStateProvider>
