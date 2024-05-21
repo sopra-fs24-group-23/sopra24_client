@@ -3,6 +3,8 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import CustomButton from "components/ui/CustomButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../helpers/api";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import TooltipContent from "components/ui/TooltipContent";
 import {
   Box,
   TextField,
@@ -69,6 +71,7 @@ const Lobby = () => {
     scoreboardDuration: 30,
     maxPlayers: 4,
   });
+  const [openHostLeftDialog, setOpenHostLeftDialog] = useState(false);
 
   const gameStarting = useRef(false);
   const lobbyClosing = useRef(false);
@@ -78,6 +81,13 @@ const Lobby = () => {
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
   const { setGameSettingsVariable } = useContext(GameSettingsContext);
   const { connectChat } = useContext(ChatContext);
+
+  const MAX_ROUNDS_LIMIT = 10; 
+  const MAX_VOTING_DURATION_LIMIT = 90; 
+  const MAX_INPUT_DURATION_LIMIT = 90; 
+  const MAX_SCOREBOARD_DURATION_LIMIT = 60; 
+  const MAX_PLAYERS_LIMIT = 10; 
+
 
   useEffect(() => {
     if (lobbyId) {
@@ -100,6 +110,12 @@ const Lobby = () => {
             setPlayers(receivedPlayers);
           },
         );
+        subscribeClient(
+          `/topic/lobbies/${lobbyId}/errors`,
+          (message: Message) => {
+            alert(message.body);
+          },
+        );
         if (user) {
           subscribeClient(
             `/queue/lobbies/${lobbyId}/kick/${user.username}`,
@@ -114,8 +130,9 @@ const Lobby = () => {
           `/topic/lobbies/${lobbyId}/close`,
           () => {
             lobbyClosing.current = true;
-            if (!isHost) alert("Sorry, the host has left the game! Returning you to the homepage.");
-            navigate("/homepage");
+            //if (!isHost) alert("Sorry, the host has left the game! Returning you to the homepage.");
+            //navigate("/homepage");
+            if (!isHost) handleOpenHostLeftDialog();
           },
         );
         subscribeClient(
@@ -168,6 +185,15 @@ const Lobby = () => {
     };
   }, []);
 
+  const handleOpenHostLeftDialog = () => {
+    setOpenHostLeftDialog(true);
+  }
+
+  const handleCloseHostLeftDialog = () => {
+    setOpenHostLeftDialog(false);
+    navigate("/homepage");
+  }
+
   const handleOpenDialog = () => {
     setOpenLeaveDialog(true);
   };
@@ -203,6 +229,7 @@ const Lobby = () => {
       send(`/app/lobbies/${lobbyId}/kick/${usernameToKick}`, JSON.stringify({ token }));
     }
   };
+
   const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
     const [tempSettings, setTempSettings] = useState(settings);
     const initialCategories = settings.categories && settings.categories.length > 0 ? settings.categories : ["Country", "City"];
@@ -233,11 +260,11 @@ const Lobby = () => {
     const handleSaveSettings = async () => {
       try {
         const newErrors = {
-          maxRounds: tempSettings.maxRounds.toString() === "" || tempSettings.maxRounds === 0,
-          votingDuration: tempSettings.votingDuration.toString() === "" || tempSettings.votingDuration === 0,
-          inputDuration: tempSettings.inputDuration.toString() === "" || tempSettings.inputDuration === 0,
-          scoreboardDuration: tempSettings.scoreboardDuration.toString() === "" || tempSettings.scoreboardDuration === 0,
-          maxPlayers: tempSettings.maxPlayers.toString() === "" || tempSettings.maxPlayers === 0,
+          maxRounds: tempSettings.maxRounds.toString() === "" || tempSettings.maxRounds === 0 || tempSettings.maxRounds > MAX_ROUNDS_LIMIT,
+          votingDuration: tempSettings.votingDuration.toString() === "" || tempSettings.votingDuration === 0 || tempSettings.votingDuration > MAX_VOTING_DURATION_LIMIT,
+          inputDuration: tempSettings.inputDuration.toString() === "" || tempSettings.inputDuration === 0 || tempSettings.inputDuration > MAX_INPUT_DURATION_LIMIT,
+          scoreboardDuration: tempSettings.scoreboardDuration.toString() === "" || tempSettings.scoreboardDuration === 0 || tempSettings.scoreboardDuration > MAX_SCOREBOARD_DURATION_LIMIT,
+          maxPlayers: tempSettings.maxPlayers.toString() === "" || tempSettings.maxPlayers === 0 || tempSettings.maxPlayers > MAX_PLAYERS_LIMIT,
         };
         setErrors(newErrors);
         if (!Object.values(newErrors).includes(true)) {
@@ -247,6 +274,8 @@ const Lobby = () => {
           const requestBody = JSON.stringify(newSettings);
           send(`/app/lobbies/${lobbyId}/settings`, requestBody);
           handleCloseGameSettings();
+        } else {
+          alert("Some settings exceed allowed limits. Please adjust them.");
         }
       } catch (error) {
         if (!isProduction) console.error("Failed to update game settings:", error);
@@ -302,7 +331,7 @@ const Lobby = () => {
                 inputProps={{maxLength: 20}}
                 onChange={(e) => handleInputChange(e, "maxRounds")}
                 error={errors.maxRounds}
-                helperText={errors.maxRounds ? "Can't be 0 or empty" : ""}
+                helperText={errors.maxRounds ? "Can't be 0, empty or exceed " + MAX_ROUNDS_LIMIT : ""}
               />
             </Grid>
             <Grid item xs={6}>
@@ -312,7 +341,7 @@ const Lobby = () => {
                 inputProps={{maxLength: 20}}
                 onChange={(e) => handleInputChange(e, "votingDuration")}
                 error={errors.votingDuration}
-                helperText={errors.votingDuration ? "Can't be 0 or empty" : ""}
+                helperText={errors.votingDuration ? "Can't be 0, empty or exceed " + MAX_VOTING_DURATION_LIMIT : ""}
               />
             </Grid>
             <Grid item xs={6}>
@@ -322,7 +351,7 @@ const Lobby = () => {
                 inputProps={{maxLength: 20}}
                 onChange={(e) => handleInputChange(e, "inputDuration")}
                 error={errors.inputDuration}
-                helperText={errors.inputDuration ? "Can't be 0 or empty" : ""}
+                helperText={errors.inputDuration ? "Can't be 0, empty or exceed " + MAX_INPUT_DURATION_LIMIT : ""}
               />
             </Grid>
             <Grid item xs={6}>
@@ -332,7 +361,7 @@ const Lobby = () => {
                 inputProps={{maxLength: 20}}
                 onChange={(e) => handleInputChange(e, "scoreboardDuration")}
                 error={errors.scoreboardDuration}
-                helperText={errors.scoreboardDuration ? "Can't be 0 or empty" : ""}
+                helperText={errors.scoreboardDuration ? "Can't be 0, empty or exceed " + MAX_SCOREBOARD_DURATION_LIMIT : ""}
               />
             </Grid>
             <Grid item xs={6}>
@@ -342,7 +371,7 @@ const Lobby = () => {
                 inputProps={{maxLength: 20}}
                 onChange={(e) => handleInputChange(e, "maxPlayers")}
                 error={errors.maxPlayers}
-                helperText={errors.maxPlayers ? "Can't be 0 or empty" : ""}
+                helperText={errors.maxPlayers ? "Can't be 0, empty or exceed " + MAX_PLAYERS_LIMIT : ""}
               />
             </Grid>
             <Grid item xs={12}>
@@ -351,6 +380,8 @@ const Lobby = () => {
           </Grid>
         ) : (
           <>
+            <Typography>The host has set the following game settings:</Typography>
+            <br />
             <Typography>Categories: {settings.isRandom ? "Randomized" : settings.categories.join(", ")}</Typography>
             <Typography>Max Rounds: {settings.maxRounds}</Typography>
             <Typography>Time-limit to vote (seconds): {settings.votingDuration}</Typography>
@@ -386,17 +417,40 @@ const Lobby = () => {
       }}>
         <img src="/Images/logo.png" alt="Descriptive Text"
           style={{ width: "auto", height: "200px", marginTop: "100px" }} />
-        <CustomButton
-          onClick={handleOpenDialog}
-          sx={{
-            backgroundColor: "#e0e0e0",
-            "&:hover": {
-              backgroundColor: "red",
-            },
-          }}
-        >
-          Leave Game
-        </CustomButton>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Tooltip title={<TooltipContent />} placement="bottom" arrow>
+            <IconButton
+              sx={{
+                fontFamily: "Londrina Solid",
+                backgroundColor: "#f8f8f8", // button color
+                color: "black", // text color
+                borderColor: "black",
+                borderWidth: "1px",
+                borderStyle: "solid",
+                fontSize: "16px",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+                boxShadow: "0px 4px 3px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)", // This is the Material-UI default, adjust to match mockup
+                //boxShadow: '2px 2px 10px rgba(0,0,0,0.1)',
+                borderRadius: "20px",
+                padding: "6px 16px"
+              }}
+            >
+              <HelpOutlineIcon />
+            </IconButton>
+          </Tooltip>
+          <CustomButton
+            onClick={handleOpenDialog}
+            sx={{
+              backgroundColor: "#e0e0e0",
+              "&:hover": {
+                backgroundColor: "red",
+              },
+            }}
+          >
+            Leave Game
+          </CustomButton>
+        </Box>
         <Dialog open={openLeaveDialog} onClose={handleCloseDialog}>
           <DialogTitle>Leave the lobby?</DialogTitle>
           <DialogContent>
@@ -533,6 +587,17 @@ const Lobby = () => {
           <ChatComponent lobbyId={lobbyId} />
         </Box>
       </Box>
+      <Dialog open={openHostLeftDialog} onClose={handleCloseHostLeftDialog}>
+        <DialogTitle>Host has left the game</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Sorry, the host has left the game! Returning you to the homepage.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <CustomButton onClick={handleCloseHostLeftDialog}>OK</CustomButton>
+        </DialogActions>
+      </Dialog>
     </BackgroundImageLobby>
   );
 };

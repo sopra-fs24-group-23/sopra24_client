@@ -13,6 +13,7 @@ import RoundInput from "../../views/RoundInput";
 import RoundVoting from "../../views/RoundVoting";
 import VotingResults from "../../views/RoundVotingResults";
 import FinalScoreboard from "../../views/FinalScoreboard";
+import Fallback from "../../views/Fallback";
 
 /**
  * Main router of your application.
@@ -32,6 +33,7 @@ const AppRouter = () => {
         <Route element={<LoginGuard/>}>
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
+          <Route path="/fallback" element={<Fallback/>} />
         </Route>
 
         {/* Only clients with a token can access this. */}

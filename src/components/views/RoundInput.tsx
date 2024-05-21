@@ -6,12 +6,15 @@ import CustomButton from "components/ui/CustomButton";
 import GameStateContext from "../../contexts/GameStateContext";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import UserContext from "../../contexts/UserContext";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import Countdown from "../ui/Countdown";
 import ChatComponent from "./ChatComponent";
-import ChatContext from "../../contexts/ChatContext";
 import { isProduction } from "../../helpers/isProduction";
-import { Typography, Box, TextField, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
+import { Typography, Box, TextField, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Tooltip } from "@mui/material";
+import StyledBox from "../ui/StyledBox";
+import TooltipContent from "components/ui/TooltipContent";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+
 const RoundInput = () => {
   /* Context Variables */
   const { gameSettings } = useContext(GameSettingsContext);
@@ -140,38 +143,43 @@ const RoundInput = () => {
 
   return (
     <BackgroundImageLobby>
-      <Box sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        //height: "50vh", // Use viewport height to fill the screen
-        padding: "20px",
-        backgroundColor: "rgba(224, 224, 224, 0.9)", // Semi-transparent grey
-        borderColor: "black",
-        borderWidth: "2px",
-        borderStyle: "solid",
-        borderRadius: "27px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        width: "90%",
-        height: "5%",
-        margin: "auto",
-        position: "relative",
-        top: 30,
-        marginBottom: "30px",
-      }}>
+      <StyledBox>
         <img src="/Images/logo.png" alt="Descriptive Text"
           style={{ width: "auto", height: "200px", marginTop: "100px" }} />
-        <CustomButton
-          onClick={handleOpenDialog}
-          sx={{
-            backgroundColor: "#e0e0e0",
-            "&:hover": {
-              backgroundColor: "red",
-            },
-          }}
-        >
-          Leave Game
-        </CustomButton>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Tooltip title={<TooltipContent />} placement="bottom" arrow>
+            <IconButton
+              sx={{
+                fontFamily: "Londrina Solid",
+                backgroundColor: "#f8f8f8", // button color
+                color: "black", // text color
+                borderColor: "black",
+                borderWidth: "1px",
+                borderStyle: "solid",
+                fontSize: "16px",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+                boxShadow: "0px 4px 3px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)", // This is the Material-UI default, adjust to match mockup
+                //boxShadow: '2px 2px 10px rgba(0,0,0,0.1)',
+                borderRadius: "20px",
+                padding: "6px 16px"
+              }}
+            >
+              <HelpOutlineIcon />
+            </IconButton>
+          </Tooltip>
+          <CustomButton
+            onClick={handleOpenDialog}
+            sx={{
+              backgroundColor: "#e0e0e0",
+              "&:hover": {
+                backgroundColor: "red",
+              },
+            }}
+          >
+            Leave Game
+          </CustomButton>
+        </Box>
         <Dialog open={openLeaveDialog} onClose={handleCloseDialog}>
           <DialogTitle>Leave the game?</DialogTitle>
           <DialogContent>
@@ -185,13 +193,14 @@ const RoundInput = () => {
             <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
           </DialogActions>
         </Dialog>
-      </Box>
+      </StyledBox>
       <Box sx={{
         display: "flex",
         justifyContent: "center",
         alignItems: "flex-start",
         width: "90%",
         margin: "auto",
+        height: "80vh", // Ensures that the container takes up most of the viewport height
       }}>
         {/* Main box */}
         <Box sx={{
@@ -200,8 +209,10 @@ const RoundInput = () => {
           borderWidth: "2px",
           borderStyle: "solid",
           width: "60%",
+          minWidth: "60%", // Ensure a minimum width for the main box
           height: "auto",
           minHeight: "60%",
+          maxHeight: "80%",
           margin: "auto",
           padding: "20px",
           borderRadius: "10px",
