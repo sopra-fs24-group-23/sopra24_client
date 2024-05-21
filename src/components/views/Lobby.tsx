@@ -264,7 +264,7 @@ const Lobby = () => {
           votingDuration: tempSettings.votingDuration.toString() === "" || tempSettings.votingDuration === 0 || tempSettings.votingDuration > MAX_VOTING_DURATION_LIMIT,
           inputDuration: tempSettings.inputDuration.toString() === "" || tempSettings.inputDuration === 0 || tempSettings.inputDuration > MAX_INPUT_DURATION_LIMIT,
           scoreboardDuration: tempSettings.scoreboardDuration.toString() === "" || tempSettings.scoreboardDuration === 0 || tempSettings.scoreboardDuration > MAX_SCOREBOARD_DURATION_LIMIT,
-          maxPlayers: tempSettings.maxPlayers.toString() === "" || tempSettings.maxPlayers === 0 || tempSettings.maxPlayers > MAX_PLAYERS_LIMIT,
+          maxPlayers: tempSettings.maxPlayers.toString() === "" || tempSettings.maxPlayers < 2 || tempSettings.maxPlayers > MAX_PLAYERS_LIMIT,
         };
         setErrors(newErrors);
         if (!Object.values(newErrors).includes(true)) {
@@ -371,11 +371,14 @@ const Lobby = () => {
                 inputProps={{maxLength: 20}}
                 onChange={(e) => handleInputChange(e, "maxPlayers")}
                 error={errors.maxPlayers}
-                helperText={errors.maxPlayers ? "Can't be 0, empty or exceed " + MAX_PLAYERS_LIMIT : ""}
+                helperText={errors.maxPlayers ? "Can't be less than 2, empty or exceed " + MAX_PLAYERS_LIMIT : ""}
               />
             </Grid>
             <Grid item xs={12}>
-              <CustomButton onClick={handleSaveSettings}>Save</CustomButton>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <CustomButton onClick={handleSaveSettings}>Save</CustomButton>
+                <CustomButton onClick={handleCloseSettings}>Close</CustomButton>
+              </Box>
             </Grid>
           </Grid>
         ) : (
@@ -388,9 +391,12 @@ const Lobby = () => {
             <Typography>Time-limit to answer (seconds): {settings.inputDuration}</Typography>
             <Typography>Duration to view scoreboard (seconds): {settings.scoreboardDuration}</Typography>
             <Typography>Max number of players: {settings.maxPlayers}</Typography>
+            <br />
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginRight: '20px' }}>
+              <CustomButton onClick={handleCloseSettings}>Close</CustomButton>
+            </Box>
           </>
         )}
-        <CustomButton onClick={handleCloseSettings}>Close</CustomButton>
       </>
     );
   };
