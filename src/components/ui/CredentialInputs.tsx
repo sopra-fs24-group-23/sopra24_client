@@ -1,7 +1,6 @@
 import GameFormField from "./GameFormField";
 import React from "react";
 import PropTypes from "prop-types";
-import "../../helpers/limitInput.js"
 
 const CredentialInputs = (props) => {
 
