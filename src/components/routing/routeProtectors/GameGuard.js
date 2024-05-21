@@ -46,7 +46,7 @@ export const GameGuard = () => {
 
   if (token && id) {
     return (
-      <>
+      <div>
         <Outlet />
         <Dialog
           open={open}
@@ -64,14 +64,10 @@ export const GameGuard = () => {
             </CustomButton>
           </DialogActions>
         </Dialog>
-      </>
+      </div>
     );
   }
   else {
     return <Navigate to="/login" replace />;
   }
-};
-
-GameGuard.propTypes = {
-  children: PropTypes.node
 };

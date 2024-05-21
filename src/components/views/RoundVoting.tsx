@@ -148,7 +148,7 @@ const RoundVoting = () => {
       <StyledBox>
         <img src="/Images/logo.png" alt="Descriptive Text"
           style={{ width: "auto", height: "200px", marginTop: "100px" }} />
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Tooltip title={<TooltipContent />} placement="bottom" arrow>
             <IconButton
               sx={{

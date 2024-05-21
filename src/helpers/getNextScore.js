@@ -20,5 +20,6 @@ export const getNextScoreString = (currentScore) => {
   if (nextGoal === null) {
     return "You've unlocked them all!"
   }
+  
   return `Reach ${nextGoal} total points to unlock the next color!`
 }

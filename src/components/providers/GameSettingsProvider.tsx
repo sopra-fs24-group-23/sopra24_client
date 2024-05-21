@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import GameSettingsModel from "../../models/GameSettings";
 import { GameSettings } from "../../types"
@@ -15,8 +15,13 @@ const GameSettingsProvider = ({ children }) => {
     setGameSettings(new GameSettingsModel(gameSettingsData))
   }
 
+  const contextValue = useMemo(() => ({
+    gameSettings,
+    setGameSettingsVariable
+  }), [gameSettings, setGameSettingsVariable])
+
   return (
-    <GameSettingsContext.Provider value={{ gameSettings, setGameSettings, setGameSettingsVariable }}>
+    <GameSettingsContext.Provider value={contextValue}>
       {children}
     </GameSettingsContext.Provider>
   );

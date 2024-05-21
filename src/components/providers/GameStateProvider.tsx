@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from "react";
+import React, { useState, ReactNode, useMemo } from "react";
 import GameStateModel from "../../models/GameState";
 import { GameState } from "../../types";
 import GameStateContext from "../../contexts/GameStateContext";
@@ -20,8 +20,17 @@ const GameStateProvider: React.FC<GamePhaseProviderProps> = ({ children }) => {
     setGameState(new GameStateModel(gameStateData))
   }
 
+  const contextValue = useMemo(() => ({
+    gameState,
+    setGameStateVariable,
+    gamePhase,
+    setGamePhase,
+    players,
+    setPlayers
+  }), [gameState, setGameStateVariable, gamePhase, setGamePhase, players, setPlayers])
+
   return (
-    <GameStateContext.Provider value={{ gameState, setGameStateVariable, gamePhase, setGamePhase, players, setPlayers }}>
+    <GameStateContext.Provider value={contextValue}>
       {children}
     </GameStateContext.Provider>
   );
