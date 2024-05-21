@@ -245,6 +245,7 @@ const RoundInput = () => {
                 <TextField
                   label={category}
                   key={category}
+                  inputProps={{maxLength: 30}}
                   onChange={(e) => handleInputChange(category, e.target.value)}
                 />
                 <IconButton onClick={() => handleJokerClick(category)}>
