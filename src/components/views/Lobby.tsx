@@ -299,6 +299,7 @@ const Lobby = () => {
               <TextField
                 label="Max Rounds"
                 value={tempSettings.maxRounds}
+                inputProps={{maxLength: 20}}
                 onChange={(e) => handleInputChange(e, "maxRounds")}
                 error={errors.maxRounds}
                 helperText={errors.maxRounds ? "Can't be 0 or empty" : ""}
@@ -308,6 +309,7 @@ const Lobby = () => {
               <TextField
                 label="Time-limit for voting (seconds)"
                 value={tempSettings.votingDuration}
+                inputProps={{maxLength: 20}}
                 onChange={(e) => handleInputChange(e, "votingDuration")}
                 error={errors.votingDuration}
                 helperText={errors.votingDuration ? "Can't be 0 or empty" : ""}
@@ -317,6 +319,7 @@ const Lobby = () => {
               <TextField
                 label="Time-limit for answering (seconds)"
                 value={tempSettings.inputDuration}
+                inputProps={{maxLength: 20}}
                 onChange={(e) => handleInputChange(e, "inputDuration")}
                 error={errors.inputDuration}
                 helperText={errors.inputDuration ? "Can't be 0 or empty" : ""}
@@ -326,6 +329,7 @@ const Lobby = () => {
               <TextField
                 label="Duration to view scoreboard (seconds)"
                 value={tempSettings.scoreboardDuration}
+                inputProps={{maxLength: 20}}
                 onChange={(e) => handleInputChange(e, "scoreboardDuration")}
                 error={errors.scoreboardDuration}
                 helperText={errors.scoreboardDuration ? "Can't be 0 or empty" : ""}
@@ -335,6 +339,7 @@ const Lobby = () => {
               <TextField
                 label="Max number of players"
                 value={tempSettings.maxPlayers}
+                inputProps={{maxLength: 20}}
                 onChange={(e) => handleInputChange(e, "maxPlayers")}
                 error={errors.maxPlayers}
                 helperText={errors.maxPlayers ? "Can't be 0 or empty" : ""}
