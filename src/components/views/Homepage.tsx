@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { isProduction } from "../../helpers/isProduction";
-import { getNextScore } from "../../helpers/getNextScore";
+import { getNextScore, getNextScoreString } from "../../helpers/getNextScore";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Game.scss";
 import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
@@ -326,12 +326,13 @@ const Homepage = () => {
                 textAlign: "left",
                 marginTop: "1rem", // Add margin at the top
               }}>
-              {profile && `Unlock the next color at ${getNextScore(profile.totalScore)} points!`}
+              {profile && `${getNextScoreString(profile.totalScore)}`}
               <Tooltip title="By entering the next level you receive a new color to display your username!">
                 <InfoOutlinedIcon sx={{ marginLeft: "10px" }} />
               </Tooltip>
             </Typography>
-            <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={getNextScore(profile.totalScore)} />
+            <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={
+              getNextScore(profile.totalScore) === null ? profile.totalScore : getNextScore(profile.totalScore)} />
           </>
         )}
         {/* User statistics */}

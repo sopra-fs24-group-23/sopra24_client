@@ -9,7 +9,16 @@ export const getNextScore = (currentScore) => {
     return 2000;
   } else if (currentScore < 5000) {
     return 5000;
-  } else if (currentScore > 5000) {
-    return 100000;
+  } else {
+    return null;
   }
+}
+
+export const getNextScoreString = (currentScore) => {
+  const nextGoal = getNextScore(currentScore)
+
+  if (nextGoal === null) {
+    return "You've unlocked them all!"
+  }
+  return `Reach ${nextGoal} total points to unlock the next color!`
 }
