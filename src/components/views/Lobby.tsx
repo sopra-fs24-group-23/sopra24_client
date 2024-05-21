@@ -223,7 +223,7 @@ const Lobby = () => {
         if (!isProduction) console.error("Failed to copy lobby code to clipboard:", error);
       });
   };
-  const kickPlayer = (usernameToKick: String) => {
+  const kickPlayer = (usernameToKick: string) => {
     const token = localStorage.getItem("token");
     if (token) {
       send(`/app/lobbies/${lobbyId}/kick/${usernameToKick}`, JSON.stringify({ token }));

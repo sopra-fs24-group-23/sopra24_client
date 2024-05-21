@@ -78,7 +78,6 @@ const Homepage = () => {
       user.username = username
       user.color = color
       setProfile({ ...profile, username: username, color: color }); // Update local profile state
-      setColor(color);
       setIsUsernameUpdateDialogOpen(true);
     } catch (error) {
       if (!isProduction) console.error(`Failed to update username: ${error}`);
