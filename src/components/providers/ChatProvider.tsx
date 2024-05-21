@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useMemo, useRef, useState } from "react";
 import ChatContext from "../../contexts/ChatContext";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import PropTypes from "prop-types";
@@ -24,8 +24,16 @@ const ChatProvider = ({ children }) => {
     setMessages([])
   }
 
+  // needed to avoid recreating context value object on every render
+  const contextValue = useMemo(() => ({
+    messages,
+    connectChat,
+    isChatSubscribed,
+    resetChat
+  }), [messages, connectChat, isChatSubscribed, resetChat])
+
   return (
-    <ChatContext.Provider value={{ messages, connectChat, isChatSubscribed, resetChat }}>
+    <ChatContext.Provider value={contextValue}>
       {children}
     </ChatContext.Provider>
   )
