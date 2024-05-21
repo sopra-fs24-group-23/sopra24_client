@@ -124,7 +124,7 @@ const RoundScoreboard = () => {
           <CustomButton
             onClick={handleOpenDialog}
             sx={{
-              backgroundColor: "#e0e0e0",
+              backgroundColor: "#ffffff",
               "&:hover": {
                 backgroundColor: "red",
               },
