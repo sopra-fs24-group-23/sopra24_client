@@ -3,10 +3,12 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const CredentialInputs = (props) => {
+
   return (
     <div>
       <GameFormField
         label="Username"
+        maxLength={30}
         value={props.username}
         onChange={(un: string) => props.setUsername(un)}
       />
@@ -14,8 +16,9 @@ const CredentialInputs = (props) => {
       <GameFormField
         label="Password"
         type="password"
+        maxLength={30}
         value={props.password}
-        onChange={(n) => props.setPassword(n)}
+        onChange={(p) => props.setPassword(p)}
       />
     </div>
   )

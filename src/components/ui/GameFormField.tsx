@@ -9,6 +9,7 @@ const GameFormField = (props) => {
         id="outlined-basic"
         label={props.label}
         type={props.type}
+        inputProps={{maxLength: props.maxLength}}
         variant="outlined"
         defaultValue={props.value}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.onChange(event.target.value)}
@@ -27,6 +28,7 @@ const GameFormField = (props) => {
 GameFormField.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
+  maxLength: PropTypes.number,
   onChange: PropTypes.func,
   type: PropTypes.string
 };

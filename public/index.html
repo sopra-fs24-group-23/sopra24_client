@@ -3,6 +3,15 @@
 
 <head>
   <meta charset="utf-8">
+  <script>
+    if (localStorage.getItem('fontsConsent') !== 'true') {
+      // Existing code to load and display the ConsentBanner component
+      var consentBanner = document.createElement('div');
+      consentBanner.id = 'consentBanner';
+      consentBanner.innerHTML = '<h1>Consent Banner</h1>';
+      document.body.appendChild(consentBanner);
+    }
+  </script>
   <link rel="shortcut icon" href="%PUBLIC_URL%/Images/logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="theme-color" content="#000000">
