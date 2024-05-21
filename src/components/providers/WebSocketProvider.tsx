@@ -31,13 +31,7 @@ const WebSocketProvider = ( { children } ) => {
           heartbeatOutgoing: 10000,
           reconnectDelay: 5000,
           debug: isProduction() ? () => {} : (str) => console.log(str),
-          beforeConnect: isProduction() ? () => {} : () => console.log("Connecting websocket..."),
-          onStompError: (frame) => {
-            `Encountered a StompError: ${frame}`;
-          },
-          onWebSocketError: () => {
-            "Encountered a WebSocketError."
-          }
+          beforeConnect: isProduction() ? () => {} : () => console.log("Connecting websocket...")
         })
         stompClient.current.onConnect = () => {
           subscriptionRequests.current.forEach((request) => {

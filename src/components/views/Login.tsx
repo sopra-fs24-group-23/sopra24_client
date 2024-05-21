@@ -74,7 +74,7 @@ const Login = () => {
             <div style={{ margin: "10px 0" }}></div>
             <div className="login button-container">
               <CustomButton
-                disabled={!username || !username}
+                disabled={!username}
                 sx={{ width: "100%" }}
                 onClick={() => doLogin()}
               >
