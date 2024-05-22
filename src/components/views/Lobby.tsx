@@ -290,10 +290,10 @@ const Lobby = () => {
     return (
       <>
         {isHost ? (
-          <Grid container spacing={6}>
+          <Grid container spacing={6} alignItems="center">
             <Grid item xs={6}>
+              <Typography variant="body1" sx={{ color: "text.secondary", fontSize: "0.775rem" }}>Categories</Typography>
               <FormControl sx={{ minWidth: 300 }}>
-                <InputLabel>Categories</InputLabel>
                 <Select
                   multiple
                   value={tempCategories || []}
@@ -311,7 +311,7 @@ const Lobby = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} sx={{ display: "flex", alignItems: "center" }}>
               <Tooltip title={"Random categories each round!"}>
                 <ToggleButton
                   value="randomize"
@@ -319,6 +319,7 @@ const Lobby = () => {
                   onChange={() => {
                     handleToggle();
                   }}
+                  sx={{ height: "fit-content" }}
                 >
                   Randomize
                 </ToggleButton>
@@ -375,7 +376,7 @@ const Lobby = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <CustomButton onClick={handleSaveSettings}>Save</CustomButton>
                 <CustomButton onClick={handleCloseSettings}>Close</CustomButton>
               </Box>
@@ -392,7 +393,7 @@ const Lobby = () => {
             <Typography>Duration to view scoreboard (seconds): {settings.scoreboardDuration}</Typography>
             <Typography>Max number of players: {settings.maxPlayers}</Typography>
             <br />
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginRight: '20px' }}>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginRight: "20px" }}>
               <CustomButton onClick={handleCloseSettings}>Close</CustomButton>
             </Box>
           </>
