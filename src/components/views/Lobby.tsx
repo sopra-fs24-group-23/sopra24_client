@@ -293,7 +293,8 @@ const Lobby = () => {
           <Grid container spacing={6} alignItems="center">
             <Grid item xs={6}>
               <Typography variant="body1" sx={{ color: "text.secondary", fontSize: "0.775rem" }}>Categories</Typography>
-              <FormControl sx={{ minWidth: 300 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <FormControl fullWidth sx={{ minWidth: 300 }}>
                 <Select
                   multiple
                   value={tempCategories || []}
@@ -310,8 +311,9 @@ const Lobby = () => {
                   <MenuItem value={"Car"}>Car</MenuItem>
                 </Select>
               </FormControl>
+              </Box>
             </Grid>
-            <Grid item xs={6} sx={{ display: "flex", alignItems: "center" }}>
+            <Grid item xs={6} sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
               <Tooltip title={"Random categories each round!"}>
                 <ToggleButton
                   value="randomize"
@@ -319,7 +321,7 @@ const Lobby = () => {
                   onChange={() => {
                     handleToggle();
                   }}
-                  sx={{ height: "fit-content" }}
+                  sx={{ height: "fit-content", whiteSpace: "nowrap" }}
                 >
                   Randomize
                 </ToggleButton>
@@ -515,11 +517,14 @@ const Lobby = () => {
               <SettingsIcon />
             </CustomButton>
             <Dialog open={openGameSettings} onClose={handleCloseGameSettings}
+                    fullWidth={false}
+                    fullScreen={false}
               PaperProps={{
                 sx: {
-                  width: "60%",
-                  maxWidth: "none",
-                  height: "60%",
+                  width: isHost ? "800px" : "400px",
+                  maxWidth: isHost ? "800px" : "400px",
+                  minWidth: isHost ? "80%" : "none",
+                  height: isHost ? "60%" : "40%",
                   maxHeight: "none",
                 }
               }}
