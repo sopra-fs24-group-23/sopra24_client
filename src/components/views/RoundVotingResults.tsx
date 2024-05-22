@@ -6,7 +6,7 @@ import Countdown from "../ui/Countdown";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import ChatComponent from "./ChatComponent";
-import LeaveGameDialog from '../ui/LeaveGameDialog';
+import LeaveGameDialog from "../ui/LeaveGameDialog";
 import {
   Typography,
   Box,

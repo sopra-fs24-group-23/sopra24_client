@@ -9,7 +9,7 @@ import UserContext from "../../contexts/UserContext";
 import Countdown from "../ui/Countdown";
 import { isProduction } from "../../helpers/isProduction";
 import CustomButton from "../ui/CustomButton";
-import LeaveGameDialog from '../ui/LeaveGameDialog';
+import LeaveGameDialog from "../ui/LeaveGameDialog";
 import { Typography, Box, IconButton, Tooltip } from "@mui/material";
 import StyledBox from "../ui/StyledBox";
 import TooltipContent from "../ui/TooltipContent";
@@ -32,9 +32,9 @@ const RoundVoting = () => {
 
 
   useEffect(() => {
-    if(!isProduction) console.log("Test");
+    if (!isProduction) console.log("Test");
     // Log the categories
-    if(!isProduction) console.log("Categories: ", gameSettings.categories);
+    if (!isProduction) console.log("Categories: ", gameSettings.categories);
 
     // Access the current answers of all players
     const answers = gameState.players.map(player => player.currentAnswers);
@@ -47,7 +47,7 @@ const RoundVoting = () => {
 
   useEffect(() => {
     if (gameState.gamePhase === "AWAITING_VOTES") {
-      if(!isProduction) console.log("Sending doubts to backend:", JSON.stringify(doubts));
+      if (!isProduction) console.log("Sending doubts to backend:", JSON.stringify(doubts));
 
       send(`/app/games/${lobbyId}/doubt/${user.username}`, JSON.stringify(doubts));
       setDoubts([]); // Clear doubts after sending
@@ -111,7 +111,7 @@ const RoundVoting = () => {
             <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
               {/* Set a fixed width for the category label */}
               <Typography sx={{ width: "150px", flexShrink: 0 }}>{answer.category}</Typography>
-              <Typography sx={{ textAlign: "left", flexGrow: 1}}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
+              <Typography sx={{ textAlign: "left", flexGrow: 1 }}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
               {!isCurrentUser && (
                 <IconButton disabled={isReady} onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "blue" : "grey" }}>
                   <CancelOutlinedIcon />
@@ -185,7 +185,7 @@ const RoundVoting = () => {
         </Box>
         <LeaveGameDialog open={openLeaveDialog} onClose={handleCloseDialog} onLeave={handleLeaveGame} />
       </StyledBox>
-        <Box sx={{
+      <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
         borderWidth: "2px",

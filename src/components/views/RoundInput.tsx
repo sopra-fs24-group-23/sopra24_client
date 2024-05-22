@@ -12,7 +12,7 @@ import ChatComponent from "./ChatComponent";
 import { isProduction } from "../../helpers/isProduction";
 import { Typography, Box, TextField, IconButton, Tooltip } from "@mui/material";
 import StyledBox from "../ui/StyledBox";
-import LeaveGameDialog from '../ui/LeaveGameDialog';
+import LeaveGameDialog from "../ui/LeaveGameDialog";
 import TooltipContent from "components/ui/TooltipContent";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
@@ -235,7 +235,7 @@ const RoundInput = () => {
                 <TextField
                   label={category}
                   key={category}
-                  inputProps={{maxLength: 30}}
+                  inputProps={{ maxLength: 30 }}
                   onChange={(e) => handleInputChange(category, e.target.value)}
                 />
                 <IconButton onClick={() => handleJokerClick(category)}>

@@ -8,9 +8,9 @@ import Countdown from "../ui/Countdown";
 import UserContext from "../../contexts/UserContext";
 import CustomButton from "../ui/CustomButton";
 import ChatComponent from "./ChatComponent";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, List, ListItem, Typography, Box, Tooltip, IconButton } from "@mui/material";
+import { List, ListItem, Typography, Box, Tooltip, IconButton } from "@mui/material";
 import StyledBox from "../ui/StyledBox";
-import LeaveGameDialog from '../ui/LeaveGameDialog';
+import LeaveGameDialog from "../ui/LeaveGameDialog";
 import TooltipContent from "../ui/TooltipContent";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
