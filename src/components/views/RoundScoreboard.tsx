@@ -10,6 +10,7 @@ import CustomButton from "../ui/CustomButton";
 import ChatComponent from "./ChatComponent";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, List, ListItem, Typography, Box, Tooltip, IconButton } from "@mui/material";
 import StyledBox from "../ui/StyledBox";
+import LeaveGameDialog from '../ui/LeaveGameDialog';
 import TooltipContent from "../ui/TooltipContent";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
@@ -133,19 +134,7 @@ const RoundScoreboard = () => {
             Leave Game
           </CustomButton>
         </Box>
-        <Dialog open={openLeaveDialog} onClose={handleCloseDialog}>
-          <DialogTitle>Leave the game?</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Are you sure you want to leave the game?
-              You will be returned to your profile page and all your progress in the current game will be lost.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
-            <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
-          </DialogActions>
-        </Dialog>
+        <LeaveGameDialog open={openLeaveDialog} onClose={handleCloseDialog} onLeave={handleLeaveGame} />
       </StyledBox>
       <Box sx={{
         display: "flex",

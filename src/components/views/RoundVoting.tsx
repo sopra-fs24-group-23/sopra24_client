@@ -9,7 +9,8 @@ import UserContext from "../../contexts/UserContext";
 import Countdown from "../ui/Countdown";
 import { isProduction } from "../../helpers/isProduction";
 import CustomButton from "../ui/CustomButton";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Typography, Box, IconButton, Tooltip } from "@mui/material";
+import LeaveGameDialog from '../ui/LeaveGameDialog';
+import { Typography, Box, IconButton, Tooltip } from "@mui/material";
 import StyledBox from "../ui/StyledBox";
 import TooltipContent from "../ui/TooltipContent";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -182,21 +183,9 @@ const RoundVoting = () => {
             Leave Game
           </CustomButton>
         </Box>
-        <Dialog open={openLeaveDialog} onClose={handleCloseDialog}>
-          <DialogTitle>Leave the game?</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Are you sure you want to leave the game?
-              You will be returned to your profile page and all your progress in the current game will be lost.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
-            <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
-          </DialogActions>
-        </Dialog>
+        <LeaveGameDialog open={openLeaveDialog} onClose={handleCloseDialog} onLeave={handleLeaveGame} />
       </StyledBox>
-      <Box sx={{
+        <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",
         borderColor: "black",
         borderWidth: "2px",
