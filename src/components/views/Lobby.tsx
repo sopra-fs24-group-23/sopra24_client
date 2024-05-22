@@ -230,6 +230,8 @@ const Lobby = () => {
     }
   };
 
+  const [scroll, setScroll] = useState<'paper' | 'body'>('paper');
+
   const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
     const [tempSettings, setTempSettings] = useState(settings);
     const initialCategories = settings.categories && settings.categories.length > 0 ? settings.categories : ["Country", "City"];
@@ -395,7 +397,7 @@ const Lobby = () => {
             <Typography>Duration to view scoreboard (seconds): {settings.scoreboardDuration}</Typography>
             <Typography>Max number of players: {settings.maxPlayers}</Typography>
             <br />
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginRight: "20px" }}>
+            <Box sx={{ display: "flex", justifyContent: "flex-start", gap: "10px", marginRight: "20px" }}>
               <CustomButton onClick={handleCloseSettings}>Close</CustomButton>
             </Box>
           </>
@@ -516,23 +518,25 @@ const Lobby = () => {
             <CustomButton onClick={handleOpenGameSettings}>
               <SettingsIcon />
             </CustomButton>
-            <Dialog open={openGameSettings} onClose={handleCloseGameSettings}
-                    fullWidth={false}
+            <Dialog open={openGameSettings} onClose={handleCloseGameSettings} scroll={scroll} fullWidth={false}
                     fullScreen={false}
               PaperProps={{
                 sx: {
-                  width: isHost ? "800px" : "400px",
-                  maxWidth: isHost ? "800px" : "400px",
+                  width: isHost ? "800px" : "auto",
+                  maxWidth: isHost ? "none" : "400px",
                   minWidth: isHost ? "80%" : "none",
-                  height: isHost ? "60%" : "40%",
+                  height: isHost ? "60%" : "auto",
                   maxHeight: "none",
+                  overflow: isHost ? "hidden" : "none",
                 }
               }}
             >
               <DialogTitle>Game Settings</DialogTitle>
-              <DialogContent>
+              <DialogContent dividers={scroll === "paper"}>
+                <Box sx={{ minWidth: "600px", height: isHost ? "500px" : "auto", overflowY: "auto", overflowX: "auto" }}>
                 <GameSettings isHost={isHost} settings={settings} onSettingsChange={setSettings} />
-              </DialogContent>
+                </Box>
+                </DialogContent>
             </Dialog>
           </Box>
 
