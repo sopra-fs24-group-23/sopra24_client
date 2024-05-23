@@ -205,7 +205,7 @@ const RoundInput = () => {
                 <TextField
                   label={category}
                   key={category}
-                  inputProps={{ maxLength: 30 }}
+                  inputProps={{ maxLength: 50 }}
                   onChange={(e) => handleInputChange(category, e.target.value)}
                 />
                 </Tooltip>

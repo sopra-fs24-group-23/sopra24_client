@@ -94,6 +94,7 @@ const RoundVoting = () => {
         borderColor: "black",
         borderWidth: "2px",
         borderStyle: "solid",
+        overflow: "auto",
       }}>
         <Typography variant="h6" style={{ color: player.color }}>
           {player.username}
