@@ -213,7 +213,7 @@ const Homepage = () => {
         zIndex: 1000,
       }}>
         <img src="/Images/logo.png" alt="Descriptive Text"
-          style={{ width: "auto", height: "200px", marginTop: "100px" }} />
+          style={{ width: "auto", height: "200px"}} />
         <CustomButton sx={{ marginLeft: "auto" }} onClick={() => navigate("/instructions")}>Instructions</CustomButton>
         <CustomButton sx={{ marginLeft: "15px" }} onClick={logout}>Logout</CustomButton>
       </Box>
@@ -271,6 +271,7 @@ const Homepage = () => {
                     label="Username"
                     value={username || ""}
                     onChange={(e) => setUsername(e.target.value)}
+                    inputProps={{ maxLength: 15 }}
                     sx={{
                       "& label": {
                         fontFamily: "Londrina Solid, cursive",
@@ -330,21 +331,22 @@ const Homepage = () => {
                 <InfoOutlinedIcon sx={{ marginLeft: "10px" }} />
               </Tooltip>
             </Typography>
-            <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={
-              getNextScore(profile.totalScore) === null ? profile.totalScore : getNextScore(profile.totalScore)} />
+            <Box sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%", // Ensure it spans the full width of its container
+              marginBottom: "15px", // Adds a bottom margin
+            }}>
+              <ProgressBarContainer currentPoints={profile.totalScore} totalPoints={
+                getNextScore(profile.totalScore) === null ? profile.totalScore : getNextScore(profile.totalScore)} />
+              <CustomButton onClick={goToLeaderboards} sx={{ marginRight: "10px" }}>Leaderboards</CustomButton>
+            </Box>
           </>
         )}
         {/* User statistics */}
         {profile && (
           <div className="user-stats">
-            <Box sx={{
-              display: "flex",
-              justifyContent: "right",
-              width: "100%",
-              my: 2,
-            }}>
-              <CustomButton onClick={goToLeaderboards}>Leaderboards</CustomButton>
-            </Box>
             <Box sx={{
               display: "flex",
               justifyContent: "center",
@@ -496,7 +498,7 @@ const statBoxStyle = {
   borderColor: "black",
   borderWidth: "2px",
   borderStyle: "solid",
-  //width: "60%", // Adjust width for horizontal layout
+  width: "30%", // Adjust width for horizontal layout
   padding: "20px",
   borderRadius: "10px",
   boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",

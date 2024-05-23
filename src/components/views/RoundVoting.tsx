@@ -9,10 +9,9 @@ import UserContext from "../../contexts/UserContext";
 import Countdown from "../ui/Countdown";
 import { isProduction } from "../../helpers/isProduction";
 import CustomButton from "../ui/CustomButton";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Typography, Box, IconButton, Tooltip } from "@mui/material";
-import StyledBox from "../ui/StyledBox";
-import TooltipContent from "../ui/TooltipContent";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import { Typography, Box, IconButton, Tooltip } from "@mui/material";
+import Header from "../ui/Header";
+import ChatComponent from "../views/ChatComponent";
 
 const RoundVoting = () => {
   const { lobbyId } = useParams();
@@ -31,9 +30,9 @@ const RoundVoting = () => {
 
 
   useEffect(() => {
-    if(!isProduction) console.log("Test");
+    if (!isProduction) console.log("Test");
     // Log the categories
-    if(!isProduction) console.log("Categories: ", gameSettings.categories);
+    if (!isProduction) console.log("Categories: ", gameSettings.categories);
 
     // Access the current answers of all players
     const answers = gameState.players.map(player => player.currentAnswers);
@@ -46,7 +45,7 @@ const RoundVoting = () => {
 
   useEffect(() => {
     if (gameState.gamePhase === "AWAITING_VOTES") {
-      if(!isProduction) console.log("Sending doubts to backend:", JSON.stringify(doubts));
+      if (!isProduction) console.log("Sending doubts to backend:", JSON.stringify(doubts));
 
       send(`/app/games/${lobbyId}/doubt/${user.username}`, JSON.stringify(doubts));
       setDoubts([]); // Clear doubts after sending
@@ -110,7 +109,7 @@ const RoundVoting = () => {
             <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
               {/* Set a fixed width for the category label */}
               <Typography sx={{ width: "150px", flexShrink: 0 }}>{answer.category}</Typography>
-              <Typography sx={{ textAlign: "left", flexGrow: 1}}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
+              <Typography sx={{ textAlign: "left", flexGrow: 1 }}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
               {!isCurrentUser && (
                 <IconButton disabled={isReady} onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "blue" : "grey" }}>
                   <CancelOutlinedIcon />
@@ -145,98 +144,62 @@ const RoundVoting = () => {
 
   return (
     <BackgroundImageLobby>
-      <StyledBox>
-        <img src="/Images/logo.png" alt="Descriptive Text"
-          style={{ width: "auto", height: "200px", marginTop: "100px" }} />
-        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <Tooltip title={<TooltipContent />} placement="bottom" arrow>
-            <IconButton
-              sx={{
-                fontFamily: "Londrina Solid",
-                backgroundColor: "#f8f8f8", // button color
-                color: "black", // text color
-                borderColor: "black",
-                borderWidth: "1px",
-                borderStyle: "solid",
-                fontSize: "16px",
-                fontWeight: "bold",
-                textTransform: "uppercase",
-                boxShadow: "0px 4px 3px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)", // This is the Material-UI default, adjust to match mockup
-                //boxShadow: '2px 2px 10px rgba(0,0,0,0.1)',
-                borderRadius: "20px",
-                padding: "6px 16px"
-              }}
-            >
-              <HelpOutlineIcon />
-            </IconButton>
-          </Tooltip>
-          <CustomButton
-            onClick={handleOpenDialog}
-            sx={{
-              backgroundColor: "#ffffff",
-              "&:hover": {
-                backgroundColor: "red",
-              },
-            }}
-          >
-            Leave Game
-          </CustomButton>
-        </Box>
-        <Dialog open={openLeaveDialog} onClose={handleCloseDialog}>
-          <DialogTitle>Leave the game?</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Are you sure you want to leave the game?
-              You will be returned to your profile page and all your progress in the current game will be lost.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
-            <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
-          </DialogActions>
-        </Dialog>
-      </StyledBox>
+      <Header handleOpenDialog={handleOpenDialog} openLeaveDialog={openLeaveDialog} handleCloseDialog={handleCloseDialog} handleLeaveGame={handleLeaveGame} />
       <Box sx={{
-        backgroundColor: "rgba(224, 224, 224, 0.9)",
-        borderColor: "black",
-        borderWidth: "2px",
-        borderStyle: "solid",
-        width: "60%",
-        height: "auto",
-        maxHeight: "80%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        width: "90%",
         margin: "auto",
-        padding: "20px",
-        borderRadius: "10px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        position: "relative",
-        top: "10px",
-        overflowY: "auto",
+        height: "80vh", // Ensures that the container takes up most of the viewport height
       }}>
-        <Typography variant="h4" gutterBottom sx={{
-          fontFamily: "Londrina Solid",
-          textAlign: "center",
+        {/* Main box */}
+        <Box sx={{
+          backgroundColor: "rgba(224, 224, 224, 0.9)",
+          borderColor: "black",
+          borderWidth: "2px",
+          borderStyle: "solid",
+          width: "60%",
+          height: "auto",
+          maxHeight: "80%",
+          margin: "auto",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+          position: "relative",
+          top: "10px",
+          overflowY: "auto",
         }}>
-          Did somebody use a joker here ?!
-        </Typography>
-        <Countdown duration={gameSettings.votingDuration} />
-        {/* Iterate over all players to render their answers */}
-        {gameState.players.map((player) => (
-          <React.Fragment key={player.id}>
-            {renderPlayerAnswers(player)}
-          </React.Fragment>
-        ))}
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <CustomButton
-            onClick={() => { handleReady(); setIsReady(true); }}
-            sx={{
-              backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF ",
-              "&:hover": { backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF" }
-            }}
-            disabled={isReady}
-          >
-            Ready
-          </CustomButton>
+          <Typography variant="h4" gutterBottom sx={{
+            fontFamily: "Londrina Solid",
+            textAlign: "center",
+          }}>
+            Did somebody use a joker here ?!
+          </Typography>
+          <Countdown duration={gameSettings.votingDuration} />
+          {/* Iterate over all players to render their answers */}
+          {gameState.players.map((player) => (
+            <React.Fragment key={player.id}>
+              {renderPlayerAnswers(player)}
+            </React.Fragment>
+          ))}
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <CustomButton
+              onClick={() => { handleReady(); setIsReady(true); }}
+              sx={{
+                backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF ",
+                "&:hover": { backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF" }
+              }}
+              disabled={isReady}
+            >
+              Ready
+            </CustomButton>
+          </Box>
         </Box>
+        {/* Chat Component */}
+        <Box sx={{ marginLeft: "20px" }}>
+            <ChatComponent lobbyId={lobbyId} />
+          </Box>
       </Box>
     </BackgroundImageLobby>
   );

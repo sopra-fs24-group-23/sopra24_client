@@ -68,13 +68,13 @@ const Login = () => {
         height: "100vh",
       }}>
         <div className="login form">
-          <img src="/Images/logo.png" alt="Logo" style={{ maxWidth: "400px" }} />
-          <div style={{ display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
+        <img src="/Images/logo.png" alt="Logo" style={{ maxWidth: "400px" }} />
+        <div style={{ display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
             <CredentialInputs setUsername={setUsername} setPassword={setPassword} username={username} password={password}/>
             <div style={{ margin: "10px 0" }}></div>
             <div className="login button-container">
               <CustomButton
-                disabled={!username || !username}
+                disabled={!username}
                 sx={{ width: "100%" }}
                 onClick={() => doLogin()}
               >

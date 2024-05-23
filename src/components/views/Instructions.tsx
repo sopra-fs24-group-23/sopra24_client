@@ -44,10 +44,11 @@ const Instructions = () => {
         position: "relative",
         //paddingTop: "20px",
         //paddingBottom: "10px",
-        top: 30,
-        marginBottom: "30px",
+        top: 35,
+        marginBottom: "50px",
       }}>
-        <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px" }} />
+        <img src="/Images/logo.png" alt="Descriptive Text"
+          style={{ width: "auto", height: "200px"}} />
         <CustomButton onClick={handleBack}>
           Back
         </CustomButton>

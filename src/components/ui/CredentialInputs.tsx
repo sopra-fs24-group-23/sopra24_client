@@ -8,7 +8,7 @@ const CredentialInputs = (props) => {
     <div>
       <GameFormField
         label="Username"
-        maxLength={30}
+        maxLength={15}
         value={props.username}
         onChange={(un: string) => props.setUsername(un)}
       />
@@ -16,7 +16,7 @@ const CredentialInputs = (props) => {
       <GameFormField
         label="Password"
         type="password"
-        maxLength={30}
+        maxLength={20}
         value={props.password}
         onChange={(p) => props.setPassword(p)}
       />
