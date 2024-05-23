@@ -11,6 +11,7 @@ import { isProduction } from "../../helpers/isProduction";
 import CustomButton from "../ui/CustomButton";
 import { Typography, Box, IconButton, Tooltip } from "@mui/material";
 import Header from "../ui/Header";
+import ChatComponent from "../views/ChatComponent";
 
 const RoundVoting = () => {
   const { lobbyId } = useParams();
@@ -145,46 +146,60 @@ const RoundVoting = () => {
     <BackgroundImageLobby>
       <Header handleOpenDialog={handleOpenDialog} openLeaveDialog={openLeaveDialog} handleCloseDialog={handleCloseDialog} handleLeaveGame={handleLeaveGame} />
       <Box sx={{
-        backgroundColor: "rgba(224, 224, 224, 0.9)",
-        borderColor: "black",
-        borderWidth: "2px",
-        borderStyle: "solid",
-        width: "60%",
-        height: "auto",
-        maxHeight: "80%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        width: "90%",
         margin: "auto",
-        padding: "20px",
-        borderRadius: "10px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        position: "relative",
-        top: "10px",
-        overflowY: "auto",
+        height: "80vh", // Ensures that the container takes up most of the viewport height
       }}>
-        <Typography variant="h4" gutterBottom sx={{
-          fontFamily: "Londrina Solid",
-          textAlign: "center",
+        {/* Main box */}
+        <Box sx={{
+          backgroundColor: "rgba(224, 224, 224, 0.9)",
+          borderColor: "black",
+          borderWidth: "2px",
+          borderStyle: "solid",
+          width: "60%",
+          height: "auto",
+          maxHeight: "80%",
+          margin: "auto",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+          position: "relative",
+          top: "10px",
+          overflowY: "auto",
         }}>
-          Did somebody use a joker here ?!
-        </Typography>
-        <Countdown duration={gameSettings.votingDuration} />
-        {/* Iterate over all players to render their answers */}
-        {gameState.players.map((player) => (
-          <React.Fragment key={player.id}>
-            {renderPlayerAnswers(player)}
-          </React.Fragment>
-        ))}
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <CustomButton
-            onClick={() => { handleReady(); setIsReady(true); }}
-            sx={{
-              backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF ",
-              "&:hover": { backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF" }
-            }}
-            disabled={isReady}
-          >
-            Ready
-          </CustomButton>
+          <Typography variant="h4" gutterBottom sx={{
+            fontFamily: "Londrina Solid",
+            textAlign: "center",
+          }}>
+            Did somebody use a joker here ?!
+          </Typography>
+          <Countdown duration={gameSettings.votingDuration} />
+          {/* Iterate over all players to render their answers */}
+          {gameState.players.map((player) => (
+            <React.Fragment key={player.id}>
+              {renderPlayerAnswers(player)}
+            </React.Fragment>
+          ))}
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <CustomButton
+              onClick={() => { handleReady(); setIsReady(true); }}
+              sx={{
+                backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF ",
+                "&:hover": { backgroundColor: isReady ? "#e0e0e0" : "#FFFFFF" }
+              }}
+              disabled={isReady}
+            >
+              Ready
+            </CustomButton>
+          </Box>
         </Box>
+        {/* Chat Component */}
+        <Box sx={{ marginLeft: "20px" }}>
+            <ChatComponent lobbyId={lobbyId} />
+          </Box>
       </Box>
     </BackgroundImageLobby>
   );
