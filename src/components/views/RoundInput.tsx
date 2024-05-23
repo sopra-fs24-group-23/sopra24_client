@@ -152,7 +152,7 @@ const RoundInput = () => {
 
   return (
     <BackgroundImageLobby>
-        <Header handleOpenDialog={handleOpenDialog} openLeaveDialog={openLeaveDialog} handleCloseDialog={handleCloseDialog} handleLeaveGame={handleLeaveGame} />
+      <Header handleOpenDialog={handleOpenDialog} openLeaveDialog={openLeaveDialog} handleCloseDialog={handleCloseDialog} handleLeaveGame={handleLeaveGame} />
       <Box sx={{
         display: "flex",
         justifyContent: "center",
@@ -202,12 +202,12 @@ const RoundInput = () => {
             {gameSettings && gameSettings.categories && gameSettings.categories.map((category) => (
               <Box key={category} sx={{ margin: "10px 0" }}>
                 <Tooltip title={categoryTooltips[category] || ""} placement="bottom" arrow>
-                <TextField
-                  label={category}
-                  key={category}
-                  inputProps={{ maxLength: 30 }}
-                  onChange={(e) => handleInputChange(category, e.target.value)}
-                />
+                  <TextField
+                    label={category}
+                    key={category}
+                    inputProps={{ maxLength: 30 }}
+                    onChange={(e) => handleInputChange(category, e.target.value)}
+                  />
                 </Tooltip>
                 <IconButton onClick={() => handleJokerClick(category)}>
                   <AutoAwesomeIcon style={{ color: jokerCategory === category ? "yellow" : "grey" }} />
