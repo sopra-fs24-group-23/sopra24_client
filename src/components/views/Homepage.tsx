@@ -271,6 +271,7 @@ const Homepage = () => {
                     label="Username"
                     value={username || ""}
                     onChange={(e) => setUsername(e.target.value)}
+                    inputProps={{ maxLength: 15 }}
                     sx={{
                       "& label": {
                         fontFamily: "Londrina Solid, cursive",
