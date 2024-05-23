@@ -595,10 +595,10 @@ const Lobby = () => {
         </Box>
       </Box>
       <Dialog open={openHostLeftDialog} onClose={handleCloseHostLeftDialog}>
-        <DialogTitle>Host has left the game</DialogTitle>
+        <DialogTitle>Lobby closed</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Sorry, the host has left the game! Returning you to the homepage.
+            Sorry, either the host left or you are the only remaining player! Redirecting to homepage.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
