@@ -10,6 +10,7 @@ import ChatComponent from "./ChatComponent";
 interface Player {
   username: string;
   currentScore: number;
+  color: string;
 }
 const FinalScoreboard = () => {
   const { lobbyId } = useParams();
@@ -30,6 +31,7 @@ const FinalScoreboard = () => {
         const players = gameState.players.map((player: any) => ({
           username: player.username,
           currentScore: player.currentScore,
+          color: player.color
         }));
         sortedPlayers = players.sort((a, b) => b.currentScore - a.currentScore);
         setPlayers(players);
@@ -113,7 +115,7 @@ const FinalScoreboard = () => {
             {players.map((player, index) => (
               <ListItem key={index} sx={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, justifyContent: "space-between" }}>
-                  {index + 1}. {player.username}
+                  {index + 1}. <Typography style={{ color: player.color }}>{player.username}</Typography>
                   <Typography variant="body1">Score: {player.currentScore}</Typography>
                 </Box>
               </ListItem>
