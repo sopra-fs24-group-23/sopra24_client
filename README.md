@@ -50,6 +50,40 @@ You can run the test suite in the server directory. Either directly from your ID
 The webapp is automatically deployed to google cloud whenever you push to the **main** branch. This should not require any additional setup on your part.
 
 ## Illustrations
+Unregistered or logged-out users land on the [login page](https://sopra-fs24-group-23-client.oa.r.appspot.com/login). Logged-in users land on the [homepage](https://sopra-fs24-group-23-client.oa.r.appspot.com/homepage). From there, users can edit their username, and color, view a global leaderboard and host or join a lobby.
+
+**insert leaderboard & homepage screenshots**
+
+### Game Flow
+#### Lobby
+Users can only enter lobbies that are not full (i.e. the max-player count is not reached yet), and that are not yet running. The lobbies main components are a playerlist, a chat-box, a settings option and a "Start Game" button.
+
+<img src="public/Images/Lobby_Screenshot.png" alt="Lobby Screenshot" width="700">
+
+#### Scoreboard
+Each round begins with the scoreboard screen, this allows users to prepare for quick typing, and displays the current scores. The timer can be skipped if all users press "Ready".
+
+<img src="public/Images/Scoreboard_Screenshot.png" alt="Scoreboard Screenshot" width="700">
+
+#### Input
+Next, users are prompted to input terms from specific categories. The screen offers tooltips to inform on the exact requirements for answers (e.g. use english country-names). Each round, players can use _one_ joker for an answer they are not sure about. As soon as one player has written an answer for every input field, they can press "Done", closing the inputs for all other players. 
+
+<img src="public/Images/Input_Screenshot.png" alt="Input Screenshot" width="700">
+
+#### Voting / Doubting
+After inputting answers, players are shown all the answers other players have given. In this screen, they get the chance to doubt other players' answers, which they suspect of being joker-answers. If a joker answer is doubted, the joker no longer applies, i.e. the answer is checked against an API just like all the others. If an answer is wrongfully doubted, i.e. if it was not a joker, the wrongfully accused player receives 5 extra points, even if the answer was wrong or empty. This allows for bluffing with joker (e.g. leave a field empty, make it a joker) but disincentivises overusing the doubting feature.
+
+<img src="public/Images/Doubting_Screenshot.png" alt="Doubting Screenshot" width="700">
+
+#### Voting Results
+The next screen displays the round results. It shows if answers were jokers, doubted, unique, duplicate and whether they were correct or incorrect. Alongside, the amount of points awarded for an answer is displayed. A ?-Icon in the navbar at the top shows a legend of all symbols.
+
+<img src="public/Images/VotingResults_Screenshot.png" alt="VotingResults Screenshot" width="700">
+
+#### Endscreen
+Finally, an endscreen is displayed, ranking the players and showing they respective scores.
+
+<img src="public/Images/Endscreen_Screenshot.png" alt="Endscreen Screenshot" width="700">
 
 ## Roadmap
 
