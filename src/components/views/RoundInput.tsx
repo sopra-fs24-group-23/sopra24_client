@@ -152,7 +152,7 @@ const RoundInput = () => {
 
   return (
     <BackgroundImageLobby>
-        <Header handleOpenDialog={handleOpenDialog} openLeaveDialog={openLeaveDialog} handleCloseDialog={handleCloseDialog} handleLeaveGame={handleLeaveGame} />
+      <Header handleOpenDialog={handleOpenDialog} openLeaveDialog={openLeaveDialog} handleCloseDialog={handleCloseDialog} handleLeaveGame={handleLeaveGame} />
       <Box sx={{
         display: "flex",
         justifyContent: "center",

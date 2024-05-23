@@ -2,8 +2,8 @@ import * as React from "react";
 import TextField from "@mui/material/TextField";
 import PropTypes from "prop-types";
 import { InputAdornment, IconButton } from "@mui/material";
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const GameFormField = (props) => {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -21,7 +21,7 @@ const GameFormField = (props) => {
       <TextField
         id="outlined-basic"
         label={props.label}
-        type={props.type === 'password' && !showPassword ? 'password' : 'text'}
+        type={props.type === "password" && !showPassword ? "password" : "text"}
         inputProps={{maxLength: props.maxLength}}
         variant="outlined"
         defaultValue={props.value}
@@ -33,17 +33,17 @@ const GameFormField = (props) => {
           "& input": {
             fontFamily: "Londrina Solid, cursive"
           },
-          width: '100%', // Ensures that the input field takes the full width of its container
+          width: "100%", // Ensures that the input field takes the full width of its container
         }}
         InputProps={{
-          endAdornment: props.type === 'password' ? (
+          endAdornment: props.type === "password" ? (
             <InputAdornment position="end">
               <IconButton
                 aria-label="toggle password visibility"
                 onClick={handleClickShowPassword}
                 onMouseDown={handleMouseDownPassword}
                 edge="end"
-                sx={{ width: '48px' }} // Ensures the icon button has a consistent width
+                sx={{ width: "48px" }} // Ensures the icon button has a consistent width
               >
                 {showPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
