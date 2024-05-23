@@ -5,8 +5,10 @@
 </h1>
 
 <div align="center">
-  [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs24-group-23_sopra24_client&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sopra-fs24-group-23_sopra24_client)
-  [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs24-group-23_sopra24_client&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=sopra-fs24-group-23_sopra24_client)
+
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs24-group-23_sopra24_client&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sopra-fs24-group-23_sopra24_client)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs24-group-23_sopra24_client&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=sopra-fs24-group-23_sopra24_client)
+
 </div>
 
 ## Technologies
