@@ -1,4 +1,13 @@
-# Frontend GlobalGuess
+<h1 align="center">
+  <a href="https://github.com/sopra-fs24-group-23"><img src="public/Images/logo.png" alt="GlobalGuess" width="200"></a>
+  <br>
+  GlobalGuess Frontend
+</h1>
+
+<div align="center">
+  [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs24-group-23_sopra24_client&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sopra-fs24-group-23_sopra24_client)
+  [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs24-group-23_sopra24_client&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=sopra-fs24-group-23_sopra24_client)
+</div>
 
 ## Technologies
 This repository relies on the [React](https://react.dev/) framework. We use the [Axios](https://axios-http.com/docs/intro) library to handle HTTP-Requests and the [stompjs](https://stomp-js.github.io/api-docs/latest/index.html) library to handle websocket connection and communication. It does not suppport websocket fallbacks using SockJS, as [websocket-support](https://caniuse.com/?search=websockets) has become ubiquitous.
