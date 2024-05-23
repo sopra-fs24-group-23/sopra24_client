@@ -198,8 +198,8 @@ const RoundVoting = () => {
         </Box>
         {/* Chat Component */}
         <Box sx={{ marginLeft: "20px" }}>
-            <ChatComponent lobbyId={lobbyId} />
-          </Box>
+          <ChatComponent lobbyId={lobbyId} />
+        </Box>
       </Box>
     </BackgroundImageLobby>
   );
