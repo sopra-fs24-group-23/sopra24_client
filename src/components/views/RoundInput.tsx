@@ -144,7 +144,7 @@ const RoundInput = () => {
     "Animal": "Write the English word of the animal. E.g., 'Cat'. Case-insensitive.",
     "Car": "Case-insensitive.",
     "Celebrity": "Case-insensitive.",
-    "City": "Please write the city in the name of the country in Latin letters. E.g., write 'Luzern' and not 'Lucerne'. Case-insensitive",
+    "City": "Please write the city in the language of the country and in Latin letters. E.g., write 'Luzern' and not 'Lucerne'. Case-insensitive",
     "Country": "Please write the country in English. E.g., write 'Switzerland' and not 'Schweiz'. Case-insensitive. ",
     "Food": "Write the English word of the food. E.g. 'Banana'. Case-insensitive.",
     "Movie/Series": "Please enter the whole title of the movie or series. E.g., write 'Harry Potter and the Philosopher's Stone' instead of 'Harry Potter'. Case-insensitive."
