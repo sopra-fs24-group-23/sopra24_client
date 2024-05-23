@@ -6,12 +6,8 @@ import Countdown from "../ui/Countdown";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
 import WebSocketContext from "../../contexts/WebSocketContext";
 import ChatComponent from "./ChatComponent";
+import LeaveGameDialog from "../ui/LeaveGameDialog";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
   Typography,
   Box,
   Tooltip,
@@ -174,19 +170,7 @@ const VotingResults = () => {
             Leave Game
           </CustomButton>
         </Box>
-        <Dialog open={openLeaveDialog} onClose={handleCloseDialog}>
-          <DialogTitle>Leave the game?</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Are you sure you want to leave the game?
-              You will be returned to your profile page and all your progress in the current game will be lost.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
-            <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
-          </DialogActions>
-        </Dialog>
+        <LeaveGameDialog open={openLeaveDialog} onClose={handleCloseDialog} onLeave={handleLeaveGame} />
       </StyledBox>
       <Box sx={{
         display: "flex",

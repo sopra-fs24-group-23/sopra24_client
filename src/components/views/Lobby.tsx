@@ -82,11 +82,11 @@ const Lobby = () => {
   const { setGameSettingsVariable } = useContext(GameSettingsContext);
   const { connectChat } = useContext(ChatContext);
 
-  const MAX_ROUNDS_LIMIT = 10; 
-  const MAX_VOTING_DURATION_LIMIT = 90; 
-  const MAX_INPUT_DURATION_LIMIT = 90; 
-  const MAX_SCOREBOARD_DURATION_LIMIT = 60; 
-  const MAX_PLAYERS_LIMIT = 10; 
+  const MAX_ROUNDS_LIMIT = 10;
+  const MAX_VOTING_DURATION_LIMIT = 90;
+  const MAX_INPUT_DURATION_LIMIT = 90;
+  const MAX_SCOREBOARD_DURATION_LIMIT = 60;
+  const MAX_PLAYERS_LIMIT = 10;
 
 
   useEffect(() => {
@@ -230,6 +230,8 @@ const Lobby = () => {
     }
   };
 
+  const [scroll, setScroll] = useState<"paper" | "body">("paper");
+
   const GameSettings: React.FC<GameSettingsProps> = ({ isHost, settings, onSettingsChange }) => {
     const [tempSettings, setTempSettings] = useState(settings);
     const initialCategories = settings.categories && settings.categories.length > 0 ? settings.categories : ["Country", "City"];
@@ -293,25 +295,27 @@ const Lobby = () => {
           <Grid container spacing={6} alignItems="center">
             <Grid item xs={6}>
               <Typography variant="body1" sx={{ color: "text.secondary", fontSize: "0.775rem" }}>Categories</Typography>
-              <FormControl sx={{ minWidth: 300 }}>
-                <Select
-                  multiple
-                  value={tempCategories || []}
-                  onChange={handleCategoryChange}
-                  disabled={tempSettings.isRandom}
-                  renderValue={(selected) => (selected as string[]).join(", ")}
-                >
-                  <MenuItem value={"City"}>City</MenuItem>
-                  <MenuItem value={"Country"}>Country</MenuItem>
-                  <MenuItem value={"Movie/Series"}>Movie/Series</MenuItem>
-                  <MenuItem value={"Animal"}>Animal</MenuItem>
-                  <MenuItem value={"Celebrity"}>Celebrity</MenuItem>
-                  <MenuItem value={"Food"}>Food</MenuItem>
-                  <MenuItem value={"Car"}>Car</MenuItem>
-                </Select>
-              </FormControl>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <FormControl fullWidth sx={{ minWidth: 300 }}>
+                  <Select
+                    multiple
+                    value={tempCategories || []}
+                    onChange={handleCategoryChange}
+                    disabled={tempSettings.isRandom}
+                    renderValue={(selected) => (selected as string[]).join(", ")}
+                  >
+                    <MenuItem value={"City"}>City</MenuItem>
+                    <MenuItem value={"Country"}>Country</MenuItem>
+                    <MenuItem value={"Movie/Series"}>Movie/Series</MenuItem>
+                    <MenuItem value={"Animal"}>Animal</MenuItem>
+                    <MenuItem value={"Celebrity"}>Celebrity</MenuItem>
+                    <MenuItem value={"Food"}>Food</MenuItem>
+                    <MenuItem value={"Car"}>Car</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
             </Grid>
-            <Grid item xs={6} sx={{ display: "flex", alignItems: "center" }}>
+            <Grid item xs={6} sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
               <Tooltip title={"Random categories each round!"}>
                 <ToggleButton
                   value="randomize"
@@ -319,7 +323,7 @@ const Lobby = () => {
                   onChange={() => {
                     handleToggle();
                   }}
-                  sx={{ height: "fit-content" }}
+                  sx={{ height: "fit-content", whiteSpace: "nowrap" }}
                 >
                   Randomize
                 </ToggleButton>
@@ -329,7 +333,7 @@ const Lobby = () => {
               <TextField
                 label="Max Rounds"
                 value={tempSettings.maxRounds}
-                inputProps={{maxLength: 20}}
+                inputProps={{ maxLength: 20 }}
                 onChange={(e) => handleInputChange(e, "maxRounds")}
                 error={errors.maxRounds}
                 helperText={errors.maxRounds ? "Can't be 0, empty or exceed " + MAX_ROUNDS_LIMIT : ""}
@@ -339,7 +343,7 @@ const Lobby = () => {
               <TextField
                 label="Time-limit for voting (seconds)"
                 value={tempSettings.votingDuration}
-                inputProps={{maxLength: 20}}
+                inputProps={{ maxLength: 20 }}
                 onChange={(e) => handleInputChange(e, "votingDuration")}
                 error={errors.votingDuration}
                 helperText={errors.votingDuration ? "Can't be 0, empty or exceed " + MAX_VOTING_DURATION_LIMIT : ""}
@@ -349,7 +353,7 @@ const Lobby = () => {
               <TextField
                 label="Time-limit for answering (seconds)"
                 value={tempSettings.inputDuration}
-                inputProps={{maxLength: 20}}
+                inputProps={{ maxLength: 20 }}
                 onChange={(e) => handleInputChange(e, "inputDuration")}
                 error={errors.inputDuration}
                 helperText={errors.inputDuration ? "Can't be 0, empty or exceed " + MAX_INPUT_DURATION_LIMIT : ""}
@@ -359,7 +363,7 @@ const Lobby = () => {
               <TextField
                 label="Duration to view scoreboard (seconds)"
                 value={tempSettings.scoreboardDuration}
-                inputProps={{maxLength: 20}}
+                inputProps={{ maxLength: 20 }}
                 onChange={(e) => handleInputChange(e, "scoreboardDuration")}
                 error={errors.scoreboardDuration}
                 helperText={errors.scoreboardDuration ? "Can't be 0, empty or exceed " + MAX_SCOREBOARD_DURATION_LIMIT : ""}
@@ -369,7 +373,7 @@ const Lobby = () => {
               <TextField
                 label="Max number of players"
                 value={tempSettings.maxPlayers}
-                inputProps={{maxLength: 20}}
+                inputProps={{ maxLength: 20 }}
                 onChange={(e) => handleInputChange(e, "maxPlayers")}
                 error={errors.maxPlayers}
                 helperText={errors.maxPlayers ? "Can't be less than 2, empty or exceed " + MAX_PLAYERS_LIMIT : ""}
@@ -393,7 +397,7 @@ const Lobby = () => {
             <Typography>Duration to view scoreboard (seconds): {settings.scoreboardDuration}</Typography>
             <Typography>Max number of players: {settings.maxPlayers}</Typography>
             <br />
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginRight: "20px" }}>
+            <Box sx={{ display: "flex", justifyContent: "flex-start", gap: "10px", marginRight: "20px" }}>
               <CustomButton onClick={handleCloseSettings}>Close</CustomButton>
             </Box>
           </>
@@ -514,19 +518,24 @@ const Lobby = () => {
             <CustomButton onClick={handleOpenGameSettings}>
               <SettingsIcon />
             </CustomButton>
-            <Dialog open={openGameSettings} onClose={handleCloseGameSettings}
+            <Dialog open={openGameSettings} onClose={handleCloseGameSettings} scroll={scroll} fullWidth={false}
+              fullScreen={false}
               PaperProps={{
                 sx: {
-                  width: "60%",
-                  maxWidth: "none",
-                  height: "60%",
+                  width: isHost ? "800px" : "auto",
+                  maxWidth: isHost ? "none" : "400px",
+                  minWidth: isHost ? "80%" : "none",
+                  height: isHost ? "60%" : "auto",
                   maxHeight: "none",
+                  overflow: isHost ? "hidden" : "none",
                 }
               }}
             >
               <DialogTitle>Game Settings</DialogTitle>
-              <DialogContent>
-                <GameSettings isHost={isHost} settings={settings} onSettingsChange={setSettings} />
+              <DialogContent dividers={scroll === "paper"}>
+                <Box sx={{ minWidth: "600px", height: isHost ? "500px" : "auto", overflowY: "auto", overflowX: "auto" }}>
+                  <GameSettings isHost={isHost} settings={settings} onSettingsChange={setSettings} />
+                </Box>
               </DialogContent>
             </Dialog>
           </Box>

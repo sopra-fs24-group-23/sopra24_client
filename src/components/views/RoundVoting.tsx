@@ -9,7 +9,8 @@ import UserContext from "../../contexts/UserContext";
 import Countdown from "../ui/Countdown";
 import { isProduction } from "../../helpers/isProduction";
 import CustomButton from "../ui/CustomButton";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Typography, Box, IconButton, Tooltip } from "@mui/material";
+import LeaveGameDialog from "../ui/LeaveGameDialog";
+import { Typography, Box, IconButton, Tooltip } from "@mui/material";
 import StyledBox from "../ui/StyledBox";
 import TooltipContent from "../ui/TooltipContent";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -31,9 +32,9 @@ const RoundVoting = () => {
 
 
   useEffect(() => {
-    if(!isProduction) console.log("Test");
+    if (!isProduction) console.log("Test");
     // Log the categories
-    if(!isProduction) console.log("Categories: ", gameSettings.categories);
+    if (!isProduction) console.log("Categories: ", gameSettings.categories);
 
     // Access the current answers of all players
     const answers = gameState.players.map(player => player.currentAnswers);
@@ -46,7 +47,7 @@ const RoundVoting = () => {
 
   useEffect(() => {
     if (gameState.gamePhase === "AWAITING_VOTES") {
-      if(!isProduction) console.log("Sending doubts to backend:", JSON.stringify(doubts));
+      if (!isProduction) console.log("Sending doubts to backend:", JSON.stringify(doubts));
 
       send(`/app/games/${lobbyId}/doubt/${user.username}`, JSON.stringify(doubts));
       setDoubts([]); // Clear doubts after sending
@@ -110,7 +111,7 @@ const RoundVoting = () => {
             <Box key={index} sx={{ display: "flex", justifyContent: "space-between", margin: "5px 0" }}>
               {/* Set a fixed width for the category label */}
               <Typography sx={{ width: "150px", flexShrink: 0 }}>{answer.category}</Typography>
-              <Typography sx={{ textAlign: "left", flexGrow: 1}}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
+              <Typography sx={{ textAlign: "left", flexGrow: 1 }}>{answer.answer ? answer.answer : "NO ANSWER"}</Typography>
               {!isCurrentUser && (
                 <IconButton disabled={isReady} onClick={() => handleDoubt(player.username, answer.category)} sx={{ color: isDoubted ? "blue" : "grey" }}>
                   <CancelOutlinedIcon />
@@ -182,19 +183,7 @@ const RoundVoting = () => {
             Leave Game
           </CustomButton>
         </Box>
-        <Dialog open={openLeaveDialog} onClose={handleCloseDialog}>
-          <DialogTitle>Leave the game?</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Are you sure you want to leave the game?
-              You will be returned to your profile page and all your progress in the current game will be lost.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
-            <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
-          </DialogActions>
-        </Dialog>
+        <LeaveGameDialog open={openLeaveDialog} onClose={handleCloseDialog} onLeave={handleLeaveGame} />
       </StyledBox>
       <Box sx={{
         backgroundColor: "rgba(224, 224, 224, 0.9)",

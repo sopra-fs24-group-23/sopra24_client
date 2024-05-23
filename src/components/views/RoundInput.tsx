@@ -8,9 +8,11 @@ import GameSettingsContext from "../../contexts/GameSettingsContext";
 import UserContext from "../../contexts/UserContext";
 import Countdown from "../ui/Countdown";
 import ChatComponent from "./ChatComponent";
+
 import { isProduction } from "../../helpers/isProduction";
-import { Typography, Box, TextField, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Tooltip } from "@mui/material";
+import { Typography, Box, TextField, IconButton, Tooltip } from "@mui/material";
 import StyledBox from "../ui/StyledBox";
+import LeaveGameDialog from "../ui/LeaveGameDialog";
 import TooltipContent from "components/ui/TooltipContent";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
@@ -141,6 +143,16 @@ const RoundInput = () => {
     navigate("/homepage")
   }
 
+  const categoryTooltips = {
+    "Animal": "Write the English word of the animal. E.g., 'Cat'. Case-insensitive.",
+    "Car": "Case-insensitive.",
+    "Celebrity": "Case-insensitive.",
+    "City": "Please write the city in the name of the country in Latin letters. E.g., write 'Luzern' and not 'Lucerne'. Case-insensitive",
+    "Country": "Please write the country in English. E.g., write 'Switzerland' and not 'Schweiz'. Case-insensitive. ",
+    "Food": "Write the English word of the food. E.g. 'Banana'. Case-insensitive.",
+    "Movie/Series": "Please enter the whole title of the movie or series. E.g., write 'Harry Potter and the Philosopher's Stone' instead of 'Harry Potter'. Case-insensitive."
+  };
+
   return (
     <BackgroundImageLobby>
       <StyledBox>
@@ -180,19 +192,7 @@ const RoundInput = () => {
             Leave Game
           </CustomButton>
         </Box>
-        <Dialog open={openLeaveDialog} onClose={handleCloseDialog}>
-          <DialogTitle>Leave the game?</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Are you sure you want to leave the game?
-              You will be returned to your profile page and all your progress in the current game will be lost.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <CustomButton onClick={handleLeaveGame}>Leave</CustomButton>
-            <CustomButton onClick={handleCloseDialog}>Stay</CustomButton>
-          </DialogActions>
-        </Dialog>
+        <LeaveGameDialog open={openLeaveDialog} onClose={handleCloseDialog} onLeave={handleLeaveGame} />
       </StyledBox>
       <Box sx={{
         display: "flex",
@@ -242,12 +242,14 @@ const RoundInput = () => {
           }}>
             {gameSettings && gameSettings.categories && gameSettings.categories.map((category) => (
               <Box key={category} sx={{ margin: "10px 0" }}>
+                <Tooltip title={categoryTooltips[category] || ""} placement="bottom" arrow>
                 <TextField
                   label={category}
                   key={category}
-                  inputProps={{maxLength: 30}}
+                  inputProps={{ maxLength: 30 }}
                   onChange={(e) => handleInputChange(category, e.target.value)}
                 />
+                </Tooltip>
                 <IconButton onClick={() => handleJokerClick(category)}>
                   <AutoAwesomeIcon style={{ color: jokerCategory === category ? "yellow" : "grey" }} />
                 </IconButton>
