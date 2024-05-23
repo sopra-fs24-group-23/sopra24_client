@@ -68,7 +68,7 @@ const GlobalLeaderboard = () => {
         top: 30,
         marginBottom: "30px",
       }}>
-        <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px", marginTop: "100px" }} />
+        <img src="/Images/logo.png" alt="Descriptive Text" style={{ width: "auto", height: "200px"}} />
         <CustomButton onClick={handleBack}>
           Back
         </CustomButton>
@@ -85,7 +85,7 @@ const GlobalLeaderboard = () => {
         padding: "20px",
         borderRadius: "27px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-        width: "100%",
+        width: "90%",
         //maxWidth: "70%",
         maxWidth: "800px",
         height: "70%",

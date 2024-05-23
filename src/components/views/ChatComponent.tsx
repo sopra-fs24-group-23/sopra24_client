@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import CustomButton from "components/ui/CustomButton";
 import ChatContext from "../../contexts/ChatContext";
 import WebSocketContext from "../../contexts/WebSocketContext";
@@ -22,6 +22,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ lobbyId }) => {
   const { send } = useContext(WebSocketContext)
   const { user } = useContext(UserContext)
   const [inputMessage, setInputMessage] = useState<string>("");
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const sendMessage = () => {
     if (user && isChatSubscribed.current && inputMessage.trim()) {
@@ -41,6 +42,10 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ lobbyId }) => {
       setInputMessage("")
     }
   };
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]); // Dependency array includes messages to trigger effect on update
 
   return (
     <Box sx={{
@@ -65,6 +70,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ lobbyId }) => {
               <strong style={{ color: msg.color }}>{msg.sender}</strong>: {msg.content}
             </div>
           ))}
+          <div ref={messagesEndRef} /> {/* This is the new line */}
         </div>
         <div className="chat-input-container" style={{ display: "flex", alignItems: "center" }}>
           <input

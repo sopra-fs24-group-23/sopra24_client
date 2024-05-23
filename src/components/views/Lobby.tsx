@@ -427,7 +427,7 @@ const Lobby = () => {
         marginBottom: "30px",
       }}>
         <img src="/Images/logo.png" alt="Descriptive Text"
-          style={{ width: "auto", height: "200px", marginTop: "100px" }} />
+          style={{ width: "auto", height: "200px", marginTop: "-10px" }} />
         <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Tooltip title={<TooltipContent />} placement="bottom" arrow>
             <IconButton
@@ -505,15 +505,16 @@ const Lobby = () => {
           height: "90%",
           //margin: "auto",
           position: "relative",
-          paddingTop: "30px",
+          paddingTop: "15px",
           paddingBottom: "10px",
           marginRight: "20px",
         }}>
           <Box sx={{
             display: "flex",
-            position: "absolute",
-            top: "2%",
-            left: "85%",
+            justifyContent: "flex-end",
+            width: "100%",
+            position: "relative",
+            marginBottom: "10px",
           }}>
             <CustomButton onClick={handleOpenGameSettings}>
               <SettingsIcon />
