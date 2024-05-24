@@ -72,6 +72,7 @@ const Lobby = () => {
     maxPlayers: 4,
   });
   const [openHostLeftDialog, setOpenHostLeftDialog] = useState(false);
+  const [openKickDialog, setOpenKickDialog] = useState(false);
 
   const gameStarting = useRef(false);
   const lobbyClosing = useRef(false);
@@ -121,8 +122,8 @@ const Lobby = () => {
             `/queue/lobbies/${lobbyId}/kick/${user.username}`,
             (message: Message) => {
               if (!isProduction) console.log(`Received kick message: ${message.body}`);
-              alert("You were kicked from the lobby.");
-              navigate("/homepage");
+              setOpenKickDialog(true);
+              //navigate("/homepage");
             },
           );
         }
@@ -223,6 +224,7 @@ const Lobby = () => {
         if (!isProduction) console.error("Failed to copy lobby code to clipboard:", error);
       });
   };
+
   const kickPlayer = (usernameToKick: string) => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -613,6 +615,18 @@ const Lobby = () => {
         </DialogContent>
         <DialogActions>
           <CustomButton onClick={handleCloseHostLeftDialog}>OK</CustomButton>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={openKickDialog} onClose={() => setOpenKickDialog(false)}>
+        <DialogTitle>Ups, this is awkward...</DialogTitle>
+        <DialogContent>
+          <DialogContentText>You were kicked from the lobby. Returning you to the homepage.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <CustomButton onClick={() => {
+            setOpenKickDialog(false);
+            navigate("/homepage");
+          }}>OK</CustomButton>
         </DialogActions>
       </Dialog>
     </BackgroundImageLobby>
