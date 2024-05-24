@@ -133,7 +133,8 @@ const Lobby = () => {
             lobbyClosing.current = true;
             //if (!isHost) alert("Sorry, the host has left the game! Returning you to the homepage.");
             //navigate("/homepage");
-            if (!isHost) handleOpenHostLeftDialog();
+            alert("Sorry, the host has left or you are the only remaining player! Returning you to the homepage.")
+            navigate("/homepage")
           },
         );
         subscribeClient(
