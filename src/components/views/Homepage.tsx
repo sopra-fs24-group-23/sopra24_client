@@ -281,7 +281,7 @@ const Homepage = () => {
                   <Box sx={{ display: "flex", flexDirection: "row", alignItems: "flex-start" }}>
                     <ColorPicker score={profile.totalScore} color={color} setColor={setColor} />
                     <Tooltip title="You can change the color of how your username is displayed
-                      on the Leaderboard. Unlock the next color by continuing playing Global Guess!"
+                      throughout the game. Unlock the next color by continuing playing Global Guess!"
                     >
                       <InfoOutlinedIcon sx={{ marginLeft: "10px" }} />
                     </Tooltip>
