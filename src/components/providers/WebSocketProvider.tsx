@@ -108,11 +108,12 @@ const WebSocketProvider = ( { children } ) => {
   }
 
   function unsubscribeAll() {
-    if (stompClient.current && stompClient.current.active) {
-      subscriptionRequests.current.forEach((destination, request) => {
-        if (request.subscription) {
+    if (stompClient.current) {
+      subscriptionRequests.current.forEach((request, destination) => {
+        if (request.subscription && stompClient.current.active) {
           request.subscription.unsubscribe();
         }
+        subscriptionRequests.current.delete(destination)
       })
     }
   }

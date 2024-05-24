@@ -86,9 +86,9 @@ const GlobalLeaderboard = () => {
         borderRadius: "27px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         width: "90%",
-        //maxWidth: "70%",
         maxWidth: "800px",
-        height: "70%",
+        height: "auto", // Changed from a fixed percentage to auto
+        minHeight: "70%",
         marginTop: "80px",
         marginBottom: "30px",
         marginLeft: "auto",
@@ -96,6 +96,7 @@ const GlobalLeaderboard = () => {
         position: "relative",
         paddingTop: "30px",
         paddingBottom: "10px",
+        overflow: "auto",
       }}>
         <Typography variant="h4" gutterBottom
           sx={{
