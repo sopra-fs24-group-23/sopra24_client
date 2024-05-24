@@ -87,6 +87,35 @@ Finally, an endscreen is displayed, ranking the players and showing they respect
 
 ## Roadmap
 
+Possible future features could be: 
+
+#### Allow players to distribute points
+There can be situations where an answer that is correct, is evaluated as wrong by the API. <br/>
+An example could be a tiny city that does indeed exist, but is not listed on the API because it might not be big/known enough.<br/>
+The player that got their answer marked as wrong, could ask in the chat, whether other players would still allow them to get points for the answer.<br/>
+We imagine a functionality where the player can mark the wrongly evaluated answer as such and allow other players to agree.<br/>
+If all players agree, the player is given a certain amount of points for their answer. 
+
+#### Pause button
+Especially if the first feature (Allow players to distribute points) has been implemented it makes sense to give the players an option to pause the game as each view is limited by a timer.<br/>
+This would of course not be beneficial in the input page (players should have only a limited time to answer the categories) but it would make sense in the voting-results screen.<br/>
+Of course players must then also be given the functionality to resume the game.
+
+#### Unlock new categories with progression
+To additionaly motivate players to keep playing the game, they could unlock new categories by achieving the next level.<br/>
+That way, if a player has reached a level to unlock a new category and they are the host, they can set that new category for their next game.<br/>
+
+#### Allow minor spelling mistakes in player answers
+We know that the game is stressful for players. In a normal paper-and-pen based categories game, spelling mistakes don't matter.<br/>
+Players would just communicate their answers to other players, regardless of their spelling.<br/>
+Integrating this feature into the GlobalGuess game would certainly improve player's satisfaction, as they are not punished with zero points for spelling mistakes.<br/>
+We imagine that the answers would still be checked as correct even if there are one or two letters that don't fit the word exactly.<br/>
+
+#### Add sounds
+We believe that by adding sounds, GlobalGuess could be even more enjoyable.<br/>
+That could include sounds for clicking a button, background music during a game etc.<br/>
+
+
 ## Authors and acknowledgement
 - Franziska Geiger, [fr4n715k4](https://github.com/fr4n715k4)
 - Nilaksan Selliah, [nilaksan97](https://github.com/nilaksan97)
