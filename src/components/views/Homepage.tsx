@@ -4,6 +4,7 @@ import { isProduction } from "../../helpers/isProduction";
 import { getNextScore, getNextScoreString } from "../../helpers/getNextScore";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Game.scss";
+import GameStateModel from "../../models/GameState";
 import HomepageBackgroundImage from "components/ui/HomepageBackgroundImage";
 import CustomButton from "components/ui/CustomButton";
 import {
@@ -27,6 +28,7 @@ import UserContext from "../../contexts/UserContext";
 import ProgressBarContainer from "../ui/ProgressBarContainer";
 import ColorPicker from "../ui/ColorPicker";
 import ChatContext from "../../contexts/ChatContext";
+import GameStateContext from "../../contexts/GameStateContext";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -48,7 +50,10 @@ const Homepage = () => {
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const [openLobbyFullOrRunning, setOpenLobbyFullOrRunning] = useState(false);
 
+  const { setGameStateVariable } = useContext(GameStateContext)
+
   useEffect(() => {
+    setGameStateVariable(new GameStateModel())
     resetChat()
   }, []);
 
