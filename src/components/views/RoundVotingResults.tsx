@@ -134,6 +134,7 @@ const VotingResults = () => {
   const handleReady = () => {
     send(`/app/games/${lobbyId}/ready/${user.username}`, JSON.stringify({ ready: true }));
     if (gameState.players.every(player => player.isReady)) {
+      gameContinuing.current = true
       navigate(`/lobbies/${lobbyId}/scoreboard`);
     }
   };
