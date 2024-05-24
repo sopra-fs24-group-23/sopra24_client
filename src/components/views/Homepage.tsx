@@ -52,7 +52,6 @@ const Homepage = () => {
   }, []);
 
   const logout = async () => {
-    if (isProduction()) {
       const token = localStorage.getItem("token");
       //console.log(token);
       await api.post("/logout", { token: token });
@@ -60,11 +59,6 @@ const Homepage = () => {
       localStorage.removeItem("token");
       navigate("/login");
       //console.log(localStorage.getItem("token"));
-    } else {
-      localStorage.removeItem("token");
-      localStorage.removeItem("id");
-      navigate("/login");
-    }
   };
 
   const handleEditClick = () => {
