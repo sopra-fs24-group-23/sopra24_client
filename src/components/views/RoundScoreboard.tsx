@@ -64,6 +64,7 @@ const RoundScoreboard = () => {
     if (gameState) {
       if (gameState.gamePhase) {
         if (gameState.gamePhase === "INPUT") {
+          console.log("NDB scoreboard setting gamecontinuing true in scoreboard")
           gameContinuing.current = true;
           navigate(`/lobbies/${lobbyId}/input`)
         }
@@ -84,12 +85,13 @@ const RoundScoreboard = () => {
     return () => {
       if (!gameContinuing.current) {
         const token = localStorage.getItem("token");
+        console.log("NDB calling cleanup from scoreboard, gamecontinuing: " + gameContinuing.current)
         send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
         unsubscribeAll()
         disconnect()
       }
     }
-  }, [])
+  }, [gameContinuing.current])
 
   return (
     <BackgroundImageLobby>

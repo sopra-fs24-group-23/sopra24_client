@@ -36,23 +36,25 @@ const VotingResults = () => {
   const { disconnect, send, unsubscribeAll } = useContext(WebSocketContext);
 
   useEffect(() => {
-    // Access the current answers of all players
-    const answers = gameState.players.map(player => player.currentAnswers);
-    setAllPlayersAnswers(answers);
-
     if (gameState.gamePhase === "SCOREBOARD") {
+      console.log("NDB scoreboard setting gamecontinuing true in votingresults")
       gameContinuing.current = true;
       navigate(`/lobbies/${lobbyId}/scoreboard`);
     }
     else if (gameState.gamePhase === "ENDED") {
+      console.log("NDB ended setting gamecontinuing true in votingresults")
       gameContinuing.current = true;
       navigate(`/lobbies/${lobbyId}/winners`);
     }
-  }, [gameState.gamePhase]);
+    // Access the current answers of all players
+    const answers = gameState.players.map(player => player.currentAnswers);
+    setAllPlayersAnswers(answers);
+  }, [gameState]);
 
   useEffect(() => {
     return () => {
       if (!gameContinuing.current) {
+        console.log("NDB calling cleanup from votingresults, gamecontinuing: " + gameContinuing.current)
         const token = localStorage.getItem("token");
         send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
         unsubscribeAll()

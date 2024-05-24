@@ -78,7 +78,7 @@ const Lobby = () => {
   const lobbyClosing = useRef(false);
 
   const { user } = useContext(UserContext);
-  const { setGameStateVariable } = useContext(GameStateContext);
+  const { gameState, setGameStateVariable } = useContext(GameStateContext);
   const { connect, disconnect, send, subscribeClient, unsubscribeClient } = useContext(WebSocketContext);
   const { setGameSettingsVariable } = useContext(GameSettingsContext);
   const { connectChat } = useContext(ChatContext);
@@ -143,10 +143,6 @@ const Lobby = () => {
             if (!isProduction) console.log(`Received GameState update: ${message.body}`);
             const receivedGameState = JSON.parse(message.body);
             setGameStateVariable(receivedGameState);
-            if (receivedGameState.gamePhase === "SCOREBOARD") {
-              gameStarting.current = true;
-              navigate(`/lobbies/${lobbyId}/scoreboard`);
-            }
           },
         );
         send(`/app/lobbies/${lobbyId}/update`);
@@ -174,6 +170,16 @@ const Lobby = () => {
       fetchHost();
     }
   }, [user]);
+
+  useEffect(() => {
+    if(gameState) {
+      if (gameState.gamePhase === "SCOREBOARD") {
+        gameStarting.current = true;
+        console.log("NDB NAVIGATING TO SCOREBOARD FROM LOBBY")
+        navigate(`/lobbies/${lobbyId}/scoreboard`);
+      }
+    }
+  }, [gameState])
 
   useEffect(() => {
     return () => {

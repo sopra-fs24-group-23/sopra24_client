@@ -46,6 +46,7 @@ const RoundInput = () => {
 
   useEffect(() => {
     if (gameState.gamePhase === "AWAITING_ANSWERS") {
+      console.log("NDB scoreboard setting gamecontinuing true in input")
       gameContinuing.current = true;
       handleAwaitingAnswers()
       navigate(`/lobbies/${lobbyId}/voting`)
@@ -56,12 +57,13 @@ const RoundInput = () => {
     return () => {
       if (!gameContinuing.current) {
         const token = localStorage.getItem("token");
+        console.log("NDB calling cleanup from votingresults, gamecontinuing: " + gameContinuing.current)
         send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
         unsubscribeAll()
         disconnect()
       }
     }
-  }, [])
+  }, [gameContinuing.current])
 
   const handleInputChange = (pCategory, value) => {
     inputRefs.current[pCategory] = {
