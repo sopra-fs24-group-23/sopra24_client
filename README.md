@@ -52,7 +52,15 @@ The webapp is automatically deployed to google cloud whenever you push to the **
 ## Illustrations
 Unregistered or logged-out users land on the [login page](https://sopra-fs24-group-23-client.oa.r.appspot.com/login). Logged-in users land on the [homepage](https://sopra-fs24-group-23-client.oa.r.appspot.com/homepage). From there, users can edit their username, and color, view a global leaderboard and host or join a lobby.
 
-**insert leaderboard & homepage screenshots**
+#### Homepage
+The homepage is the user's profile at the same time. They can edit their username and color of how their username is displayed (if they unlocked the next level).<br/>
+They also have a direct overview of their current progress (progress bar) and player stats (how many games they have played, their total points scored and how many games they have won).
+<img src="public/Images/Homepage_Screenshot.png" alt="Homepage Screenshot" width="700">
+
+#### Leaderboards
+Upon navigating to the leaderboards they have an overview (globally) of all the players that have played GlobalGuess.<br/>
+Up to ten users (the top 10) are displayed there. 
+<img src="public/Images/Leaderboards_Screenshot.png" alt="Leaderboards Screenshot" width="700">
 
 ### Game Flow
 #### Lobby
