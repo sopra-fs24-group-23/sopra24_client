@@ -210,12 +210,14 @@ const Lobby = () => {
       if (!isProduction) console.error("Failed to start the game:", error);
     }
   };
+
   const handleLeaveGame = () => {
     if (isHost) {
       send(`/app/lobbies/${lobbyId}/delete`);
     }
     navigate("/homepage");
   };
+
   const handleCopyLobbyCode = () => {
     navigator.clipboard.writeText(localStorage.getItem("lobbyCode"))
       .then(() => {

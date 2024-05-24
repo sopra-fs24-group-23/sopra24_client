@@ -134,9 +134,6 @@ const RoundInput = () => {
     setOpenLeaveDialog(false);
   };
   const handleLeaveGame = () => {
-    send(`/app/games/${lobbyId}/leave`, JSON.stringify({ token: user.token }));
-    unsubscribeAll()
-    disconnect()
     navigate("/homepage")
   }
 
@@ -202,12 +199,12 @@ const RoundInput = () => {
             {gameSettings && gameSettings.categories && gameSettings.categories.map((category) => (
               <Box key={category} sx={{ margin: "10px 0" }}>
                 <Tooltip title={categoryTooltips[category] || ""} placement="bottom" arrow>
-                <TextField
-                  label={category}
-                  key={category}
-                  inputProps={{ maxLength: 50 }}
-                  onChange={(e) => handleInputChange(category, e.target.value)}
-                />
+                  <TextField
+                    label={category}
+                    key={category}
+                    inputProps={{ maxLength: 50 }}
+                    onChange={(e) => handleInputChange(category, e.target.value)}
+                  />
                 </Tooltip>
                 <IconButton onClick={() => handleJokerClick(category)}>
                   <AutoAwesomeIcon style={{ color: jokerCategory === category ? "yellow" : "grey" }} />

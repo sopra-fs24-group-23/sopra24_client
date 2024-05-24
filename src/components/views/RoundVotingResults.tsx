@@ -1,5 +1,5 @@
 import BackgroundImageLobby from "../ui/BackgroundImageLobby";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import GameStateContext from "../../contexts/GameStateContext";
 import { useNavigate, useParams } from "react-router-dom";
 import Countdown from "../ui/Countdown";
@@ -27,7 +27,7 @@ const VotingResults = () => {
   const [allPlayersAnswers, setAllPlayersAnswers] = useState([]);
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
-
+  const gameContinuing = useRef(false)
 
   /* Context variables */
   const { gameState } = useContext(GameStateContext);
@@ -41,12 +41,25 @@ const VotingResults = () => {
     setAllPlayersAnswers(answers);
 
     if (gameState.gamePhase === "SCOREBOARD") {
+      gameContinuing.current = true;
       navigate(`/lobbies/${lobbyId}/scoreboard`);
     }
     else if (gameState.gamePhase === "ENDED") {
+      gameContinuing.current = true;
       navigate(`/lobbies/${lobbyId}/winners`);
     }
   }, [gameState.gamePhase]);
+
+  useEffect(() => {
+    return () => {
+      if (!gameContinuing.current) {
+        const token = localStorage.getItem("token");
+        send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
+        unsubscribeAll()
+        disconnect()
+      }
+    }
+  }, [])
 
   /* Render Icons */
   const renderStatusIcons = (answer) => (
@@ -115,9 +128,6 @@ const VotingResults = () => {
     setOpenLeaveDialog(false);
   };
   const handleLeaveGame = () => {
-    send(`/app/games/${lobbyId}/leave`, JSON.stringify({ token: user.token }));
-    unsubscribeAll()
-    disconnect()
     navigate("/homepage")
   }
 

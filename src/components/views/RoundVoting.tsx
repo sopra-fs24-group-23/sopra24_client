@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BackgroundImageLobby from "components/ui/BackgroundImageLobby";
 import GameSettingsContext from "../../contexts/GameSettingsContext";
@@ -21,6 +21,7 @@ const RoundVoting = () => {
   const [doubtedAnswers, setDoubtedAnswers] = useState([]);
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const gameContinuing = useRef(false);
 
   /* Context variables */
   const { gameSettings } = useContext(GameSettingsContext);
@@ -39,6 +40,7 @@ const RoundVoting = () => {
     setAllPlayersAnswers(answers);
 
     if (gameState.gamePhase === "VOTING_RESULTS") {
+      gameContinuing.current = true;
       navigate(`/lobbies/${lobbyId}/voting-results`);
     }
   }, [gameState.gamePhase]);
@@ -52,6 +54,16 @@ const RoundVoting = () => {
     }
   }, [gameState]);
 
+  useEffect(() => {
+    return () => {
+      if (!gameContinuing.current) {
+        const token = localStorage.getItem("token");
+        send(`/app/lobbies/${lobbyId}/leave`, JSON.stringify({ token }));
+        unsubscribeAll()
+        disconnect()
+      }
+    }
+  }, [])
   // Function to handle the doubt of a player's answer
 
 
@@ -129,10 +141,8 @@ const RoundVoting = () => {
   const handleCloseDialog = () => {
     setOpenLeaveDialog(false);
   };
+
   const handleLeaveGame = () => {
-    send(`/app/games/${lobbyId}/leave`, JSON.stringify({ token: user.token }));
-    unsubscribeAll()
-    disconnect()
     navigate("/homepage")
   }
 
