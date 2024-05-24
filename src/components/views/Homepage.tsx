@@ -46,6 +46,7 @@ const Homepage = () => {
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [openJoinLobbyErrorDialog, setOpenJoinLobbyErrorDialog] = useState(false);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
+  const [openLobbyFullOrRunning, setOpenLobbyFullOrRunning] = useState(false);
 
   useEffect(() => {
     resetChat()
@@ -146,8 +147,8 @@ const Homepage = () => {
           await api.post(`/lobbies/${inputLobbyId}/join`, requestBody);
           navigate(`/lobbies/${inputLobbyId}`);
         } catch (e) {
-          if (e.response.data.status) {
-            alert(`${e.response.data.message}`);
+          if (e.response.status === 409) {
+            setOpenLobbyFullOrRunning(true);
           } else {
             handleError(e);
           }
@@ -440,6 +441,15 @@ const Homepage = () => {
         <DialogActions>
           <CustomButton onClick={() => setOpenJoinLobbyDialog(false)}>Cancel</CustomButton>
           <CustomButton onClick={joinLobby}>Join</CustomButton>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={openLobbyFullOrRunning} onClose={() => setOpenLobbyFullOrRunning(false)}>
+        <DialogTitle>Lobby Full or Running</DialogTitle>
+        <DialogContent>
+          <DialogContentText>The lobby is either full or the game has already started. Please try another lobby.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <CustomButton onClick={() => setOpenLobbyFullOrRunning(false)}>OK</CustomButton>
         </DialogActions>
       </Dialog>
       {/* Dialog for 'Failed to create Game' */}
