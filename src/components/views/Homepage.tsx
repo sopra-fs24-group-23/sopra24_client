@@ -53,13 +53,13 @@ const Homepage = () => {
   }, []);
 
   const logout = async () => {
-      const token = localStorage.getItem("token");
-      //console.log(token);
-      await api.post("/logout", { token: token });
+    const token = localStorage.getItem("token");
+    //console.log(token);
+    await api.post("/logout", { token: token });
 
-      localStorage.removeItem("token");
-      navigate("/login");
-      //console.log(localStorage.getItem("token"));
+    localStorage.removeItem("token");
+    navigate("/login");
+    //console.log(localStorage.getItem("token"));
   };
 
   const handleEditClick = () => {

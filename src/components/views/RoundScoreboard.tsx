@@ -47,10 +47,8 @@ const RoundScoreboard = () => {
   const handleCloseDialog = () => {
     setOpenLeaveDialog(false);
   };
+
   const handleLeaveGame = () => {
-    send(`/app/games/${lobbyId}/leave`, JSON.stringify({ token: user.token }));
-    unsubscribeAll()
-    disconnect()
     navigate("/homepage")
   }
 
