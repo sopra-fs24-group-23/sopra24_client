@@ -63,7 +63,7 @@ const RoundVoting = () => {
         disconnect()
       }
     }
-  }, [])
+  }, [gameContinuing.current])
   // Function to handle the doubt of a player's answer
 
 
